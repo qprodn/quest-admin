@@ -1,0 +1,586 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: ""
+    version: 0.0.1
+paths:
+    /api/v1/user/changePassword:
+        post:
+            tags:
+                - UserService
+            summary: 修改用户密码
+            description: 用户主动修改自己的登录密码，需要验证原密码
+            operationId: UserService_ChangePassword
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.user.v1.ChangePasswordRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.user.v1.ChangePasswordReply'
+    /api/v1/user/changeStatus:
+        post:
+            tags:
+                - UserService
+            summary: 变更用户状态
+            description: 启用或禁用用户，管理用户的使用权限
+            operationId: UserService_ChangeUserStatus
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.user.v1.ChangeUserStatusRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.user.v1.ChangeUserStatusReply'
+    /api/v1/user/create:
+        post:
+            tags:
+                - UserService
+            summary: 创建新用户
+            description: 创建一个新的用户，需要提供用户名、密码等基本信息
+            operationId: UserService_CreateUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.user.v1.CreateUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.user.v1.CreateUserReply'
+    /api/v1/user/delete:
+        post:
+            tags:
+                - UserService
+            summary: 删除用户
+            description: 删除用户，此操作不可逆
+            operationId: UserService_DeleteUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.user.v1.DeleteUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.user.v1.DeleteUserReply'
+    /api/v1/user/list:
+        post:
+            tags:
+                - UserService
+            summary: 获取用户列表
+            description: 分页查询用户列表，支持关键字搜索、状态筛选等
+            operationId: UserService_ListUsers
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.user.v1.ListUsersRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.user.v1.ListUsersReply'
+    /api/v1/user/managePosts:
+        post:
+            tags:
+                - UserService
+            summary: 管理用户岗位
+            description: 为用户分配或移除岗位，管理用户的职位信息
+            operationId: UserService_ManageUserPosts
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.user.v1.ManageUserPostsRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.user.v1.ManageUserPostsReply'
+    /api/v1/user/resetPassword:
+        post:
+            tags:
+                - UserService
+            summary: 重置用户密码
+            description: 管理员重置用户密码，生成临时密码
+            operationId: UserService_ResetPassword
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.user.v1.ResetPasswordRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.user.v1.ResetPasswordReply'
+    /api/v1/user/update:
+        post:
+            tags:
+                - UserService
+            summary: 更新用户信息
+            description: 更新用户的基本信息，如昵称、邮箱、手机号等
+            operationId: UserService_UpdateUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.user.v1.UpdateUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.user.v1.UpdateUserReply'
+    /api/v1/user/{id}:
+        get:
+            tags:
+                - UserService
+            summary: 获取用户详细信息
+            description: 根据用户ID获取用户的详细信息
+            operationId: UserService_GetUser
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.user.v1.GetUserReply'
+    /helloworld/{name}:
+        get:
+            tags:
+                - Greeter
+            description: Sends a greeting
+            operationId: Greeter_SayHello
+            parameters:
+                - name: name
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/helloworld.v1.HelloReply'
+components:
+    schemas:
+        helloworld.v1.HelloReply:
+            type: object
+            properties:
+                message:
+                    type: string
+            description: The response message containing the greetings
+        system.user.v1.ChangePasswordReply:
+            type: object
+            properties:
+                success:
+                    example: true
+                    type: boolean
+                    description: 是否成功
+                message:
+                    example: 密码修改成功
+                    type: string
+                    description: 操作结果消息
+            description: 修改密码响应体
+        system.user.v1.ChangePasswordRequest:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 用户ID
+                oldPassword:
+                    example: oldpassword123
+                    type: string
+                    description: 原密码
+                newPassword:
+                    example: newpassword123
+                    type: string
+                    description: 新密码
+                confirmPassword:
+                    example: newpassword123
+                    type: string
+                    description: 确认新密码
+            description: 修改密码请求体
+        system.user.v1.ChangeUserStatusReply:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 用户ID
+                status:
+                    example: 1
+                    type: integer
+                    description: 更新后的状态
+                    format: int32
+                updateAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+            description: 变更用户状态响应体
+        system.user.v1.ChangeUserStatusRequest:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 用户ID
+                status:
+                    example: 1
+                    type: integer
+                    description: '目标状态: 0-禁用, 1-正常'
+                    format: int32
+                reason:
+                    example: 用户申请启用
+                    type: string
+                    description: 变更原因
+            description: 变更用户状态请求体
+        system.user.v1.CreateUserReply:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 用户ID
+            description: 创建用户响应体
+        system.user.v1.CreateUserRequest:
+            example: {"username": "newuser", "password": "password123", "nickname": "新用户", "email": "newuser@example.com", "mobile": "13900139000", "sex": 1}
+            type: object
+            properties:
+                username:
+                    example: newuser
+                    type: string
+                    description: 用户名，必须唯一
+                password:
+                    example: password123
+                    type: string
+                    description: 密码，长度不少于6位
+                nickname:
+                    example: 新用户
+                    type: string
+                    description: 用户昵称
+                email:
+                    example: newuser@example.com
+                    type: string
+                    description: 邮箱地址
+                mobile:
+                    example: 13900139000
+                    type: string
+                    description: 手机号码
+                sex:
+                    example: 1
+                    type: integer
+                    description: '性别: 0-未知, 1-男, 2-女'
+                    format: int32
+                avatar:
+                    example: https://example.com/avatar.jpg
+                    type: string
+                    description: 用户头像URL
+                remark:
+                    type: string
+                    description: 备注信息
+            description: 创建用户请求体
+        system.user.v1.DeleteUserReply:
+            type: object
+            properties:
+                success:
+                    example: true
+                    type: boolean
+                    description: 是否成功
+                message:
+                    example: 用户删除成功
+                    type: string
+                    description: 操作结果消息
+                deleteAt:
+                    type: string
+                    description: 删除时间
+                    format: date-time
+            description: 删除用户响应体
+        system.user.v1.DeleteUserRequest:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 用户ID
+            description: 删除用户请求体
+        system.user.v1.GetUserReply:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/system.user.v1.UserInfo'
+            description: 获取用户信息响应体
+        system.user.v1.ListUsersReply:
+            type: object
+            properties:
+                users:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/system.user.v1.UserInfo'
+                    description: 用户列表
+                total:
+                    example: 100
+                    type: string
+                    description: 总记录数
+                page:
+                    example: 1
+                    type: integer
+                    description: 当前页码
+                    format: int32
+                pageSize:
+                    example: 10
+                    type: integer
+                    description: 每页数量
+                    format: int32
+                totalPages:
+                    example: 10
+                    type: integer
+                    description: 总页数
+                    format: int32
+            description: 查询用户列表响应体
+        system.user.v1.ListUsersRequest:
+            type: object
+            properties:
+                page:
+                    example: 1
+                    type: integer
+                    description: 页码，从1开始
+                    format: int32
+                pageSize:
+                    example: 10
+                    type: integer
+                    description: 每页数量，默认10
+                    format: int32
+                keyword:
+                    example: admin
+                    type: string
+                    description: 搜索关键字，支持用户名、昵称搜索
+                status:
+                    example: 1
+                    type: integer
+                    description: '用户状态筛选: 0-禁用, 1-正常'
+                    format: int32
+                sex:
+                    example: 1
+                    type: integer
+                    description: '性别筛选: 0-未知, 1-男, 2-女'
+                    format: int32
+                sortField:
+                    example: create_at
+                    type: string
+                    description: 排序字段
+                sortOrder:
+                    example: desc
+                    type: string
+                    description: '排序方式: asc, desc'
+            description: 查询用户列表请求体
+        system.user.v1.ManageUserPostsReply:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 用户ID
+                postIds:
+                    type: array
+                    items:
+                        type: string
+                    description: 更新后的岗位ID列表
+                updateAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+            description: 管理用户岗位响应体
+        system.user.v1.ManageUserPostsRequest:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 用户ID
+                postIds:
+                    type: array
+                    items:
+                        type: string
+                    description: 岗位ID列表
+                operation:
+                    example: add
+                    type: string
+                    description: '操作类型: add-添加, remove-移除, replace-替换'
+            description: 管理用户岗位请求体
+        system.user.v1.ResetPasswordReply:
+            type: object
+            properties:
+                success:
+                    example: true
+                    type: boolean
+                    description: 是否成功
+                temporaryPassword:
+                    example: temp123456
+                    type: string
+                    description: 临时密码
+                message:
+                    example: 密码重置成功，请使用临时密码登录
+                    type: string
+                    description: 操作结果消息
+            description: 重置密码响应体
+        system.user.v1.ResetPasswordRequest:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 用户ID
+                reason:
+                    example: 用户忘记密码
+                    type: string
+                    description: 重置原因
+            description: 重置密码请求体
+        system.user.v1.UpdateUserReply:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/system.user.v1.UserInfo'
+            description: 更新用户信息响应体
+        system.user.v1.UpdateUserRequest:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 用户ID
+                nickname:
+                    example: 新昵称
+                    type: string
+                    description: 用户昵称
+                email:
+                    example: newemail@example.com
+                    type: string
+                    description: 邮箱地址
+                mobile:
+                    example: 13900139000
+                    type: string
+                    description: 手机号码
+                sex:
+                    example: 1
+                    type: integer
+                    description: '性别: 0-未知, 1-男, 2-女'
+                    format: int32
+                avatar:
+                    example: https://example.com/newavatar.jpg
+                    type: string
+                    description: 用户头像URL
+                remark:
+                    type: string
+                    description: 备注信息
+            description: 更新用户信息请求体
+        system.user.v1.UserInfo:
+            example: {"id": "123456789", "username": "admin", "nickname": "管理员", "email": "admin@example.com", "mobile": "13800138000", "sex": 1, "status": 1}
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 用户唯一标识符
+                username:
+                    example: admin
+                    type: string
+                    description: 用户名，用于登录
+                nickname:
+                    example: 管理员
+                    type: string
+                    description: 用户昵称
+                email:
+                    example: admin@example.com
+                    type: string
+                    description: 邮箱地址
+                mobile:
+                    example: 13800138000
+                    type: string
+                    description: 手机号码
+                sex:
+                    example: 1
+                    type: integer
+                    description: '性别: 0-未知, 1-男, 2-女'
+                    format: int32
+                avatar:
+                    example: https://example.com/avatar.jpg
+                    type: string
+                    description: 用户头像URL
+                status:
+                    example: 1
+                    type: integer
+                    description: '用户状态: 0-禁用, 1-正常'
+                    format: int32
+                remark:
+                    type: string
+                    description: 备注信息
+                loginIp:
+                    type: string
+                    description: 最后登录IP地址
+                loginDate:
+                    type: string
+                    description: 最后登录时间
+                    format: date-time
+                createAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updateAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+                tenantId:
+                    type: string
+                    description: 租户ID
+            description: 用户的基本信息，包含用户的所有属性
+tags:
+    - name: Greeter
+      description: The greeting service definition.
+    - name: UserService
+      description: 用户相关操作
+    - name: UserService
