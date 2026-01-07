@@ -2,12 +2,12 @@ package user
 
 import (
 	"context"
-	"time"
 
 	v1 "quest-admin/api/gen/user/v1"
 	biz "quest-admin/internal/biz/user"
 
 	"github.com/go-kratos/kratos/v2/log"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -24,7 +24,7 @@ func NewUserService(uc *biz.UserUsecase, logger log.Logger) *UserService {
 	}
 }
 
-func (s *UserService) CreateUser(ctx context.Context, in *v1.CreateUserRequest) (*v1.CreateUserReply, error) {
+func (s *UserService) CreateUser(ctx context.Context, in *v1.CreateUserRequest) (*emptypb.Empty, error) {
 	user := &biz.User{
 		Username: in.GetUsername(),
 		Password: in.GetPassword(),
@@ -37,14 +37,12 @@ func (s *UserService) CreateUser(ctx context.Context, in *v1.CreateUserRequest) 
 		Status:   1,
 	}
 
-	created, err := s.uc.CreateUser(ctx, user)
+	_, err := s.uc.CreateUser(ctx, user)
 	if err != nil {
 		return nil, err
 	}
 
-	return &v1.CreateUserReply{
-		Id: created.ID,
-	}, nil
+	return &emptypb.Empty{}, nil
 }
 
 func (s *UserService) GetUser(ctx context.Context, in *v1.GetUserRequest) (*v1.GetUserReply, error) {
@@ -94,7 +92,7 @@ func (s *UserService) ListUsers(ctx context.Context, in *v1.ListUsersRequest) (*
 	}, nil
 }
 
-func (s *UserService) UpdateUser(ctx context.Context, in *v1.UpdateUserRequest) (*v1.UpdateUserReply, error) {
+func (s *UserService) UpdateUser(ctx context.Context, in *v1.UpdateUserRequest) (*emptypb.Empty, error) {
 	user := &biz.User{
 		ID:       in.GetId(),
 		Nickname: in.GetNickname(),
@@ -105,100 +103,57 @@ func (s *UserService) UpdateUser(ctx context.Context, in *v1.UpdateUserRequest) 
 		Remark:   in.GetRemark(),
 	}
 
-	updated, err := s.uc.UpdateUser(ctx, user)
+	_, err := s.uc.UpdateUser(ctx, user)
 	if err != nil {
 		return nil, err
 	}
 
-	return &v1.UpdateUserReply{
-		User: s.toProtoUser(updated),
-	}, nil
+	return &emptypb.Empty{}, nil
 }
 
-func (s *UserService) ChangePassword(ctx context.Context, in *v1.ChangePasswordRequest) (*v1.ChangePasswordReply, error) {
+func (s *UserService) ChangePassword(ctx context.Context, in *v1.ChangePasswordRequest) (*emptypb.Empty, error) {
 	err := s.uc.ChangePassword(ctx, in.GetId(), in.GetOldPassword(), in.GetNewPassword())
 	if err != nil {
 		return nil, err
 	}
 
-	success := true
-	message := "密码修改成功"
-
-	return &v1.ChangePasswordReply{
-		Success: &success,
-		Message: &message,
-	}, nil
+	return &emptypb.Empty{}, nil
 }
 
-func (s *UserService) ResetPassword(ctx context.Context, in *v1.ResetPasswordRequest) (*v1.ResetPasswordReply, error) {
-	tempPassword, err := s.uc.ResetPassword(ctx, in.GetId())
+func (s *UserService) ResetPassword(ctx context.Context, in *v1.ResetPasswordRequest) (*emptypb.Empty, error) {
+	_, err := s.uc.ResetPassword(ctx, in.GetId())
 	if err != nil {
 		return nil, err
 	}
 
-	return &v1.ResetPasswordReply{
-		Success:           true,
-		TemporaryPassword: tempPassword,
-		Message:           "密码重置成功，请使用临时密码登录",
-	}, nil
+	return &emptypb.Empty{}, nil
 }
 
-func (s *UserService) ChangeUserStatus(ctx context.Context, in *v1.ChangeUserStatusRequest) (*v1.ChangeUserStatusReply, error) {
+func (s *UserService) ChangeUserStatus(ctx context.Context, in *v1.ChangeUserStatusRequest) (*emptypb.Empty, error) {
 	err := s.uc.ChangeUserStatus(ctx, in.GetId(), in.GetStatus())
 	if err != nil {
 		return nil, err
 	}
 
-	user, err := s.uc.GetUser(ctx, in.GetId())
-	if err != nil {
-		return nil, err
-	}
-
-	return &v1.ChangeUserStatusReply{
-		Id:       user.ID,
-		Status:   user.Status,
-		UpdateAt: timestamppb.New(user.UpdateAt),
-	}, nil
+	return &emptypb.Empty{}, nil
 }
 
-func (s *UserService) ManageUserPosts(ctx context.Context, in *v1.ManageUserPostsRequest) (*v1.ManageUserPostsReply, error) {
+func (s *UserService) ManageUserPosts(ctx context.Context, in *v1.ManageUserPostsRequest) (*emptypb.Empty, error) {
 	err := s.uc.ManageUserPosts(ctx, in.GetId(), in.GetPostIds(), in.GetOperation())
 	if err != nil {
 		return nil, err
 	}
 
-	postIDs, err := s.uc.GetUserPosts(ctx, in.GetId())
-	if err != nil {
-		return nil, err
-	}
-
-	user, err := s.uc.GetUser(ctx, in.GetId())
-	if err != nil {
-		return nil, err
-	}
-
-	return &v1.ManageUserPostsReply{
-		Id:       &user.ID,
-		PostIds:  postIDs,
-		UpdateAt: timestamppb.New(user.UpdateAt),
-	}, nil
+	return &emptypb.Empty{}, nil
 }
 
-func (s *UserService) DeleteUser(ctx context.Context, in *v1.DeleteUserRequest) (*v1.DeleteUserReply, error) {
+func (s *UserService) DeleteUser(ctx context.Context, in *v1.DeleteUserRequest) (*emptypb.Empty, error) {
 	err := s.uc.DeleteUser(ctx, in.GetId())
 	if err != nil {
 		return nil, err
 	}
 
-	success := true
-	message := "用户删除成功"
-	deleteAt := timestamppb.New(time.Now())
-
-	return &v1.DeleteUserReply{
-		Success:  &success,
-		Message:  &message,
-		DeleteAt: deleteAt,
-	}, nil
+	return &emptypb.Empty{}, nil
 }
 
 func (s *UserService) toProtoUser(user *biz.User) *v1.UserInfo {

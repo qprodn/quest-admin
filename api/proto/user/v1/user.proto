@@ -4,6 +4,7 @@ package system.user.v1;
 
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
 import "openapi/v3/annotations.proto";
 
 option go_package = "quest-admin/api/user/v1;v1";
@@ -20,7 +21,7 @@ option (openapi.v3.document) = {
 
 service UserService {
   // 创建用户
-  rpc CreateUser (CreateUserRequest) returns (CreateUserReply) {
+  rpc CreateUser (CreateUserRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       post: "/api/v1/user/create"
       body: "*"
@@ -55,7 +56,7 @@ service UserService {
   }
 
   // 更新用户信息
-  rpc UpdateUser (UpdateUserRequest) returns (UpdateUserReply) {
+  rpc UpdateUser (UpdateUserRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       post: "/api/v1/user/update"
       body: "*"
@@ -67,7 +68,7 @@ service UserService {
   }
 
   // 修改用户密码
-  rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordReply) {
+  rpc ChangePassword (ChangePasswordRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       post: "/api/v1/user/changePassword"
       body: "*"
@@ -79,7 +80,7 @@ service UserService {
   }
 
   // 重置用户密码
-  rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordReply) {
+  rpc ResetPassword (ResetPasswordRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       post: "/api/v1/user/resetPassword"
       body: "*"
@@ -91,7 +92,7 @@ service UserService {
   }
 
   // 变更用户状态
-  rpc ChangeUserStatus (ChangeUserStatusRequest) returns (ChangeUserStatusReply) {
+  rpc ChangeUserStatus (ChangeUserStatusRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       post: "/api/v1/user/changeStatus"
       body: "*"
@@ -103,7 +104,7 @@ service UserService {
   }
 
   // 管理用户岗位
-  rpc ManageUserPosts (ManageUserPostsRequest) returns (ManageUserPostsReply) {
+  rpc ManageUserPosts (ManageUserPostsRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       post: "/api/v1/user/managePosts"
       body: "*"
@@ -115,7 +116,7 @@ service UserService {
   }
 
   // 删除用户
-  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserReply) {
+  rpc DeleteUser (DeleteUserRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       post: "/api/v1/user/delete"
       body: "*"
@@ -274,7 +275,6 @@ message ChangeUserStatusRequest {
   };
   optional string id = 1 [(openapi.v3.property) = {description: "用户ID"; example: {yaml: "123456789"};}];
   optional int32 status = 2 [(openapi.v3.property) = {description: "目标状态: 0-禁用, 1-正常"; example: {yaml: "1"};}];
-  optional string reason = 3 [(openapi.v3.property) = {description: "变更原因"; example: {yaml: "用户申请启用"};}];
 }
 
 message ChangeUserStatusReply {

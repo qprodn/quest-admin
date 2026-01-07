@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -35,23 +36,23 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
 	// 创建用户
-	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserReply, error)
+	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 获取用户信息
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserReply, error)
 	// 用户列表查询
 	ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersReply, error)
 	// 更新用户信息
-	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserReply, error)
+	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 修改用户密码
-	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordReply, error)
+	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 重置用户密码
-	ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordReply, error)
+	ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 变更用户状态
-	ChangeUserStatus(ctx context.Context, in *ChangeUserStatusRequest, opts ...grpc.CallOption) (*ChangeUserStatusReply, error)
+	ChangeUserStatus(ctx context.Context, in *ChangeUserStatusRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 管理用户岗位
-	ManageUserPosts(ctx context.Context, in *ManageUserPostsRequest, opts ...grpc.CallOption) (*ManageUserPostsReply, error)
+	ManageUserPosts(ctx context.Context, in *ManageUserPostsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 删除用户
-	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserReply, error)
+	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type userServiceClient struct {
@@ -62,9 +63,9 @@ func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 	return &userServiceClient{cc}
 }
 
-func (c *userServiceClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserReply, error) {
+func (c *userServiceClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreateUserReply)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, UserService_CreateUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -92,9 +93,9 @@ func (c *userServiceClient) ListUsers(ctx context.Context, in *ListUsersRequest,
 	return out, nil
 }
 
-func (c *userServiceClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserReply, error) {
+func (c *userServiceClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UpdateUserReply)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, UserService_UpdateUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -102,9 +103,9 @@ func (c *userServiceClient) UpdateUser(ctx context.Context, in *UpdateUserReques
 	return out, nil
 }
 
-func (c *userServiceClient) ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordReply, error) {
+func (c *userServiceClient) ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ChangePasswordReply)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, UserService_ChangePassword_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -112,9 +113,9 @@ func (c *userServiceClient) ChangePassword(ctx context.Context, in *ChangePasswo
 	return out, nil
 }
 
-func (c *userServiceClient) ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordReply, error) {
+func (c *userServiceClient) ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ResetPasswordReply)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, UserService_ResetPassword_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -122,9 +123,9 @@ func (c *userServiceClient) ResetPassword(ctx context.Context, in *ResetPassword
 	return out, nil
 }
 
-func (c *userServiceClient) ChangeUserStatus(ctx context.Context, in *ChangeUserStatusRequest, opts ...grpc.CallOption) (*ChangeUserStatusReply, error) {
+func (c *userServiceClient) ChangeUserStatus(ctx context.Context, in *ChangeUserStatusRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ChangeUserStatusReply)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, UserService_ChangeUserStatus_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -132,9 +133,9 @@ func (c *userServiceClient) ChangeUserStatus(ctx context.Context, in *ChangeUser
 	return out, nil
 }
 
-func (c *userServiceClient) ManageUserPosts(ctx context.Context, in *ManageUserPostsRequest, opts ...grpc.CallOption) (*ManageUserPostsReply, error) {
+func (c *userServiceClient) ManageUserPosts(ctx context.Context, in *ManageUserPostsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ManageUserPostsReply)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, UserService_ManageUserPosts_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -142,9 +143,9 @@ func (c *userServiceClient) ManageUserPosts(ctx context.Context, in *ManageUserP
 	return out, nil
 }
 
-func (c *userServiceClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserReply, error) {
+func (c *userServiceClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeleteUserReply)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, UserService_DeleteUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -157,23 +158,23 @@ func (c *userServiceClient) DeleteUser(ctx context.Context, in *DeleteUserReques
 // for forward compatibility.
 type UserServiceServer interface {
 	// 创建用户
-	CreateUser(context.Context, *CreateUserRequest) (*CreateUserReply, error)
+	CreateUser(context.Context, *CreateUserRequest) (*emptypb.Empty, error)
 	// 获取用户信息
 	GetUser(context.Context, *GetUserRequest) (*GetUserReply, error)
 	// 用户列表查询
 	ListUsers(context.Context, *ListUsersRequest) (*ListUsersReply, error)
 	// 更新用户信息
-	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserReply, error)
+	UpdateUser(context.Context, *UpdateUserRequest) (*emptypb.Empty, error)
 	// 修改用户密码
-	ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordReply, error)
+	ChangePassword(context.Context, *ChangePasswordRequest) (*emptypb.Empty, error)
 	// 重置用户密码
-	ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordReply, error)
+	ResetPassword(context.Context, *ResetPasswordRequest) (*emptypb.Empty, error)
 	// 变更用户状态
-	ChangeUserStatus(context.Context, *ChangeUserStatusRequest) (*ChangeUserStatusReply, error)
+	ChangeUserStatus(context.Context, *ChangeUserStatusRequest) (*emptypb.Empty, error)
 	// 管理用户岗位
-	ManageUserPosts(context.Context, *ManageUserPostsRequest) (*ManageUserPostsReply, error)
+	ManageUserPosts(context.Context, *ManageUserPostsRequest) (*emptypb.Empty, error)
 	// 删除用户
-	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserReply, error)
+	DeleteUser(context.Context, *DeleteUserRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -184,7 +185,7 @@ type UserServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedUserServiceServer struct{}
 
-func (UnimplementedUserServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserReply, error) {
+func (UnimplementedUserServiceServer) CreateUser(context.Context, *CreateUserRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateUser not implemented")
 }
 func (UnimplementedUserServiceServer) GetUser(context.Context, *GetUserRequest) (*GetUserReply, error) {
@@ -193,22 +194,22 @@ func (UnimplementedUserServiceServer) GetUser(context.Context, *GetUserRequest) 
 func (UnimplementedUserServiceServer) ListUsers(context.Context, *ListUsersRequest) (*ListUsersReply, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListUsers not implemented")
 }
-func (UnimplementedUserServiceServer) UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserReply, error) {
+func (UnimplementedUserServiceServer) UpdateUser(context.Context, *UpdateUserRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateUser not implemented")
 }
-func (UnimplementedUserServiceServer) ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordReply, error) {
+func (UnimplementedUserServiceServer) ChangePassword(context.Context, *ChangePasswordRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method ChangePassword not implemented")
 }
-func (UnimplementedUserServiceServer) ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordReply, error) {
+func (UnimplementedUserServiceServer) ResetPassword(context.Context, *ResetPasswordRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method ResetPassword not implemented")
 }
-func (UnimplementedUserServiceServer) ChangeUserStatus(context.Context, *ChangeUserStatusRequest) (*ChangeUserStatusReply, error) {
+func (UnimplementedUserServiceServer) ChangeUserStatus(context.Context, *ChangeUserStatusRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method ChangeUserStatus not implemented")
 }
-func (UnimplementedUserServiceServer) ManageUserPosts(context.Context, *ManageUserPostsRequest) (*ManageUserPostsReply, error) {
+func (UnimplementedUserServiceServer) ManageUserPosts(context.Context, *ManageUserPostsRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method ManageUserPosts not implemented")
 }
-func (UnimplementedUserServiceServer) DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserReply, error) {
+func (UnimplementedUserServiceServer) DeleteUser(context.Context, *DeleteUserRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteUser not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}

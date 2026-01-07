@@ -22,10 +22,7 @@ paths:
             responses:
                 "200":
                     description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.user.v1.ChangePasswordReply'
+                    content: {}
     /api/v1/user/changeStatus:
         post:
             tags:
@@ -42,10 +39,7 @@ paths:
             responses:
                 "200":
                     description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.user.v1.ChangeUserStatusReply'
+                    content: {}
     /api/v1/user/create:
         post:
             tags:
@@ -62,10 +56,7 @@ paths:
             responses:
                 "200":
                     description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.user.v1.CreateUserReply'
+                    content: {}
     /api/v1/user/delete:
         post:
             tags:
@@ -82,10 +73,7 @@ paths:
             responses:
                 "200":
                     description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.user.v1.DeleteUserReply'
+                    content: {}
     /api/v1/user/list:
         post:
             tags:
@@ -122,10 +110,7 @@ paths:
             responses:
                 "200":
                     description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.user.v1.ManageUserPostsReply'
+                    content: {}
     /api/v1/user/resetPassword:
         post:
             tags:
@@ -142,10 +127,7 @@ paths:
             responses:
                 "200":
                     description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.user.v1.ResetPasswordReply'
+                    content: {}
     /api/v1/user/update:
         post:
             tags:
@@ -162,10 +144,7 @@ paths:
             responses:
                 "200":
                     description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.user.v1.UpdateUserReply'
+                    content: {}
     /api/v1/user/{id}:
         get:
             tags:
@@ -213,18 +192,6 @@ components:
                 message:
                     type: string
             description: The response message containing the greetings
-        system.user.v1.ChangePasswordReply:
-            type: object
-            properties:
-                success:
-                    example: true
-                    type: boolean
-                    description: 是否成功
-                message:
-                    example: 密码修改成功
-                    type: string
-                    description: 操作结果消息
-            description: 修改密码响应体
         system.user.v1.ChangePasswordRequest:
             type: object
             properties:
@@ -245,23 +212,6 @@ components:
                     type: string
                     description: 确认新密码
             description: 修改密码请求体
-        system.user.v1.ChangeUserStatusReply:
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 用户ID
-                status:
-                    example: 1
-                    type: integer
-                    description: 更新后的状态
-                    format: int32
-                updateAt:
-                    type: string
-                    description: 更新时间
-                    format: date-time
-            description: 变更用户状态响应体
         system.user.v1.ChangeUserStatusRequest:
             type: object
             properties:
@@ -274,19 +224,7 @@ components:
                     type: integer
                     description: '目标状态: 0-禁用, 1-正常'
                     format: int32
-                reason:
-                    example: 用户申请启用
-                    type: string
-                    description: 变更原因
             description: 变更用户状态请求体
-        system.user.v1.CreateUserReply:
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 用户ID
-            description: 创建用户响应体
         system.user.v1.CreateUserRequest:
             example: {"username": "newuser", "password": "password123", "nickname": "新用户", "email": "newuser@example.com", "mobile": "13900139000", "sex": 1}
             type: object
@@ -324,22 +262,6 @@ components:
                     type: string
                     description: 备注信息
             description: 创建用户请求体
-        system.user.v1.DeleteUserReply:
-            type: object
-            properties:
-                success:
-                    example: true
-                    type: boolean
-                    description: 是否成功
-                message:
-                    example: 用户删除成功
-                    type: string
-                    description: 操作结果消息
-                deleteAt:
-                    type: string
-                    description: 删除时间
-                    format: date-time
-            description: 删除用户响应体
         system.user.v1.DeleteUserRequest:
             type: object
             properties:
@@ -418,23 +340,6 @@ components:
                     type: string
                     description: '排序方式: asc, desc'
             description: 查询用户列表请求体
-        system.user.v1.ManageUserPostsReply:
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 用户ID
-                postIds:
-                    type: array
-                    items:
-                        type: string
-                    description: 更新后的岗位ID列表
-                updateAt:
-                    type: string
-                    description: 更新时间
-                    format: date-time
-            description: 管理用户岗位响应体
         system.user.v1.ManageUserPostsRequest:
             type: object
             properties:
@@ -452,22 +357,6 @@ components:
                     type: string
                     description: '操作类型: add-添加, remove-移除, replace-替换'
             description: 管理用户岗位请求体
-        system.user.v1.ResetPasswordReply:
-            type: object
-            properties:
-                success:
-                    example: true
-                    type: boolean
-                    description: 是否成功
-                temporaryPassword:
-                    example: temp123456
-                    type: string
-                    description: 临时密码
-                message:
-                    example: 密码重置成功，请使用临时密码登录
-                    type: string
-                    description: 操作结果消息
-            description: 重置密码响应体
         system.user.v1.ResetPasswordRequest:
             type: object
             properties:
@@ -480,12 +369,6 @@ components:
                     type: string
                     description: 重置原因
             description: 重置密码请求体
-        system.user.v1.UpdateUserReply:
-            type: object
-            properties:
-                user:
-                    $ref: '#/components/schemas/system.user.v1.UserInfo'
-            description: 更新用户信息响应体
         system.user.v1.UpdateUserRequest:
             type: object
             properties:

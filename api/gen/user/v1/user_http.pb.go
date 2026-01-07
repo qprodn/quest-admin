@@ -10,6 +10,7 @@ import (
 	context "context"
 	http "github.com/go-kratos/kratos/v2/transport/http"
 	binding "github.com/go-kratos/kratos/v2/transport/http/binding"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -31,23 +32,23 @@ const OperationUserServiceUpdateUser = "/system.user.v1.UserService/UpdateUser"
 
 type UserServiceHTTPServer interface {
 	// ChangePassword 修改用户密码
-	ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordReply, error)
+	ChangePassword(context.Context, *ChangePasswordRequest) (*emptypb.Empty, error)
 	// ChangeUserStatus 变更用户状态
-	ChangeUserStatus(context.Context, *ChangeUserStatusRequest) (*ChangeUserStatusReply, error)
+	ChangeUserStatus(context.Context, *ChangeUserStatusRequest) (*emptypb.Empty, error)
 	// CreateUser 创建用户
-	CreateUser(context.Context, *CreateUserRequest) (*CreateUserReply, error)
+	CreateUser(context.Context, *CreateUserRequest) (*emptypb.Empty, error)
 	// DeleteUser 删除用户
-	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserReply, error)
+	DeleteUser(context.Context, *DeleteUserRequest) (*emptypb.Empty, error)
 	// GetUser 获取用户信息
 	GetUser(context.Context, *GetUserRequest) (*GetUserReply, error)
 	// ListUsers 用户列表查询
 	ListUsers(context.Context, *ListUsersRequest) (*ListUsersReply, error)
 	// ManageUserPosts 管理用户岗位
-	ManageUserPosts(context.Context, *ManageUserPostsRequest) (*ManageUserPostsReply, error)
+	ManageUserPosts(context.Context, *ManageUserPostsRequest) (*emptypb.Empty, error)
 	// ResetPassword 重置用户密码
-	ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordReply, error)
+	ResetPassword(context.Context, *ResetPasswordRequest) (*emptypb.Empty, error)
 	// UpdateUser 更新用户信息
-	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserReply, error)
+	UpdateUser(context.Context, *UpdateUserRequest) (*emptypb.Empty, error)
 }
 
 func RegisterUserServiceHTTPServer(s *http.Server, srv UserServiceHTTPServer) {
@@ -80,7 +81,7 @@ func _UserService_CreateUser0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx h
 		if err != nil {
 			return err
 		}
-		reply := out.(*CreateUserReply)
+		reply := out.(*emptypb.Empty)
 		return ctx.Result(200, reply)
 	}
 }
@@ -146,7 +147,7 @@ func _UserService_UpdateUser0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx h
 		if err != nil {
 			return err
 		}
-		reply := out.(*UpdateUserReply)
+		reply := out.(*emptypb.Empty)
 		return ctx.Result(200, reply)
 	}
 }
@@ -168,7 +169,7 @@ func _UserService_ChangePassword0_HTTP_Handler(srv UserServiceHTTPServer) func(c
 		if err != nil {
 			return err
 		}
-		reply := out.(*ChangePasswordReply)
+		reply := out.(*emptypb.Empty)
 		return ctx.Result(200, reply)
 	}
 }
@@ -190,7 +191,7 @@ func _UserService_ResetPassword0_HTTP_Handler(srv UserServiceHTTPServer) func(ct
 		if err != nil {
 			return err
 		}
-		reply := out.(*ResetPasswordReply)
+		reply := out.(*emptypb.Empty)
 		return ctx.Result(200, reply)
 	}
 }
@@ -212,7 +213,7 @@ func _UserService_ChangeUserStatus0_HTTP_Handler(srv UserServiceHTTPServer) func
 		if err != nil {
 			return err
 		}
-		reply := out.(*ChangeUserStatusReply)
+		reply := out.(*emptypb.Empty)
 		return ctx.Result(200, reply)
 	}
 }
@@ -234,7 +235,7 @@ func _UserService_ManageUserPosts0_HTTP_Handler(srv UserServiceHTTPServer) func(
 		if err != nil {
 			return err
 		}
-		reply := out.(*ManageUserPostsReply)
+		reply := out.(*emptypb.Empty)
 		return ctx.Result(200, reply)
 	}
 }
@@ -256,30 +257,30 @@ func _UserService_DeleteUser0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx h
 		if err != nil {
 			return err
 		}
-		reply := out.(*DeleteUserReply)
+		reply := out.(*emptypb.Empty)
 		return ctx.Result(200, reply)
 	}
 }
 
 type UserServiceHTTPClient interface {
 	// ChangePassword 修改用户密码
-	ChangePassword(ctx context.Context, req *ChangePasswordRequest, opts ...http.CallOption) (rsp *ChangePasswordReply, err error)
+	ChangePassword(ctx context.Context, req *ChangePasswordRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// ChangeUserStatus 变更用户状态
-	ChangeUserStatus(ctx context.Context, req *ChangeUserStatusRequest, opts ...http.CallOption) (rsp *ChangeUserStatusReply, err error)
+	ChangeUserStatus(ctx context.Context, req *ChangeUserStatusRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// CreateUser 创建用户
-	CreateUser(ctx context.Context, req *CreateUserRequest, opts ...http.CallOption) (rsp *CreateUserReply, err error)
+	CreateUser(ctx context.Context, req *CreateUserRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// DeleteUser 删除用户
-	DeleteUser(ctx context.Context, req *DeleteUserRequest, opts ...http.CallOption) (rsp *DeleteUserReply, err error)
+	DeleteUser(ctx context.Context, req *DeleteUserRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// GetUser 获取用户信息
 	GetUser(ctx context.Context, req *GetUserRequest, opts ...http.CallOption) (rsp *GetUserReply, err error)
 	// ListUsers 用户列表查询
 	ListUsers(ctx context.Context, req *ListUsersRequest, opts ...http.CallOption) (rsp *ListUsersReply, err error)
 	// ManageUserPosts 管理用户岗位
-	ManageUserPosts(ctx context.Context, req *ManageUserPostsRequest, opts ...http.CallOption) (rsp *ManageUserPostsReply, err error)
+	ManageUserPosts(ctx context.Context, req *ManageUserPostsRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// ResetPassword 重置用户密码
-	ResetPassword(ctx context.Context, req *ResetPasswordRequest, opts ...http.CallOption) (rsp *ResetPasswordReply, err error)
+	ResetPassword(ctx context.Context, req *ResetPasswordRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// UpdateUser 更新用户信息
-	UpdateUser(ctx context.Context, req *UpdateUserRequest, opts ...http.CallOption) (rsp *UpdateUserReply, err error)
+	UpdateUser(ctx context.Context, req *UpdateUserRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 }
 
 type UserServiceHTTPClientImpl struct {
@@ -291,8 +292,8 @@ func NewUserServiceHTTPClient(client *http.Client) UserServiceHTTPClient {
 }
 
 // ChangePassword 修改用户密码
-func (c *UserServiceHTTPClientImpl) ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...http.CallOption) (*ChangePasswordReply, error) {
-	var out ChangePasswordReply
+func (c *UserServiceHTTPClientImpl) ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
 	pattern := "/api/v1/user/changePassword"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserServiceChangePassword))
@@ -305,8 +306,8 @@ func (c *UserServiceHTTPClientImpl) ChangePassword(ctx context.Context, in *Chan
 }
 
 // ChangeUserStatus 变更用户状态
-func (c *UserServiceHTTPClientImpl) ChangeUserStatus(ctx context.Context, in *ChangeUserStatusRequest, opts ...http.CallOption) (*ChangeUserStatusReply, error) {
-	var out ChangeUserStatusReply
+func (c *UserServiceHTTPClientImpl) ChangeUserStatus(ctx context.Context, in *ChangeUserStatusRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
 	pattern := "/api/v1/user/changeStatus"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserServiceChangeUserStatus))
@@ -319,8 +320,8 @@ func (c *UserServiceHTTPClientImpl) ChangeUserStatus(ctx context.Context, in *Ch
 }
 
 // CreateUser 创建用户
-func (c *UserServiceHTTPClientImpl) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...http.CallOption) (*CreateUserReply, error) {
-	var out CreateUserReply
+func (c *UserServiceHTTPClientImpl) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
 	pattern := "/api/v1/user/create"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserServiceCreateUser))
@@ -333,8 +334,8 @@ func (c *UserServiceHTTPClientImpl) CreateUser(ctx context.Context, in *CreateUs
 }
 
 // DeleteUser 删除用户
-func (c *UserServiceHTTPClientImpl) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...http.CallOption) (*DeleteUserReply, error) {
-	var out DeleteUserReply
+func (c *UserServiceHTTPClientImpl) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
 	pattern := "/api/v1/user/delete"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserServiceDeleteUser))
@@ -375,8 +376,8 @@ func (c *UserServiceHTTPClientImpl) ListUsers(ctx context.Context, in *ListUsers
 }
 
 // ManageUserPosts 管理用户岗位
-func (c *UserServiceHTTPClientImpl) ManageUserPosts(ctx context.Context, in *ManageUserPostsRequest, opts ...http.CallOption) (*ManageUserPostsReply, error) {
-	var out ManageUserPostsReply
+func (c *UserServiceHTTPClientImpl) ManageUserPosts(ctx context.Context, in *ManageUserPostsRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
 	pattern := "/api/v1/user/managePosts"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserServiceManageUserPosts))
@@ -389,8 +390,8 @@ func (c *UserServiceHTTPClientImpl) ManageUserPosts(ctx context.Context, in *Man
 }
 
 // ResetPassword 重置用户密码
-func (c *UserServiceHTTPClientImpl) ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...http.CallOption) (*ResetPasswordReply, error) {
-	var out ResetPasswordReply
+func (c *UserServiceHTTPClientImpl) ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
 	pattern := "/api/v1/user/resetPassword"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserServiceResetPassword))
@@ -403,8 +404,8 @@ func (c *UserServiceHTTPClientImpl) ResetPassword(ctx context.Context, in *Reset
 }
 
 // UpdateUser 更新用户信息
-func (c *UserServiceHTTPClientImpl) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...http.CallOption) (*UpdateUserReply, error) {
-	var out UpdateUserReply
+func (c *UserServiceHTTPClientImpl) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
 	pattern := "/api/v1/user/update"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserServiceUpdateUser))
