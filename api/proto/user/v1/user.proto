@@ -23,7 +23,7 @@ service UserService {
   // 创建用户
   rpc CreateUser (CreateUserRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/api/v1/user/create"
+      post: "/api/v1/users"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -35,7 +35,7 @@ service UserService {
   // 获取用户信息
   rpc GetUser (GetUserRequest) returns (GetUserReply) {
     option (google.api.http) = {
-      get: "/api/v1/user/{id}"
+      get: "/api/v1/users/{id}"
     };
     option (openapi.v3.operation) = {
       summary: "获取用户详细信息";
@@ -46,8 +46,7 @@ service UserService {
   // 用户列表查询
   rpc ListUsers (ListUsersRequest) returns (ListUsersReply) {
     option (google.api.http) = {
-      post: "/api/v1/user/list"
-      body: "*"
+      get: "/api/v1/users"
     };
     option (openapi.v3.operation) = {
       summary: "获取用户列表";
@@ -58,7 +57,7 @@ service UserService {
   // 更新用户信息
   rpc UpdateUser (UpdateUserRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/api/v1/user/update"
+      put: "/api/v1/users/{id}"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -70,7 +69,7 @@ service UserService {
   // 修改用户密码
   rpc ChangePassword (ChangePasswordRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/api/v1/user/changePassword"
+      put: "/api/v1/users/{id}/password"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -82,7 +81,7 @@ service UserService {
   // 重置用户密码
   rpc ResetPassword (ResetPasswordRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/api/v1/user/resetPassword"
+      put: "/api/v1/users/{id}/password/reset"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -94,7 +93,7 @@ service UserService {
   // 变更用户状态
   rpc ChangeUserStatus (ChangeUserStatusRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/api/v1/user/changeStatus"
+      patch: "/api/v1/users/{id}/status"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -106,7 +105,7 @@ service UserService {
   // 管理用户岗位
   rpc ManageUserPosts (ManageUserPostsRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/api/v1/user/managePosts"
+      put: "/api/v1/users/{id}/posts"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -118,8 +117,7 @@ service UserService {
   // 删除用户
   rpc DeleteUser (DeleteUserRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/api/v1/user/delete"
-      body: "*"
+      delete: "/api/v1/users/{id}"
     };
     option (openapi.v3.operation) = {
       summary: "删除用户";
@@ -227,13 +225,6 @@ message UpdateUserRequest {
   optional string remark = 9 [(openapi.v3.property) = {description: "备注信息";}];
 }
 
-message UpdateUserReply {
-  option (openapi.v3.schema) = {
-    description: "更新用户信息响应体";
-  };
-  UserInfo user = 1 [(openapi.v3.property) = {description: "更新后的用户信息";}];
-}
-
 message ChangePasswordRequest {
   option (openapi.v3.schema) = {
     description: "修改密码请求体";
@@ -244,14 +235,6 @@ message ChangePasswordRequest {
   optional string confirm_password = 4 [(openapi.v3.property) = {description: "确认新密码"; example: {yaml: "newpassword123"};}];
 }
 
-message ChangePasswordReply {
-  option (openapi.v3.schema) = {
-    description: "修改密码响应体";
-  };
-  optional bool success = 1 [(openapi.v3.property) = {description: "是否成功"; example: {yaml: "true"};}];
-  optional string message = 2 [(openapi.v3.property) = {description: "操作结果消息"; example: {yaml: "密码修改成功"};}];
-}
-
 message ResetPasswordRequest {
   option (openapi.v3.schema) = {
     description: "重置密码请求体";
@@ -260,30 +243,12 @@ message ResetPasswordRequest {
   optional string reason = 2 [(openapi.v3.property) = {description: "重置原因"; example: {yaml: "用户忘记密码"};}];
 }
 
-message ResetPasswordReply {
-  option (openapi.v3.schema) = {
-    description: "重置密码响应体";
-  };
-  bool success = 1 [(openapi.v3.property) = {description: "是否成功"; example: {yaml: "true"};}];
-  string temporary_password = 2 [(openapi.v3.property) = {description: "临时密码"; example: {yaml: "temp123456"};}];
-  string message = 3 [(openapi.v3.property) = {description: "操作结果消息"; example: {yaml: "密码重置成功，请使用临时密码登录"};}];
-}
-
 message ChangeUserStatusRequest {
   option (openapi.v3.schema) = {
     description: "变更用户状态请求体";
   };
   optional string id = 1 [(openapi.v3.property) = {description: "用户ID"; example: {yaml: "123456789"};}];
   optional int32 status = 2 [(openapi.v3.property) = {description: "目标状态: 0-禁用, 1-正常"; example: {yaml: "1"};}];
-}
-
-message ChangeUserStatusReply {
-  option (openapi.v3.schema) = {
-    description: "变更用户状态响应体";
-  };
-  string id = 1 [(openapi.v3.property) = {description: "用户ID"; example: {yaml: "123456789"};}];
-  int32 status = 2 [(openapi.v3.property) = {description: "更新后的状态"; example: {yaml: "1"};}];
-  google.protobuf.Timestamp update_at = 3 [(openapi.v3.property) = {description: "更新时间";}];
 }
 
 message ManageUserPostsRequest {
@@ -295,27 +260,9 @@ message ManageUserPostsRequest {
   optional string operation = 3 [(openapi.v3.property) = {description: "操作类型: add-添加, remove-移除, replace-替换"; example: {yaml: "add"};}];
 }
 
-message ManageUserPostsReply {
-  option (openapi.v3.schema) = {
-    description: "管理用户岗位响应体";
-  };
-  optional string id = 1 [(openapi.v3.property) = {description: "用户ID"; example: {yaml: "123456789"};}];
-  repeated string post_ids = 2 [(openapi.v3.property) = {description: "更新后的岗位ID列表";}];
-  optional google.protobuf.Timestamp update_at = 3 [(openapi.v3.property) = {description: "更新时间";}];
-}
-
 message DeleteUserRequest {
   option (openapi.v3.schema) = {
     description: "删除用户请求体";
   };
   optional string id = 1 [(openapi.v3.property) = {description: "用户ID"; example: {yaml: "123456789"};}];
-}
-
-message DeleteUserReply {
-  option (openapi.v3.schema) = {
-    description: "删除用户响应体";
-  };
-  optional bool success = 1 [(openapi.v3.property) = {description: "是否成功"; example: {yaml: "true"};}];
-  optional string message = 2 [(openapi.v3.property) = {description: "操作结果消息"; example: {yaml: "用户删除成功"};}];
-  optional google.protobuf.Timestamp delete_at = 3 [(openapi.v3.property) = {description: "删除时间";}];
 }

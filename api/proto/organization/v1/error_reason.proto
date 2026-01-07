@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package system.organization.v1;
+
+import "errors/errors.proto";
+
+option go_package = "quest-admin/api/organization/v1;v1";
+
+enum ErrorReason {
+  option (errors.default_code) = 500;
+
+  // 部门不存在
+  DEPARTMENT_NOT_FOUND = 0 [(errors.code) = 404];
+  // 部门名称已存在
+  DEPARTMENT_NAME_EXISTS = 10 [(errors.code) = 409];
+  // 部门编码已存在
+  DEPARTMENT_CODE_EXISTS = 20 [(errors.code) = 409];
+  // 部门存在子部门
+  DEPARTMENT_HAS_CHILDREN = 30 [(errors.code) = 400];
+  // 部门存在用户
+  DEPARTMENT_HAS_USERS = 40 [(errors.code) = 400];
+  // 无效的父部门
+  INVALID_PARENT_DEPARTMENT = 50 [(errors.code) = 400];
+  // 岗位不存在
+  POST_NOT_FOUND = 60 [(errors.code) = 404];
+  // 岗位名称已存在
+  POST_NAME_EXISTS = 70 [(errors.code) = 409];
+  // 岗位编码已存在
+  POST_CODE_EXISTS = 80 [(errors.code) = 409];
+  // 岗位存在用户
+  POST_HAS_USERS = 90 [(errors.code) = 400];
+  // 部门状态无效
+  INVALID_DEPARTMENT_STATUS = 100 [(errors.code) = 400];
+  // 岗位状态无效
+  INVALID_POST_STATUS = 110 [(errors.code) = 400];
+  // 部门层级超出限制
+  DEPARTMENT_LEVEL_EXCEEDED = 120 [(errors.code) = 400];
+  // 部门路径无效
+  INVALID_DEPARTMENT_PATH = 130 [(errors.code) = 400];
+  // 部门删除失败
+  DEPARTMENT_DELETE_FAILED = 140 [(errors.code) = 500];
+  // 岗位删除失败
+  POST_DELETE_FAILED = 150 [(errors.code) = 500];
+  // 参数验证失败
+  VALIDATION_FAILED = 160 [(errors.code) = 400];
+  // 数据库操作失败
+  DATABASE_ERROR = 170 [(errors.code) = 500];
+  // 系统内部错误
+  INTERNAL_ERROR = 180 [(errors.code) = 500];
+}

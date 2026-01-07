@@ -216,33 +216,33 @@ func (r *userRepo) Update(ctx context.Context, user *biz.User) (*biz.User, error
 	return r.GetByID(ctx, user.ID)
 }
 
-func (r *userRepo) UpdatePassword(ctx context.Context, id, hashedPassword string) error {
+func (r *userRepo) UpdatePassword(ctx context.Context, bo *biz.UpdatePasswordBO) error {
 	_, err := r.data.DB(ctx).NewUpdate().
 		Model((*User)(nil)).
-		Set("password = ?", hashedPassword).
+		Set("password = ?", bo.NewPassword).
 		Set("update_at = ?", time.Now()).
-		Where("id = ?", id).
+		Where("id = ?", bo.UserID).
 		Exec(ctx)
 	return err
 }
 
-func (r *userRepo) UpdateStatus(ctx context.Context, id string, status int32) error {
+func (r *userRepo) UpdateStatus(ctx context.Context, bo *biz.UpdateStatusBO) error {
 	_, err := r.data.DB(ctx).NewUpdate().
 		Model((*User)(nil)).
-		Set("status = ?", status).
+		Set("status = ?", bo.Status).
 		Set("update_at = ?", time.Now()).
-		Where("id = ?", id).
+		Where("id = ?", bo.UserID).
 		Exec(ctx)
 	return err
 }
 
-func (r *userRepo) UpdateLoginInfo(ctx context.Context, id, loginIP string, loginDate time.Time) error {
+func (r *userRepo) UpdateLoginInfo(ctx context.Context, bo *biz.UpdateLoginInfoBO) error {
 	_, err := r.data.DB(ctx).NewUpdate().
 		Model((*User)(nil)).
-		Set("login_ip = ?", loginIP).
-		Set("login_date = ?", loginDate).
+		Set("login_ip = ?", bo.LoginIP).
+		Set("login_date = ?", bo.LoginDate).
 		Set("update_at = ?", time.Now()).
-		Where("id = ?", id).
+		Where("id = ?", bo.UserID).
 		Exec(ctx)
 	return err
 }
@@ -264,16 +264,16 @@ func (r *userRepo) GetUserPosts(ctx context.Context, id string) ([]string, error
 	return postIDs, nil
 }
 
-func (r *userRepo) ManageUserPosts(ctx context.Context, id string, postIDs []string, operation string) error {
-	switch operation {
+func (r *userRepo) ManageUserPosts(ctx context.Context, bo *biz.ManageUserPostsBO) error {
+	switch bo.Operation {
 	case "add":
-		return r.addUserPosts(ctx, id, postIDs)
+		return r.addUserPosts(ctx, bo.UserID, bo.PostIDs)
 	case "remove":
-		return r.removeUserPosts(ctx, id, postIDs)
+		return r.removeUserPosts(ctx, bo.UserID, bo.PostIDs)
 	case "replace":
-		return r.replaceUserPosts(ctx, id, postIDs)
+		return r.replaceUserPosts(ctx, bo.UserID, bo.PostIDs)
 	default:
-		return fmt.Errorf("invalid operation: %s", operation)
+		return fmt.Errorf("invalid operation: %s", bo.Operation)
 	}
 }
 

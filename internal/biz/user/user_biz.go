@@ -64,11 +64,11 @@ type UserRepo interface {
 	GetByUsername(ctx context.Context, username string) (*User, error)
 	List(ctx context.Context, query *ListUsersQuery) (*ListUsersResult, error)
 	Update(ctx context.Context, user *User) (*User, error)
-	UpdatePassword(ctx context.Context, id, hashedPassword string) error
-	UpdateStatus(ctx context.Context, id string, status int32) error
-	UpdateLoginInfo(ctx context.Context, id, loginIP string, loginDate time.Time) error
+	UpdatePassword(ctx context.Context, bo *UpdatePasswordBO) error
+	UpdateStatus(ctx context.Context, bo *UpdateStatusBO) error
+	UpdateLoginInfo(ctx context.Context, bo *UpdateLoginInfoBO) error
 	GetUserPosts(ctx context.Context, id string) ([]string, error)
-	ManageUserPosts(ctx context.Context, id string, postIDs []string, operation string) error
+	ManageUserPosts(ctx context.Context, bo *ManageUserPostsBO) error
 	Delete(ctx context.Context, id string) error
 }
 
@@ -113,15 +113,15 @@ func (uc *UserUsecase) UpdateUser(ctx context.Context, user *User) (*User, error
 	return uc.repo.Update(ctx, user)
 }
 
-func (uc *UserUsecase) ChangePassword(ctx context.Context, id, oldPassword, newPassword string) error {
-	uc.log.WithContext(ctx).Infof("ChangePassword: id=%s", id)
+func (uc *UserUsecase) ChangePassword(ctx context.Context, bo *UpdatePasswordBO) error {
+	uc.log.WithContext(ctx).Infof("ChangePassword: id=%s", bo.UserID)
 
-	_, err := uc.repo.GetByID(ctx, id)
+	_, err := uc.repo.GetByID(ctx, bo.UserID)
 	if err != nil {
 		return err
 	}
 
-	return uc.repo.UpdatePassword(ctx, id, newPassword)
+	return uc.repo.UpdatePassword(ctx, bo)
 }
 
 func (uc *UserUsecase) ResetPassword(ctx context.Context, id string) (string, error) {
@@ -138,7 +138,10 @@ func (uc *UserUsecase) ResetPassword(ctx context.Context, id string) (string, er
 		return "", err
 	}
 
-	err = uc.repo.UpdatePassword(ctx, id, hashedPassword)
+	err = uc.repo.UpdatePassword(ctx, &UpdatePasswordBO{
+		UserID:      id,
+		NewPassword: hashedPassword,
+	})
 	if err != nil {
 		return "", err
 	}
@@ -146,26 +149,26 @@ func (uc *UserUsecase) ResetPassword(ctx context.Context, id string) (string, er
 	return tempPassword, nil
 }
 
-func (uc *UserUsecase) ChangeUserStatus(ctx context.Context, id string, status int32) error {
-	uc.log.WithContext(ctx).Infof("ChangeUserStatus: id=%s, status=%d", id, status)
+func (uc *UserUsecase) ChangeUserStatus(ctx context.Context, bo *UpdateStatusBO) error {
+	uc.log.WithContext(ctx).Infof("ChangeUserStatus: id=%s, status=%d", bo.UserID, bo.Status)
 
-	_, err := uc.repo.GetByID(ctx, id)
+	_, err := uc.repo.GetByID(ctx, bo.UserID)
 	if err != nil {
 		return err
 	}
 
-	return uc.repo.UpdateStatus(ctx, id, status)
+	return uc.repo.UpdateStatus(ctx, bo)
 }
 
-func (uc *UserUsecase) ManageUserPosts(ctx context.Context, id string, postIDs []string, operation string) error {
-	uc.log.WithContext(ctx).Infof("ManageUserPosts: id=%s, operation=%s, postCount=%d", id, operation, len(postIDs))
+func (uc *UserUsecase) ManageUserPosts(ctx context.Context, bo *ManageUserPostsBO) error {
+	uc.log.WithContext(ctx).Infof("ManageUserPosts: id=%s, operation=%s, postCount=%d", bo.UserID, bo.Operation, len(bo.PostIDs))
 
-	_, err := uc.repo.GetByID(ctx, id)
+	_, err := uc.repo.GetByID(ctx, bo.UserID)
 	if err != nil {
 		return err
 	}
 
-	return uc.repo.ManageUserPosts(ctx, id, postIDs, operation)
+	return uc.repo.ManageUserPosts(ctx, bo)
 }
 
 func (uc *UserUsecase) DeleteUser(ctx context.Context, id string) error {
@@ -179,9 +182,9 @@ func (uc *UserUsecase) DeleteUser(ctx context.Context, id string) error {
 	return uc.repo.Delete(ctx, id)
 }
 
-func (uc *UserUsecase) UpdateLoginInfo(ctx context.Context, id, loginIP string, loginDate time.Time) error {
-	uc.log.WithContext(ctx).Infof("UpdateLoginInfo: id=%s, loginIP=%s", id, loginIP)
-	return uc.repo.UpdateLoginInfo(ctx, id, loginIP, loginDate)
+func (uc *UserUsecase) UpdateLoginInfo(ctx context.Context, bo *UpdateLoginInfoBO) error {
+	uc.log.WithContext(ctx).Infof("UpdateLoginInfo: id=%s, loginIP=%s", bo.UserID, bo.LoginIP)
+	return uc.repo.UpdateLoginInfo(ctx, bo)
 }
 
 func (uc *UserUsecase) GetUserPosts(ctx context.Context, id string) ([]string, error) {

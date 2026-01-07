@@ -6,41 +6,237 @@ info:
     title: ""
     version: 0.0.1
 paths:
-    /api/v1/user/changePassword:
+    /api/v1/organizations/departments:
         post:
             tags:
-                - UserService
-            summary: 修改用户密码
-            description: 用户主动修改自己的登录密码，需要验证原密码
-            operationId: UserService_ChangePassword
+                - OrganizationService
+            summary: 创建部门
+            description: 创建一个新的部门
+            operationId: OrganizationService_CreateDepartment
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/system.user.v1.ChangePasswordRequest'
+                            $ref: '#/components/schemas/system.organization.v1.CreateDepartmentRequest'
                 required: true
             responses:
                 "200":
                     description: OK
                     content: {}
-    /api/v1/user/changeStatus:
-        post:
+    /api/v1/organizations/departments/tree:
+        get:
             tags:
-                - UserService
-            summary: 变更用户状态
-            description: 启用或禁用用户，管理用户的使用权限
-            operationId: UserService_ChangeUserStatus
+                - OrganizationService
+            summary: 获取部门树
+            description: 获取完整的部门树结构
+            operationId: OrganizationService_GetDepartmentTree
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.organization.v1.GetDepartmentTreeReply'
+    /api/v1/organizations/departments/{id}:
+        get:
+            tags:
+                - OrganizationService
+            summary: 获取部门详细信息
+            description: 根据部门ID获取部门的详细信息
+            operationId: OrganizationService_GetDepartment
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.organization.v1.GetDepartmentReply'
+        put:
+            tags:
+                - OrganizationService
+            summary: 更新部门信息
+            description: 更新部门的基本信息
+            operationId: OrganizationService_UpdateDepartment
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/system.user.v1.ChangeUserStatusRequest'
+                            $ref: '#/components/schemas/system.organization.v1.UpdateDepartmentRequest'
                 required: true
             responses:
                 "200":
                     description: OK
                     content: {}
-    /api/v1/user/create:
+        delete:
+            tags:
+                - OrganizationService
+            summary: 删除部门
+            description: 删除部门，此操作不可逆
+            operationId: OrganizationService_DeleteDepartment
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/organizations/posts:
+        post:
+            tags:
+                - OrganizationService
+            summary: 创建岗位
+            description: 创建一个新的岗位
+            operationId: OrganizationService_CreatePost
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.organization.v1.CreatePostRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/organizations/posts/list:
+        post:
+            tags:
+                - OrganizationService
+            summary: 获取岗位列表
+            description: 分页查询岗位列表
+            operationId: OrganizationService_ListPosts
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.organization.v1.ListPostsRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.organization.v1.ListPostsReply'
+    /api/v1/organizations/posts/{id}:
+        get:
+            tags:
+                - OrganizationService
+            summary: 获取岗位详细信息
+            description: 根据岗位ID获取岗位的详细信息
+            operationId: OrganizationService_GetPost
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.organization.v1.GetPostReply'
+        put:
+            tags:
+                - OrganizationService
+            summary: 更新岗位信息
+            description: 更新岗位的基本信息
+            operationId: OrganizationService_UpdatePost
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.organization.v1.UpdatePostRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+        delete:
+            tags:
+                - OrganizationService
+            summary: 删除岗位
+            description: 删除岗位，此操作不可逆
+            operationId: OrganizationService_DeletePost
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/users:
+        get:
+            tags:
+                - UserService
+            summary: 获取用户列表
+            description: 分页查询用户列表，支持关键字搜索、状态筛选等
+            operationId: UserService_ListUsers
+            parameters:
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: keyword
+                  in: query
+                  schema:
+                    type: string
+                - name: status
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: sex
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: sortField
+                  in: query
+                  schema:
+                    type: string
+                - name: sortOrder
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.user.v1.ListUsersReply'
         post:
             tags:
                 - UserService
@@ -57,95 +253,7 @@ paths:
                 "200":
                     description: OK
                     content: {}
-    /api/v1/user/delete:
-        post:
-            tags:
-                - UserService
-            summary: 删除用户
-            description: 删除用户，此操作不可逆
-            operationId: UserService_DeleteUser
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.user.v1.DeleteUserRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /api/v1/user/list:
-        post:
-            tags:
-                - UserService
-            summary: 获取用户列表
-            description: 分页查询用户列表，支持关键字搜索、状态筛选等
-            operationId: UserService_ListUsers
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.user.v1.ListUsersRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.user.v1.ListUsersReply'
-    /api/v1/user/managePosts:
-        post:
-            tags:
-                - UserService
-            summary: 管理用户岗位
-            description: 为用户分配或移除岗位，管理用户的职位信息
-            operationId: UserService_ManageUserPosts
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.user.v1.ManageUserPostsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /api/v1/user/resetPassword:
-        post:
-            tags:
-                - UserService
-            summary: 重置用户密码
-            description: 管理员重置用户密码，生成临时密码
-            operationId: UserService_ResetPassword
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.user.v1.ResetPasswordRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /api/v1/user/update:
-        post:
-            tags:
-                - UserService
-            summary: 更新用户信息
-            description: 更新用户的基本信息，如昵称、邮箱、手机号等
-            operationId: UserService_UpdateUser
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.user.v1.UpdateUserRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /api/v1/user/{id}:
+    /api/v1/users/{id}:
         get:
             tags:
                 - UserService
@@ -165,6 +273,136 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/system.user.v1.GetUserReply'
+        put:
+            tags:
+                - UserService
+            summary: 更新用户信息
+            description: 更新用户的基本信息，如昵称、邮箱、手机号等
+            operationId: UserService_UpdateUser
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.user.v1.UpdateUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+        delete:
+            tags:
+                - UserService
+            summary: 删除用户
+            description: 删除用户，此操作不可逆
+            operationId: UserService_DeleteUser
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/users/{id}/password:
+        put:
+            tags:
+                - UserService
+            summary: 修改用户密码
+            description: 用户主动修改自己的登录密码，需要验证原密码
+            operationId: UserService_ChangePassword
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.user.v1.ChangePasswordRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/users/{id}/password/reset:
+        put:
+            tags:
+                - UserService
+            summary: 重置用户密码
+            description: 管理员重置用户密码，生成临时密码
+            operationId: UserService_ResetPassword
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.user.v1.ResetPasswordRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/users/{id}/posts:
+        put:
+            tags:
+                - UserService
+            summary: 管理用户岗位
+            description: 为用户分配或移除岗位，管理用户的职位信息
+            operationId: UserService_ManageUserPosts
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.user.v1.ManageUserPostsRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/users/{id}/status:
+        patch:
+            tags:
+                - UserService
+            summary: 变更用户状态
+            description: 启用或禁用用户，管理用户的使用权限
+            operationId: UserService_ChangeUserStatus
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.user.v1.ChangeUserStatusRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
     /helloworld/{name}:
         get:
             tags:
@@ -192,6 +430,296 @@ components:
                 message:
                     type: string
             description: The response message containing the greetings
+        system.organization.v1.CreateDepartmentRequest:
+            type: object
+            properties:
+                name:
+                    example: 技术部
+                    type: string
+                    description: 部门名称
+                parentId:
+                    example: 0
+                    type: string
+                    description: 父部门ID
+                sort:
+                    example: 1
+                    type: integer
+                    description: 排序号
+                    format: int32
+                leaderUserId:
+                    example: user123
+                    type: string
+                    description: 部门负责人用户ID
+                phone:
+                    example: 13800138000
+                    type: string
+                    description: 联系电话
+                email:
+                    example: tech@example.com
+                    type: string
+                    description: 联系邮箱
+            description: 创建部门请求体
+        system.organization.v1.CreatePostRequest:
+            type: object
+            properties:
+                name:
+                    example: 软件工程师
+                    type: string
+                    description: 岗位名称
+                code:
+                    example: SE001
+                    type: string
+                    description: 岗位编码
+                sort:
+                    example: 1
+                    type: integer
+                    description: 排序号
+                    format: int32
+                remark:
+                    type: string
+                    description: 备注信息
+            description: 创建岗位请求体
+        system.organization.v1.DepartmentInfo:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 部门唯一标识符
+                name:
+                    example: 技术部
+                    type: string
+                    description: 部门名称
+                parentId:
+                    example: 0
+                    type: string
+                    description: 父部门ID，根部门为空
+                sort:
+                    example: 1
+                    type: integer
+                    description: 排序号
+                    format: int32
+                leaderUserId:
+                    example: user123
+                    type: string
+                    description: 部门负责人用户ID
+                phone:
+                    example: 13800138000
+                    type: string
+                    description: 联系电话
+                email:
+                    example: tech@example.com
+                    type: string
+                    description: 联系邮箱
+                status:
+                    example: 1
+                    type: integer
+                    description: '部门状态: 0-禁用, 1-正常'
+                    format: int32
+                createAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updateAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+                tenantId:
+                    type: string
+                    description: 租户ID
+                children:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/system.organization.v1.DepartmentInfo'
+                    description: 子部门列表
+            description: 部门的基本信息
+        system.organization.v1.GetDepartmentReply:
+            type: object
+            properties:
+                department:
+                    $ref: '#/components/schemas/system.organization.v1.DepartmentInfo'
+            description: 获取部门信息响应体
+        system.organization.v1.GetDepartmentTreeReply:
+            type: object
+            properties:
+                departments:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/system.organization.v1.DepartmentInfo'
+                    description: 部门树结构
+            description: 获取部门树响应体
+        system.organization.v1.GetPostReply:
+            type: object
+            properties:
+                post:
+                    $ref: '#/components/schemas/system.organization.v1.PostInfo'
+            description: 获取岗位信息响应体
+        system.organization.v1.ListPostsReply:
+            type: object
+            properties:
+                posts:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/system.organization.v1.PostInfo'
+                    description: 岗位列表
+                total:
+                    example: 100
+                    type: string
+                    description: 总记录数
+                page:
+                    example: 1
+                    type: integer
+                    description: 当前页码
+                    format: int32
+                pageSize:
+                    example: 10
+                    type: integer
+                    description: 每页数量
+                    format: int32
+                totalPages:
+                    example: 10
+                    type: integer
+                    description: 总页数
+                    format: int32
+            description: 查询岗位列表响应体
+        system.organization.v1.ListPostsRequest:
+            type: object
+            properties:
+                page:
+                    example: 1
+                    type: integer
+                    description: 页码，从1开始
+                    format: int32
+                pageSize:
+                    example: 10
+                    type: integer
+                    description: 每页数量，默认10
+                    format: int32
+                keyword:
+                    example: 软件
+                    type: string
+                    description: 搜索关键字
+                status:
+                    example: 1
+                    type: integer
+                    description: '岗位状态筛选: 0-禁用, 1-正常'
+                    format: int32
+                sortField:
+                    example: sort
+                    type: string
+                    description: 排序字段
+                sortOrder:
+                    example: asc
+                    type: string
+                    description: '排序方式: asc, desc'
+            description: 查询岗位列表请求体
+        system.organization.v1.PostInfo:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 岗位唯一标识符
+                name:
+                    example: 软件工程师
+                    type: string
+                    description: 岗位名称
+                code:
+                    example: SE001
+                    type: string
+                    description: 岗位编码
+                sort:
+                    example: 1
+                    type: integer
+                    description: 排序号
+                    format: int32
+                status:
+                    example: 1
+                    type: integer
+                    description: '岗位状态: 0-禁用, 1-正常'
+                    format: int32
+                remark:
+                    type: string
+                    description: 备注信息
+                createAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updateAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+                tenantId:
+                    type: string
+                    description: 租户ID
+            description: 岗位的基本信息
+        system.organization.v1.UpdateDepartmentRequest:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 部门ID
+                name:
+                    example: 技术部
+                    type: string
+                    description: 部门名称
+                parentId:
+                    example: 0
+                    type: string
+                    description: 父部门ID
+                sort:
+                    example: 1
+                    type: integer
+                    description: 排序号
+                    format: int32
+                leaderUserId:
+                    example: user123
+                    type: string
+                    description: 部门负责人用户ID
+                phone:
+                    example: 13800138000
+                    type: string
+                    description: 联系电话
+                email:
+                    example: tech@example.com
+                    type: string
+                    description: 联系邮箱
+                status:
+                    example: 1
+                    type: integer
+                    description: '部门状态: 0-禁用, 1-正常'
+                    format: int32
+            description: 更新部门信息请求体
+        system.organization.v1.UpdatePostRequest:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 岗位ID
+                name:
+                    example: 软件工程师
+                    type: string
+                    description: 岗位名称
+                code:
+                    example: SE001
+                    type: string
+                    description: 岗位编码
+                sort:
+                    example: 1
+                    type: integer
+                    description: 排序号
+                    format: int32
+                status:
+                    example: 1
+                    type: integer
+                    description: '岗位状态: 0-禁用, 1-正常'
+                    format: int32
+                remark:
+                    type: string
+                    description: 备注信息
+            description: 更新岗位信息请求体
         system.user.v1.ChangePasswordRequest:
             type: object
             properties:
@@ -262,14 +790,6 @@ components:
                     type: string
                     description: 备注信息
             description: 创建用户请求体
-        system.user.v1.DeleteUserRequest:
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 用户ID
-            description: 删除用户请求体
         system.user.v1.GetUserReply:
             type: object
             properties:
@@ -304,42 +824,6 @@ components:
                     description: 总页数
                     format: int32
             description: 查询用户列表响应体
-        system.user.v1.ListUsersRequest:
-            type: object
-            properties:
-                page:
-                    example: 1
-                    type: integer
-                    description: 页码，从1开始
-                    format: int32
-                pageSize:
-                    example: 10
-                    type: integer
-                    description: 每页数量，默认10
-                    format: int32
-                keyword:
-                    example: admin
-                    type: string
-                    description: 搜索关键字，支持用户名、昵称搜索
-                status:
-                    example: 1
-                    type: integer
-                    description: '用户状态筛选: 0-禁用, 1-正常'
-                    format: int32
-                sex:
-                    example: 1
-                    type: integer
-                    description: '性别筛选: 0-未知, 1-男, 2-女'
-                    format: int32
-                sortField:
-                    example: create_at
-                    type: string
-                    description: 排序字段
-                sortOrder:
-                    example: desc
-                    type: string
-                    description: '排序方式: asc, desc'
-            description: 查询用户列表请求体
         system.user.v1.ManageUserPostsRequest:
             type: object
             properties:
@@ -464,6 +948,9 @@ components:
 tags:
     - name: Greeter
       description: The greeting service definition.
+    - name: OrganizationService
+      description: 组织架构相关操作
+    - name: OrganizationService
     - name: UserService
       description: 用户相关操作
     - name: UserService

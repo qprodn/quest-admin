@@ -53,15 +53,15 @@ type UserServiceHTTPServer interface {
 
 func RegisterUserServiceHTTPServer(s *http.Server, srv UserServiceHTTPServer) {
 	r := s.Route("/")
-	r.POST("/api/v1/user/create", _UserService_CreateUser0_HTTP_Handler(srv))
-	r.GET("/api/v1/user/{id}", _UserService_GetUser0_HTTP_Handler(srv))
-	r.POST("/api/v1/user/list", _UserService_ListUsers0_HTTP_Handler(srv))
-	r.POST("/api/v1/user/update", _UserService_UpdateUser0_HTTP_Handler(srv))
-	r.POST("/api/v1/user/changePassword", _UserService_ChangePassword0_HTTP_Handler(srv))
-	r.POST("/api/v1/user/resetPassword", _UserService_ResetPassword0_HTTP_Handler(srv))
-	r.POST("/api/v1/user/changeStatus", _UserService_ChangeUserStatus0_HTTP_Handler(srv))
-	r.POST("/api/v1/user/managePosts", _UserService_ManageUserPosts0_HTTP_Handler(srv))
-	r.POST("/api/v1/user/delete", _UserService_DeleteUser0_HTTP_Handler(srv))
+	r.POST("/api/v1/users", _UserService_CreateUser0_HTTP_Handler(srv))
+	r.GET("/api/v1/users/{id}", _UserService_GetUser0_HTTP_Handler(srv))
+	r.GET("/api/v1/users", _UserService_ListUsers0_HTTP_Handler(srv))
+	r.PUT("/api/v1/users/{id}", _UserService_UpdateUser0_HTTP_Handler(srv))
+	r.PUT("/api/v1/users/{id}/password", _UserService_ChangePassword0_HTTP_Handler(srv))
+	r.PUT("/api/v1/users/{id}/password/reset", _UserService_ResetPassword0_HTTP_Handler(srv))
+	r.PATCH("/api/v1/users/{id}/status", _UserService_ChangeUserStatus0_HTTP_Handler(srv))
+	r.PUT("/api/v1/users/{id}/posts", _UserService_ManageUserPosts0_HTTP_Handler(srv))
+	r.DELETE("/api/v1/users/{id}", _UserService_DeleteUser0_HTTP_Handler(srv))
 }
 
 func _UserService_CreateUser0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx http.Context) error {
@@ -111,9 +111,6 @@ func _UserService_GetUser0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx http
 func _UserService_ListUsers0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in ListUsersRequest
-		if err := ctx.Bind(&in); err != nil {
-			return err
-		}
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
@@ -139,6 +136,9 @@ func _UserService_UpdateUser0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx h
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
 		http.SetOperation(ctx, OperationUserServiceUpdateUser)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.UpdateUser(ctx, req.(*UpdateUserRequest))
@@ -159,6 +159,9 @@ func _UserService_ChangePassword0_HTTP_Handler(srv UserServiceHTTPServer) func(c
 			return err
 		}
 		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, OperationUserServiceChangePassword)
@@ -183,6 +186,9 @@ func _UserService_ResetPassword0_HTTP_Handler(srv UserServiceHTTPServer) func(ct
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
 		http.SetOperation(ctx, OperationUserServiceResetPassword)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.ResetPassword(ctx, req.(*ResetPasswordRequest))
@@ -203,6 +209,9 @@ func _UserService_ChangeUserStatus0_HTTP_Handler(srv UserServiceHTTPServer) func
 			return err
 		}
 		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, OperationUserServiceChangeUserStatus)
@@ -227,6 +236,9 @@ func _UserService_ManageUserPosts0_HTTP_Handler(srv UserServiceHTTPServer) func(
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
 		http.SetOperation(ctx, OperationUserServiceManageUserPosts)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.ManageUserPosts(ctx, req.(*ManageUserPostsRequest))
@@ -243,10 +255,10 @@ func _UserService_ManageUserPosts0_HTTP_Handler(srv UserServiceHTTPServer) func(
 func _UserService_DeleteUser0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in DeleteUserRequest
-		if err := ctx.Bind(&in); err != nil {
+		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		if err := ctx.BindQuery(&in); err != nil {
+		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, OperationUserServiceDeleteUser)
@@ -294,11 +306,11 @@ func NewUserServiceHTTPClient(client *http.Client) UserServiceHTTPClient {
 // ChangePassword 修改用户密码
 func (c *UserServiceHTTPClientImpl) ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/user/changePassword"
+	pattern := "/api/v1/users/{id}/password"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserServiceChangePassword))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -308,11 +320,11 @@ func (c *UserServiceHTTPClientImpl) ChangePassword(ctx context.Context, in *Chan
 // ChangeUserStatus 变更用户状态
 func (c *UserServiceHTTPClientImpl) ChangeUserStatus(ctx context.Context, in *ChangeUserStatusRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/user/changeStatus"
+	pattern := "/api/v1/users/{id}/status"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserServiceChangeUserStatus))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	err := c.cc.Invoke(ctx, "PATCH", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -322,7 +334,7 @@ func (c *UserServiceHTTPClientImpl) ChangeUserStatus(ctx context.Context, in *Ch
 // CreateUser 创建用户
 func (c *UserServiceHTTPClientImpl) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/user/create"
+	pattern := "/api/v1/users"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserServiceCreateUser))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -336,11 +348,11 @@ func (c *UserServiceHTTPClientImpl) CreateUser(ctx context.Context, in *CreateUs
 // DeleteUser 删除用户
 func (c *UserServiceHTTPClientImpl) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/user/delete"
-	path := binding.EncodeURL(pattern, in, false)
+	pattern := "/api/v1/users/{id}"
+	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationUserServiceDeleteUser))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	err := c.cc.Invoke(ctx, "DELETE", path, nil, &out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -350,7 +362,7 @@ func (c *UserServiceHTTPClientImpl) DeleteUser(ctx context.Context, in *DeleteUs
 // GetUser 获取用户信息
 func (c *UserServiceHTTPClientImpl) GetUser(ctx context.Context, in *GetUserRequest, opts ...http.CallOption) (*GetUserReply, error) {
 	var out GetUserReply
-	pattern := "/api/v1/user/{id}"
+	pattern := "/api/v1/users/{id}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationUserServiceGetUser))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -364,11 +376,11 @@ func (c *UserServiceHTTPClientImpl) GetUser(ctx context.Context, in *GetUserRequ
 // ListUsers 用户列表查询
 func (c *UserServiceHTTPClientImpl) ListUsers(ctx context.Context, in *ListUsersRequest, opts ...http.CallOption) (*ListUsersReply, error) {
 	var out ListUsersReply
-	pattern := "/api/v1/user/list"
-	path := binding.EncodeURL(pattern, in, false)
+	pattern := "/api/v1/users"
+	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationUserServiceListUsers))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -378,11 +390,11 @@ func (c *UserServiceHTTPClientImpl) ListUsers(ctx context.Context, in *ListUsers
 // ManageUserPosts 管理用户岗位
 func (c *UserServiceHTTPClientImpl) ManageUserPosts(ctx context.Context, in *ManageUserPostsRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/user/managePosts"
+	pattern := "/api/v1/users/{id}/posts"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserServiceManageUserPosts))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -392,11 +404,11 @@ func (c *UserServiceHTTPClientImpl) ManageUserPosts(ctx context.Context, in *Man
 // ResetPassword 重置用户密码
 func (c *UserServiceHTTPClientImpl) ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/user/resetPassword"
+	pattern := "/api/v1/users/{id}/password/reset"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserServiceResetPassword))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -406,11 +418,11 @@ func (c *UserServiceHTTPClientImpl) ResetPassword(ctx context.Context, in *Reset
 // UpdateUser 更新用户信息
 func (c *UserServiceHTTPClientImpl) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/user/update"
+	pattern := "/api/v1/users/{id}"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserServiceUpdateUser))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

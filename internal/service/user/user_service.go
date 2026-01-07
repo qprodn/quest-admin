@@ -112,7 +112,12 @@ func (s *UserService) UpdateUser(ctx context.Context, in *v1.UpdateUserRequest) 
 }
 
 func (s *UserService) ChangePassword(ctx context.Context, in *v1.ChangePasswordRequest) (*emptypb.Empty, error) {
-	err := s.uc.ChangePassword(ctx, in.GetId(), in.GetOldPassword(), in.GetNewPassword())
+	bo := &biz.UpdatePasswordBO{
+		UserID:      in.GetId(),
+		OldPassword: in.GetOldPassword(),
+		NewPassword: in.GetNewPassword(),
+	}
+	err := s.uc.ChangePassword(ctx, bo)
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +135,11 @@ func (s *UserService) ResetPassword(ctx context.Context, in *v1.ResetPasswordReq
 }
 
 func (s *UserService) ChangeUserStatus(ctx context.Context, in *v1.ChangeUserStatusRequest) (*emptypb.Empty, error) {
-	err := s.uc.ChangeUserStatus(ctx, in.GetId(), in.GetStatus())
+	bo := &biz.UpdateStatusBO{
+		UserID: in.GetId(),
+		Status: in.GetStatus(),
+	}
+	err := s.uc.ChangeUserStatus(ctx, bo)
 	if err != nil {
 		return nil, err
 	}
@@ -139,7 +148,12 @@ func (s *UserService) ChangeUserStatus(ctx context.Context, in *v1.ChangeUserSta
 }
 
 func (s *UserService) ManageUserPosts(ctx context.Context, in *v1.ManageUserPostsRequest) (*emptypb.Empty, error) {
-	err := s.uc.ManageUserPosts(ctx, in.GetId(), in.GetPostIds(), in.GetOperation())
+	bo := &biz.ManageUserPostsBO{
+		UserID:    in.GetId(),
+		PostIDs:   in.GetPostIds(),
+		Operation: in.GetOperation(),
+	}
+	err := s.uc.ManageUserPosts(ctx, bo)
 	if err != nil {
 		return nil, err
 	}
