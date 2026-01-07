@@ -17,7 +17,7 @@ import (
 )
 
 type User struct {
-	bun.BaseModel `bun:"table:users,alias:u"`
+	bun.BaseModel `bun:"table:qa_user,alias:u"`
 
 	ID        string     `bun:"id,pk"`
 	Username  string     `bun:"username,notnull"`
@@ -31,19 +31,25 @@ type User struct {
 	Remark    string     `bun:"remark"`
 	LoginIP   string     `bun:"login_ip"`
 	LoginDate time.Time  `bun:"login_date"`
+	CreateBy  string     `bun:"create_by"`
 	CreateAt  time.Time  `bun:"create_at,notnull,default:current_timestamp()"`
+	UpdateBy  string     `bun:"update_by"`
 	UpdateAt  time.Time  `bun:"update_at,notnull,default:current_timestamp()"`
 	TenantID  string     `bun:"tenant_id"`
 	DeleteAt  *time.Time `bun:"delete_at,soft_delete,nullzero"`
 }
 
 type UserPost struct {
-	bun.BaseModel `bun:"table:user_posts,alias:up"`
+	bun.BaseModel `bun:"table:qa_user_map_post,alias:up"`
 
 	ID       string     `bun:"id,pk"`
 	UserID   string     `bun:"user_id,notnull"`
 	PostID   string     `bun:"post_id,notnull"`
+	CreateBy string     `bun:"create_by"`
 	CreateAt time.Time  `bun:"create_at,notnull,default:current_timestamp()"`
+	UpdateBy string     `bun:"update_by"`
+	UpdateAt time.Time  `bun:"update_at,notnull,default:current_timestamp()"`
+	TenantID string     `bun:"tenant_id"`
 	DeleteAt *time.Time `bun:"delete_at,soft_delete,nullzero"`
 }
 
@@ -74,7 +80,9 @@ func (r *userRepo) Create(ctx context.Context, user *biz.User) (*biz.User, error
 		Remark:    user.Remark,
 		LoginIP:   user.LoginIP,
 		LoginDate: user.LoginDate,
+		CreateBy:  user.CreateBy,
 		CreateAt:  now,
+		UpdateBy:  user.UpdateBy,
 		UpdateAt:  now,
 		TenantID:  user.TenantID,
 	}
@@ -347,7 +355,9 @@ func (r *userRepo) toBizUser(dbUser *User) *biz.User {
 		Remark:    dbUser.Remark,
 		LoginIP:   dbUser.LoginIP,
 		LoginDate: dbUser.LoginDate,
+		CreateBy:  dbUser.CreateBy,
 		CreateAt:  dbUser.CreateAt,
+		UpdateBy:  dbUser.UpdateBy,
 		UpdateAt:  dbUser.UpdateAt,
 		TenantID:  dbUser.TenantID,
 	}

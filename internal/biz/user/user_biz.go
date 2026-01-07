@@ -33,7 +33,9 @@ type User struct {
 	Remark    string
 	LoginIP   string
 	LoginDate time.Time
+	CreateBy  string
 	CreateAt  time.Time
+	UpdateBy  string
 	UpdateAt  time.Time
 	TenantID  string
 }

@@ -10,7 +10,7 @@ server:
 data:
   database:
     driver: postgres
-    source: postgres://root:123456@localhost:5432/cursor_admin?sslmode=disable
+    source: postgres://root:123456@localhost:5432/quest_admin?sslmode=disable
     max_idle_conns: 20
     max_open_conns: 100
     conn_max_lifetime: 5
