@@ -4,8 +4,6 @@ import (
 	"context"
 	"crypto/rand"
 	"math/big"
-	"time"
-
 	v1 "quest-admin/api/gen/user/v1"
 	"quest-admin/pkg/util/pswd"
 
@@ -20,48 +18,10 @@ var (
 	ErrPasswordConfirmMismatch = errors.BadRequest(v1.ErrorReason_PASSWORD_CONFIRM_MISMATCH.String(), "password confirm mismatch")
 )
 
-type User struct {
-	ID        string
-	Username  string
-	Password  string
-	Nickname  string
-	Email     string
-	Mobile    string
-	Sex       int32
-	Avatar    string
-	Status    int32
-	Remark    string
-	LoginIP   string
-	LoginDate time.Time
-	CreateBy  string
-	CreateAt  time.Time
-	UpdateBy  string
-	UpdateAt  time.Time
-	TenantID  string
-}
-
-type ListUsersQuery struct {
-	Page      int32
-	PageSize  int32
-	Keyword   string
-	Status    *int32
-	Sex       *int32
-	SortField string
-	SortOrder string
-}
-
-type ListUsersResult struct {
-	Users      []*User
-	Total      int64
-	Page       int32
-	PageSize   int32
-	TotalPages int32
-}
-
 type UserRepo interface {
 	Create(ctx context.Context, user *User) (*User, error)
-	GetByID(ctx context.Context, id string) (*User, error)
-	GetByUsername(ctx context.Context, username string) (*User, error)
+	FindByID(ctx context.Context, id string) (*User, error)
+	FindByUsername(ctx context.Context, username string) (*User, error)
 	List(ctx context.Context, query *ListUsersQuery) (*ListUsersResult, error)
 	Update(ctx context.Context, user *User) (*User, error)
 	UpdatePassword(ctx context.Context, bo *UpdatePasswordBO) error
@@ -87,7 +47,7 @@ func NewUserUsecase(repo UserRepo, logger log.Logger) *UserUsecase {
 func (uc *UserUsecase) CreateUser(ctx context.Context, user *User) (*User, error) {
 	uc.log.WithContext(ctx).Infof("CreateUser: username=%s", user.Username)
 
-	existing, err := uc.repo.GetByUsername(ctx, user.Username)
+	existing, err := uc.repo.FindByUsername(ctx, user.Username)
 	if err != nil && !errors.Is(err, ErrUserNotFound) {
 		return nil, err
 	}
@@ -100,7 +60,7 @@ func (uc *UserUsecase) CreateUser(ctx context.Context, user *User) (*User, error
 
 func (uc *UserUsecase) GetUser(ctx context.Context, id string) (*User, error) {
 	uc.log.WithContext(ctx).Infof("GetUser: id=%s", id)
-	return uc.repo.GetByID(ctx, id)
+	return uc.repo.FindByID(ctx, id)
 }
 
 func (uc *UserUsecase) ListUsers(ctx context.Context, query *ListUsersQuery) (*ListUsersResult, error) {
@@ -116,7 +76,7 @@ func (uc *UserUsecase) UpdateUser(ctx context.Context, user *User) (*User, error
 func (uc *UserUsecase) ChangePassword(ctx context.Context, bo *UpdatePasswordBO) error {
 	uc.log.WithContext(ctx).Infof("ChangePassword: id=%s", bo.UserID)
 
-	_, err := uc.repo.GetByID(ctx, bo.UserID)
+	_, err := uc.repo.FindByID(ctx, bo.UserID)
 	if err != nil {
 		return err
 	}
@@ -127,7 +87,7 @@ func (uc *UserUsecase) ChangePassword(ctx context.Context, bo *UpdatePasswordBO)
 func (uc *UserUsecase) ResetPassword(ctx context.Context, id string) (string, error) {
 	uc.log.WithContext(ctx).Infof("ResetPassword: id=%s", id)
 
-	_, err := uc.repo.GetByID(ctx, id)
+	_, err := uc.repo.FindByID(ctx, id)
 	if err != nil {
 		return "", err
 	}
@@ -152,7 +112,7 @@ func (uc *UserUsecase) ResetPassword(ctx context.Context, id string) (string, er
 func (uc *UserUsecase) ChangeUserStatus(ctx context.Context, bo *UpdateStatusBO) error {
 	uc.log.WithContext(ctx).Infof("ChangeUserStatus: id=%s, status=%d", bo.UserID, bo.Status)
 
-	_, err := uc.repo.GetByID(ctx, bo.UserID)
+	_, err := uc.repo.FindByID(ctx, bo.UserID)
 	if err != nil {
 		return err
 	}
@@ -163,7 +123,7 @@ func (uc *UserUsecase) ChangeUserStatus(ctx context.Context, bo *UpdateStatusBO)
 func (uc *UserUsecase) ManageUserPosts(ctx context.Context, bo *ManageUserPostsBO) error {
 	uc.log.WithContext(ctx).Infof("ManageUserPosts: id=%s, operation=%s, postCount=%d", bo.UserID, bo.Operation, len(bo.PostIDs))
 
-	_, err := uc.repo.GetByID(ctx, bo.UserID)
+	_, err := uc.repo.FindByID(ctx, bo.UserID)
 	if err != nil {
 		return err
 	}
@@ -174,7 +134,7 @@ func (uc *UserUsecase) ManageUserPosts(ctx context.Context, bo *ManageUserPostsB
 func (uc *UserUsecase) DeleteUser(ctx context.Context, id string) error {
 	uc.log.WithContext(ctx).Infof("DeleteUser: id=%s", id)
 
-	_, err := uc.repo.GetByID(ctx, id)
+	_, err := uc.repo.FindByID(ctx, id)
 	if err != nil {
 		return err
 	}

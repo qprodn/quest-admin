@@ -1,0 +1,157 @@
+syntax = "proto3";
+
+package system.tenant.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "openapi/v3/annotations.proto";
+
+option go_package = "quest-admin/api/tenant/v1;v1";
+
+
+option (openapi.v3.document) = {
+  tags: [
+    {
+      name: "TenantPackageService";
+      description: "租户套餐相关操作";
+    }
+  ];
+};
+
+service TenantPackageService {
+  // 创建租户套餐
+  rpc CreateTenantPackage (CreateTenantPackageRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/tenant-packages"
+      body: "*"
+    };
+    option (openapi.v3.operation) = {
+      summary: "创建租户套餐";
+      description: "创建一个新的租户套餐";
+    };
+  }
+
+  // 获取租户套餐信息
+  rpc GetTenantPackage (GetTenantPackageRequest) returns (GetTenantPackageReply) {
+    option (google.api.http) = {
+      get: "/api/v1/tenant-packages/{id}"
+    };
+    option (openapi.v3.operation) = {
+      summary: "获取租户套餐详细信息";
+      description: "根据套餐ID获取套餐的详细信息";
+    };
+  }
+
+  // 获取租户套餐列表
+  rpc ListTenantPackages (ListTenantPackagesRequest) returns (ListTenantPackagesReply) {
+    option (google.api.http) = {
+      post: "/api/v1/tenant-packages/list"
+      body: "*"
+    };
+    option (openapi.v3.operation) = {
+      summary: "获取租户套餐列表";
+      description: "分页查询租户套餐列表";
+    };
+  }
+
+  // 更新租户套餐信息
+  rpc UpdateTenantPackage (UpdateTenantPackageRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/api/v1/tenant-packages/{id}"
+      body: "*"
+    };
+    option (openapi.v3.operation) = {
+      summary: "更新租户套餐信息";
+      description: "更新租户套餐的基本信息";
+    };
+  }
+
+  // 删除租户套餐
+  rpc DeleteTenantPackage (DeleteTenantPackageRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/tenant-packages/{id}"
+    };
+    option (openapi.v3.operation) = {
+      summary: "删除租户套餐";
+      description: "删除租户套餐，此操作不可逆";
+    };
+  }
+}
+
+message TenantPackageInfo {
+  option (openapi.v3.schema) = {
+    description: "租户套餐的基本信息";
+  };
+  string id = 1 [(openapi.v3.property) = {description: "套餐唯一标识符"; example: {yaml: "pkg001"};}];
+  string name = 2 [(openapi.v3.property) = {description: "套餐名称"; example: {yaml: "基础版"};}];
+  int32 status = 3 [(openapi.v3.property) = {description: "套餐状态: 0-停用, 1-正常"; example: {yaml: "1"};}];
+  string remark = 4 [(openapi.v3.property) = {description: "备注信息";}];
+  string menu_ids = 5 [(openapi.v3.property) = {description: "关联的菜单编号（逗号分隔）"; example: {yaml: "1,2,3,4,5"};}];
+  google.protobuf.Timestamp create_at = 6 [(openapi.v3.property) = {description: "创建时间";}];
+  google.protobuf.Timestamp update_at = 7 [(openapi.v3.property) = {description: "更新时间";}];
+}
+
+message CreateTenantPackageRequest {
+  option (openapi.v3.schema) = {
+    description: "创建租户套餐请求体";
+  };
+  optional string name = 1 [(openapi.v3.property) = {description: "套餐名称"; example: {yaml: "基础版"};}];
+  optional string remark = 2 [(openapi.v3.property) = {description: "备注信息";}];
+  optional string menu_ids = 3 [(openapi.v3.property) = {description: "关联的菜单编号（逗号分隔）"; example: {yaml: "1,2,3,4,5"};}];
+}
+
+message GetTenantPackageRequest {
+  option (openapi.v3.schema) = {
+    description: "获取租户套餐信息请求体";
+  };
+  optional string id = 1 [(openapi.v3.property) = {description: "套餐ID"; example: {yaml: "pkg001"};}];
+}
+
+message GetTenantPackageReply {
+  option (openapi.v3.schema) = {
+    description: "获取租户套餐信息响应体";
+  };
+  TenantPackageInfo package = 1 [(openapi.v3.property) = {description: "套餐详细信息";}];
+}
+
+message ListTenantPackagesRequest {
+  option (openapi.v3.schema) = {
+    description: "查询租户套餐列表请求体";
+  };
+  optional int32 page = 1 [(openapi.v3.property) = {description: "页码，从1开始"; example: {yaml: "1"};}];
+  optional int32 page_size = 2 [(openapi.v3.property) = {description: "每页数量，默认10"; example: {yaml: "10"};}];
+  optional string keyword = 3 [(openapi.v3.property) = {description: "搜索关键字"; example: {yaml: "基础"};}];
+  optional int32 status = 4 [(openapi.v3.property) = {description: "套餐状态筛选: 0-停用, 1-正常"; example: {yaml: "1"};}];
+  optional string sort_field = 5 [(openapi.v3.property) = {description: "排序字段"; example: {yaml: "create_at"};}];
+  optional string sort_order = 6 [(openapi.v3.property) = {description: "排序方式: asc, desc"; example: {yaml: "desc"};}];
+}
+
+message ListTenantPackagesReply {
+  option (openapi.v3.schema) = {
+    description: "查询租户套餐列表响应体";
+  };
+  repeated TenantPackageInfo packages = 1 [(openapi.v3.property) = {description: "套餐列表";}];
+  int64 total = 2 [(openapi.v3.property) = {description: "总记录数"; example: {yaml: "100"};}];
+  int32 page = 3 [(openapi.v3.property) = {description: "当前页码"; example: {yaml: "1"};}];
+  int32 page_size = 4 [(openapi.v3.property) = {description: "每页数量"; example: {yaml: "10"};}];
+  int32 total_pages = 5 [(openapi.v3.property) = {description: "总页数"; example: {yaml: "10"};}];
+}
+
+message UpdateTenantPackageRequest {
+  option (openapi.v3.schema) = {
+    description: "更新租户套餐信息请求体";
+  };
+  optional string id = 1 [(openapi.v3.property) = {description: "套餐ID"; example: {yaml: "pkg001"};}];
+  optional string name = 2 [(openapi.v3.property) = {description: "套餐名称"; example: {yaml: "基础版"};}];
+  optional int32 status = 3 [(openapi.v3.property) = {description: "套餐状态: 0-停用, 1-正常"; example: {yaml: "1"};}];
+  optional string remark = 4 [(openapi.v3.property) = {description: "备注信息";}];
+  optional string menu_ids = 5 [(openapi.v3.property) = {description: "关联的菜单编号（逗号分隔）"; example: {yaml: "1,2,3,4,5"};}];
+}
+
+message DeleteTenantPackageRequest {
+  option (openapi.v3.schema) = {
+    description: "删除租户套餐请求体";
+  };
+  optional string id = 1 [(openapi.v3.property) = {description: "套餐ID"; example: {yaml: "pkg001"};}];
+}

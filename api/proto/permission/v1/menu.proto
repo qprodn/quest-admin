@@ -1,0 +1,169 @@
+syntax = "proto3";
+
+package system.permission.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "openapi/v3/annotations.proto";
+
+option go_package = "quest-admin/api/permission/v1;v1";
+
+
+option (openapi.v3.document) = {
+  tags: [
+    {
+      name: "MenuService";
+      description: "菜单管理相关操作";
+    }
+  ];
+};
+
+service MenuService {
+  // 创建菜单
+  rpc CreateMenu (CreateMenuRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/permissions/menus"
+      body: "*"
+    };
+    option (openapi.v3.operation) = {
+      summary: "创建菜单";
+      description: "创建一个新的菜单";
+    };
+  }
+
+  // 获取菜单信息
+  rpc GetMenu (GetMenuRequest) returns (GetMenuReply) {
+    option (google.api.http) = {
+      get: "/api/v1/permissions/menus/{id}"
+    };
+    option (openapi.v3.operation) = {
+      summary: "获取菜单详细信息";
+      description: "根据菜单ID获取菜单的详细信息";
+    };
+  }
+
+  // 获取菜单树
+  rpc GetMenuTree (google.protobuf.Empty) returns (GetMenuTreeReply) {
+    option (google.api.http) = {
+      get: "/api/v1/permissions/menus/tree"
+    };
+    option (openapi.v3.operation) = {
+      summary: "获取菜单树";
+      description: "获取完整的菜单树结构";
+    };
+  }
+
+  // 更新菜单信息
+  rpc UpdateMenu (UpdateMenuRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/api/v1/permissions/menus/{id}"
+      body: "*"
+    };
+    option (openapi.v3.operation) = {
+      summary: "更新菜单信息";
+      description: "更新菜单的基本信息";
+    };
+  }
+
+  // 删除菜单
+  rpc DeleteMenu (DeleteMenuRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/permissions/menus/{id}"
+    };
+    option (openapi.v3.operation) = {
+      summary: "删除菜单";
+      description: "删除菜单，此操作不可逆";
+    };
+  }
+}
+
+message MenuInfo {
+  option (openapi.v3.schema) = {
+    description: "菜单的基本信息";
+  };
+  string id = 1 [(openapi.v3.property) = {description: "菜单唯一标识符"; example: {yaml: "123456789"};}];
+  string name = 2 [(openapi.v3.property) = {description: "菜单名称"; example: {yaml: "系统管理"};}];
+  string permission = 3 [(openapi.v3.property) = {description: "权限标识"; example: {yaml: "system:user:list"};}];
+  int32 type = 4 [(openapi.v3.property) = {description: "菜单类型"; example: {yaml: "1"};}];
+  int32 sort = 5 [(openapi.v3.property) = {description: "显示顺序"; example: {yaml: "1"};}];
+  string parent_id = 6 [(openapi.v3.property) = {description: "父菜单ID，根菜单为0"; example: {yaml: "0"};}];
+  string path = 7 [(openapi.v3.property) = {description: "路由地址"; example: {yaml: "/system/user"};}];
+  string icon = 8 [(openapi.v3.property) = {description: "菜单图标"; example: {yaml: "user"};}];
+  string component = 9 [(openapi.v3.property) = {description: "组件路径"; example: {yaml: "system/user/index"};}];
+  string component_name = 10 [(openapi.v3.property) = {description: "组件名"; example: {yaml: "User"};}];
+  int32 status = 11 [(openapi.v3.property) = {description: "菜单状态: 0-禁用, 1-正常"; example: {yaml: "1"};}];
+  bool visible = 12 [(openapi.v3.property) = {description: "是否可见"; example: {yaml: "true"};}];
+  bool keep_alive = 13 [(openapi.v3.property) = {description: "是否缓存"; example: {yaml: "true"};}];
+  bool always_show = 14 [(openapi.v3.property) = {description: "是否总是显示"; example: {yaml: "true"};}];
+  google.protobuf.Timestamp create_at = 15 [(openapi.v3.property) = {description: "创建时间";}];
+  google.protobuf.Timestamp update_at = 16 [(openapi.v3.property) = {description: "更新时间";}];
+  repeated MenuInfo children = 17 [(openapi.v3.property) = {description: "子菜单列表";}];
+}
+
+message CreateMenuRequest {
+  option (openapi.v3.schema) = {
+    description: "创建菜单请求体";
+  };
+  optional string name = 1 [(openapi.v3.property) = {description: "菜单名称"; example: {yaml: "系统管理"};}];
+  optional string permission = 2 [(openapi.v3.property) = {description: "权限标识"; example: {yaml: "system:user:list"};}];
+  optional int32 type = 3 [(openapi.v3.property) = {description: "菜单类型"; example: {yaml: "1"};}];
+  optional int32 sort = 4 [(openapi.v3.property) = {description: "显示顺序"; example: {yaml: "1"};}];
+  optional string parent_id = 5 [(openapi.v3.property) = {description: "父菜单ID，根菜单为0"; example: {yaml: "0"};}];
+  optional string path = 6 [(openapi.v3.property) = {description: "路由地址"; example: {yaml: "/system/user"};}];
+  optional string icon = 7 [(openapi.v3.property) = {description: "菜单图标"; example: {yaml: "user"};}];
+  optional string component = 8 [(openapi.v3.property) = {description: "组件路径"; example: {yaml: "system/user/index"};}];
+  optional string component_name = 9 [(openapi.v3.property) = {description: "组件名"; example: {yaml: "User"};}];
+  optional int32 status = 10 [(openapi.v3.property) = {description: "菜单状态: 0-禁用, 1-正常"; example: {yaml: "1"};}];
+  optional bool visible = 11 [(openapi.v3.property) = {description: "是否可见"; example: {yaml: "true"};}];
+  optional bool keep_alive = 12 [(openapi.v3.property) = {description: "是否缓存"; example: {yaml: "true"};}];
+  optional bool always_show = 13 [(openapi.v3.property) = {description: "是否总是显示"; example: {yaml: "true"};}];
+}
+
+message GetMenuRequest {
+  option (openapi.v3.schema) = {
+    description: "获取菜单信息请求体";
+  };
+  optional string id = 1 [(openapi.v3.property) = {description: "菜单ID"; example: {yaml: "123456789"};}];
+}
+
+message GetMenuReply {
+  option (openapi.v3.schema) = {
+    description: "获取菜单信息响应体";
+  };
+  MenuInfo menu = 1 [(openapi.v3.property) = {description: "菜单详细信息";}];
+}
+
+message GetMenuTreeReply {
+  option (openapi.v3.schema) = {
+    description: "获取菜单树响应体";
+  };
+  repeated MenuInfo menus = 1 [(openapi.v3.property) = {description: "菜单树结构";}];
+}
+
+message UpdateMenuRequest {
+  option (openapi.v3.schema) = {
+    description: "更新菜单信息请求体";
+  };
+  optional string id = 1 [(openapi.v3.property) = {description: "菜单ID"; example: {yaml: "123456789"};}];
+  optional string name = 2 [(openapi.v3.property) = {description: "菜单名称"; example: {yaml: "系统管理"};}];
+  optional string permission = 3 [(openapi.v3.property) = {description: "权限标识"; example: {yaml: "system:user:list"};}];
+  optional int32 type = 4 [(openapi.v3.property) = {description: "菜单类型"; example: {yaml: "1"};}];
+  optional int32 sort = 5 [(openapi.v3.property) = {description: "显示顺序"; example: {yaml: "1"};}];
+  optional string parent_id = 6 [(openapi.v3.property) = {description: "父菜单ID，根菜单为0"; example: {yaml: "0"};}];
+  optional string path = 7 [(openapi.v3.property) = {description: "路由地址"; example: {yaml: "/system/user"};}];
+  optional string icon = 8 [(openapi.v3.property) = {description: "菜单图标"; example: {yaml: "user"};}];
+  optional string component = 9 [(openapi.v3.property) = {description: "组件路径"; example: {yaml: "system/user/index"};}];
+  optional string component_name = 10 [(openapi.v3.property) = {description: "组件名"; example: {yaml: "User"};}];
+  optional int32 status = 11 [(openapi.v3.property) = {description: "菜单状态: 0-禁用, 1-正常"; example: {yaml: "1"};}];
+  optional bool visible = 12 [(openapi.v3.property) = {description: "是否可见"; example: {yaml: "true"};}];
+  optional bool keep_alive = 13 [(openapi.v3.property) = {description: "是否缓存"; example: {yaml: "true"};}];
+  optional bool always_show = 14 [(openapi.v3.property) = {description: "是否总是显示"; example: {yaml: "true"};}];
+}
+
+message DeleteMenuRequest {
+  option (openapi.v3.schema) = {
+    description: "删除菜单请求体";
+  };
+  optional string id = 1 [(openapi.v3.property) = {description: "菜单ID"; example: {yaml: "123456789"};}];
+}

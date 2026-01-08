@@ -13,13 +13,13 @@ option go_package = "quest-admin/api/organization/v1;v1";
 option (openapi.v3.document) = {
   tags: [
     {
-      name: "OrganizationService";
-      description: "组织架构相关操作";
+      name: "DepartmentService";
+      description: "部门相关操作";
     }
   ];
 };
 
-service OrganizationService {
+service DepartmentService {
   // 创建部门
   rpc CreateDepartment (CreateDepartmentRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
@@ -74,64 +74,6 @@ service OrganizationService {
     option (openapi.v3.operation) = {
       summary: "删除部门";
       description: "删除部门，此操作不可逆";
-    };
-  }
-
-  // 创建岗位
-  rpc CreatePost (CreatePostRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      post: "/api/v1/organizations/posts"
-      body: "*"
-    };
-    option (openapi.v3.operation) = {
-      summary: "创建岗位";
-      description: "创建一个新的岗位";
-    };
-  }
-
-  // 获取岗位信息
-  rpc GetPost (GetPostRequest) returns (GetPostReply) {
-    option (google.api.http) = {
-      get: "/api/v1/organizations/posts/{id}"
-    };
-    option (openapi.v3.operation) = {
-      summary: "获取岗位详细信息";
-      description: "根据岗位ID获取岗位的详细信息";
-    };
-  }
-
-  // 获取岗位列表
-  rpc ListPosts (ListPostsRequest) returns (ListPostsReply) {
-    option (google.api.http) = {
-      post: "/api/v1/organizations/posts/list"
-      body: "*"
-    };
-    option (openapi.v3.operation) = {
-      summary: "获取岗位列表";
-      description: "分页查询岗位列表";
-    };
-  }
-
-  // 更新岗位信息
-  rpc UpdatePost (UpdatePostRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      put: "/api/v1/organizations/posts/{id}"
-      body: "*"
-    };
-    option (openapi.v3.operation) = {
-      summary: "更新岗位信息";
-      description: "更新岗位的基本信息";
-    };
-  }
-
-  // 删除岗位
-  rpc DeletePost (DeletePostRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      delete: "/api/v1/organizations/posts/{id}"
-    };
-    option (openapi.v3.operation) = {
-      summary: "删除岗位";
-      description: "删除岗位，此操作不可逆";
     };
   }
 }
@@ -206,85 +148,4 @@ message DeleteDepartmentRequest {
     description: "删除部门请求体";
   };
   optional string id = 1 [(openapi.v3.property) = {description: "部门ID"; example: {yaml: "123456789"};}];
-}
-
-message PostInfo {
-  option (openapi.v3.schema) = {
-    description: "岗位的基本信息";
-  };
-  string id = 1 [(openapi.v3.property) = {description: "岗位唯一标识符"; example: {yaml: "123456789"};}];
-  string name = 2 [(openapi.v3.property) = {description: "岗位名称"; example: {yaml: "软件工程师"};}];
-  string code = 3 [(openapi.v3.property) = {description: "岗位编码"; example: {yaml: "SE001"};}];
-  int32 sort = 4 [(openapi.v3.property) = {description: "排序号"; example: {yaml: "1"};}];
-  int32 status = 5 [(openapi.v3.property) = {description: "岗位状态: 0-禁用, 1-正常"; example: {yaml: "1"};}];
-  string remark = 6 [(openapi.v3.property) = {description: "备注信息";}];
-  google.protobuf.Timestamp create_at = 7 [(openapi.v3.property) = {description: "创建时间";}];
-  google.protobuf.Timestamp update_at = 8 [(openapi.v3.property) = {description: "更新时间";}];
-  string tenant_id = 9 [(openapi.v3.property) = {description: "租户ID";}];
-}
-
-message CreatePostRequest {
-  option (openapi.v3.schema) = {
-    description: "创建岗位请求体";
-  };
-  optional string name = 1 [(openapi.v3.property) = {description: "岗位名称"; example: {yaml: "软件工程师"};}];
-  optional string code = 2 [(openapi.v3.property) = {description: "岗位编码"; example: {yaml: "SE001"};}];
-  optional int32 sort = 3 [(openapi.v3.property) = {description: "排序号"; example: {yaml: "1"};}];
-  optional string remark = 4 [(openapi.v3.property) = {description: "备注信息";}];
-}
-
-message GetPostRequest {
-  option (openapi.v3.schema) = {
-    description: "获取岗位信息请求体";
-  };
-  optional string id = 1 [(openapi.v3.property) = {description: "岗位ID"; example: {yaml: "123456789"};}];
-}
-
-message GetPostReply {
-  option (openapi.v3.schema) = {
-    description: "获取岗位信息响应体";
-  };
-  PostInfo post = 1 [(openapi.v3.property) = {description: "岗位详细信息";}];
-}
-
-message ListPostsRequest {
-  option (openapi.v3.schema) = {
-    description: "查询岗位列表请求体";
-  };
-  optional int32 page = 1 [(openapi.v3.property) = {description: "页码，从1开始"; example: {yaml: "1"};}];
-  optional int32 page_size = 2 [(openapi.v3.property) = {description: "每页数量，默认10"; example: {yaml: "10"};}];
-  optional string keyword = 3 [(openapi.v3.property) = {description: "搜索关键字"; example: {yaml: "软件"};}];
-  optional int32 status = 4 [(openapi.v3.property) = {description: "岗位状态筛选: 0-禁用, 1-正常"; example: {yaml: "1"};}];
-  optional string sort_field = 5 [(openapi.v3.property) = {description: "排序字段"; example: {yaml: "sort"};}];
-  optional string sort_order = 6 [(openapi.v3.property) = {description: "排序方式: asc, desc"; example: {yaml: "asc"};}];
-}
-
-message ListPostsReply {
-  option (openapi.v3.schema) = {
-    description: "查询岗位列表响应体";
-  };
-  repeated PostInfo posts = 1 [(openapi.v3.property) = {description: "岗位列表";}];
-  int64 total = 2 [(openapi.v3.property) = {description: "总记录数"; example: {yaml: "100"};}];
-  int32 page = 3 [(openapi.v3.property) = {description: "当前页码"; example: {yaml: "1"};}];
-  int32 page_size = 4 [(openapi.v3.property) = {description: "每页数量"; example: {yaml: "10"};}];
-  int32 total_pages = 5 [(openapi.v3.property) = {description: "总页数"; example: {yaml: "10"};}];
-}
-
-message UpdatePostRequest {
-  option (openapi.v3.schema) = {
-    description: "更新岗位信息请求体";
-  };
-  optional string id = 1 [(openapi.v3.property) = {description: "岗位ID"; example: {yaml: "123456789"};}];
-  optional string name = 2 [(openapi.v3.property) = {description: "岗位名称"; example: {yaml: "软件工程师"};}];
-  optional string code = 3 [(openapi.v3.property) = {description: "岗位编码"; example: {yaml: "SE001"};}];
-  optional int32 sort = 4 [(openapi.v3.property) = {description: "排序号"; example: {yaml: "1"};}];
-  optional int32 status = 5 [(openapi.v3.property) = {description: "岗位状态: 0-禁用, 1-正常"; example: {yaml: "1"};}];
-  optional string remark = 6 [(openapi.v3.property) = {description: "备注信息";}];
-}
-
-message DeletePostRequest {
-  option (openapi.v3.schema) = {
-    description: "删除岗位请求体";
-  };
-  optional string id = 1 [(openapi.v3.property) = {description: "岗位ID"; example: {yaml: "123456789"};}];
 }

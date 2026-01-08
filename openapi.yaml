@@ -9,10 +9,10 @@ paths:
     /api/v1/organizations/departments:
         post:
             tags:
-                - OrganizationService
+                - DepartmentService
             summary: 创建部门
             description: 创建一个新的部门
-            operationId: OrganizationService_CreateDepartment
+            operationId: DepartmentService_CreateDepartment
             requestBody:
                 content:
                     application/json:
@@ -26,10 +26,10 @@ paths:
     /api/v1/organizations/departments/tree:
         get:
             tags:
-                - OrganizationService
+                - DepartmentService
             summary: 获取部门树
             description: 获取完整的部门树结构
-            operationId: OrganizationService_GetDepartmentTree
+            operationId: DepartmentService_GetDepartmentTree
             responses:
                 "200":
                     description: OK
@@ -40,10 +40,10 @@ paths:
     /api/v1/organizations/departments/{id}:
         get:
             tags:
-                - OrganizationService
+                - DepartmentService
             summary: 获取部门详细信息
             description: 根据部门ID获取部门的详细信息
-            operationId: OrganizationService_GetDepartment
+            operationId: DepartmentService_GetDepartment
             parameters:
                 - name: id
                   in: path
@@ -59,10 +59,10 @@ paths:
                                 $ref: '#/components/schemas/system.organization.v1.GetDepartmentReply'
         put:
             tags:
-                - OrganizationService
+                - DepartmentService
             summary: 更新部门信息
             description: 更新部门的基本信息
-            operationId: OrganizationService_UpdateDepartment
+            operationId: DepartmentService_UpdateDepartment
             parameters:
                 - name: id
                   in: path
@@ -81,10 +81,10 @@ paths:
                     content: {}
         delete:
             tags:
-                - OrganizationService
+                - DepartmentService
             summary: 删除部门
             description: 删除部门，此操作不可逆
-            operationId: OrganizationService_DeleteDepartment
+            operationId: DepartmentService_DeleteDepartment
             parameters:
                 - name: id
                   in: path
@@ -98,10 +98,10 @@ paths:
     /api/v1/organizations/posts:
         post:
             tags:
-                - OrganizationService
+                - PostService
             summary: 创建岗位
             description: 创建一个新的岗位
-            operationId: OrganizationService_CreatePost
+            operationId: PostService_CreatePost
             requestBody:
                 content:
                     application/json:
@@ -115,10 +115,10 @@ paths:
     /api/v1/organizations/posts/list:
         post:
             tags:
-                - OrganizationService
+                - PostService
             summary: 获取岗位列表
             description: 分页查询岗位列表
-            operationId: OrganizationService_ListPosts
+            operationId: PostService_ListPosts
             requestBody:
                 content:
                     application/json:
@@ -135,10 +135,10 @@ paths:
     /api/v1/organizations/posts/{id}:
         get:
             tags:
-                - OrganizationService
+                - PostService
             summary: 获取岗位详细信息
             description: 根据岗位ID获取岗位的详细信息
-            operationId: OrganizationService_GetPost
+            operationId: PostService_GetPost
             parameters:
                 - name: id
                   in: path
@@ -154,10 +154,10 @@ paths:
                                 $ref: '#/components/schemas/system.organization.v1.GetPostReply'
         put:
             tags:
-                - OrganizationService
+                - PostService
             summary: 更新岗位信息
             description: 更新岗位的基本信息
-            operationId: OrganizationService_UpdatePost
+            operationId: PostService_UpdatePost
             parameters:
                 - name: id
                   in: path
@@ -176,10 +176,426 @@ paths:
                     content: {}
         delete:
             tags:
-                - OrganizationService
+                - PostService
             summary: 删除岗位
             description: 删除岗位，此操作不可逆
-            operationId: OrganizationService_DeletePost
+            operationId: PostService_DeletePost
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/permissions/menus:
+        post:
+            tags:
+                - MenuService
+            summary: 创建菜单
+            description: 创建一个新的菜单
+            operationId: MenuService_CreateMenu
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.permission.v1.CreateMenuRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/permissions/menus/tree:
+        get:
+            tags:
+                - MenuService
+            summary: 获取菜单树
+            description: 获取完整的菜单树结构
+            operationId: MenuService_GetMenuTree
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.permission.v1.GetMenuTreeReply'
+    /api/v1/permissions/menus/{id}:
+        get:
+            tags:
+                - MenuService
+            summary: 获取菜单详细信息
+            description: 根据菜单ID获取菜单的详细信息
+            operationId: MenuService_GetMenu
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.permission.v1.GetMenuReply'
+        put:
+            tags:
+                - MenuService
+            summary: 更新菜单信息
+            description: 更新菜单的基本信息
+            operationId: MenuService_UpdateMenu
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.permission.v1.UpdateMenuRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+        delete:
+            tags:
+                - MenuService
+            summary: 删除菜单
+            description: 删除菜单，此操作不可逆
+            operationId: MenuService_DeleteMenu
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/permissions/roles:
+        post:
+            tags:
+                - RoleService
+            summary: 创建角色
+            description: 创建一个新的角色
+            operationId: RoleService_CreateRole
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.permission.v1.CreateRoleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/permissions/roles/list:
+        post:
+            tags:
+                - RoleService
+            summary: 获取角色列表
+            description: 分页查询角色列表
+            operationId: RoleService_ListRoles
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.permission.v1.ListRolesRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.permission.v1.ListRolesReply'
+    /api/v1/permissions/roles/{id}:
+        get:
+            tags:
+                - RoleService
+            summary: 获取角色详细信息
+            description: 根据角色ID获取角色的详细信息
+            operationId: RoleService_GetRole
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.permission.v1.GetRoleReply'
+        put:
+            tags:
+                - RoleService
+            summary: 更新角色信息
+            description: 更新角色的基本信息
+            operationId: RoleService_UpdateRole
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.permission.v1.UpdateRoleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+        delete:
+            tags:
+                - RoleService
+            summary: 删除角色
+            description: 删除角色，此操作不可逆
+            operationId: RoleService_DeleteRole
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/permissions/roles/{id}/menus:
+        get:
+            tags:
+                - RoleService
+            summary: 获取角色菜单权限
+            description: 获取角色已分配的菜单权限列表
+            operationId: RoleService_GetRoleMenus
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.permission.v1.GetRoleMenusReply'
+        post:
+            tags:
+                - RoleService
+            summary: 分配角色菜单权限
+            description: 为角色分配菜单权限
+            operationId: RoleService_AssignRoleMenus
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.permission.v1.AssignRoleMenusRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/tenant-packages:
+        post:
+            tags:
+                - TenantPackageService
+            summary: 创建租户套餐
+            description: 创建一个新的租户套餐
+            operationId: TenantPackageService_CreateTenantPackage
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.tenant.v1.CreateTenantPackageRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/tenant-packages/list:
+        post:
+            tags:
+                - TenantPackageService
+            summary: 获取租户套餐列表
+            description: 分页查询租户套餐列表
+            operationId: TenantPackageService_ListTenantPackages
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.tenant.v1.ListTenantPackagesRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.tenant.v1.ListTenantPackagesReply'
+    /api/v1/tenant-packages/{id}:
+        get:
+            tags:
+                - TenantPackageService
+            summary: 获取租户套餐详细信息
+            description: 根据套餐ID获取套餐的详细信息
+            operationId: TenantPackageService_GetTenantPackage
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.tenant.v1.GetTenantPackageReply'
+        put:
+            tags:
+                - TenantPackageService
+            summary: 更新租户套餐信息
+            description: 更新租户套餐的基本信息
+            operationId: TenantPackageService_UpdateTenantPackage
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.tenant.v1.UpdateTenantPackageRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+        delete:
+            tags:
+                - TenantPackageService
+            summary: 删除租户套餐
+            description: 删除租户套餐，此操作不可逆
+            operationId: TenantPackageService_DeleteTenantPackage
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/tenants:
+        post:
+            tags:
+                - TenantService
+            summary: 创建租户
+            description: 创建一个新的租户
+            operationId: TenantService_CreateTenant
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.tenant.v1.CreateTenantRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/tenants/list:
+        post:
+            tags:
+                - TenantService
+            summary: 获取租户列表
+            description: 分页查询租户列表
+            operationId: TenantService_ListTenants
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.tenant.v1.ListTenantsRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.tenant.v1.ListTenantsReply'
+    /api/v1/tenants/{id}:
+        get:
+            tags:
+                - TenantService
+            summary: 获取租户详细信息
+            description: 根据租户ID获取租户的详细信息
+            operationId: TenantService_GetTenant
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.tenant.v1.GetTenantReply'
+        put:
+            tags:
+                - TenantService
+            summary: 更新租户信息
+            description: 更新租户的基本信息
+            operationId: TenantService_UpdateTenant
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.tenant.v1.UpdateTenantRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+        delete:
+            tags:
+                - TenantService
+            summary: 删除租户
+            description: 删除租户，此操作不可逆
+            operationId: TenantService_DeleteTenant
             parameters:
                 - name: id
                   in: path
@@ -375,6 +791,48 @@ paths:
                     application/json:
                         schema:
                             $ref: '#/components/schemas/system.user.v1.ManageUserPostsRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/users/{id}/roles:
+        get:
+            tags:
+                - UserRoleService
+            summary: 获取用户角色列表
+            description: 获取用户已分配的角色列表
+            operationId: UserRoleService_GetUserRoles
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.user.v1.GetUserRolesReply'
+        put:
+            tags:
+                - UserRoleService
+            summary: 管理用户角色
+            description: 为用户分配或移除角色，管理用户的角色信息
+            operationId: UserRoleService_ManageUserRoles
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.user.v1.ManageUserRolesRequest'
                 required: true
             responses:
                 "200":
@@ -720,6 +1178,777 @@ components:
                     type: string
                     description: 备注信息
             description: 更新岗位信息请求体
+        system.permission.v1.AssignRoleMenusRequest:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 角色ID
+                menuIds:
+                    type: array
+                    items:
+                        type: string
+                    description: 菜单ID列表
+            description: 分配角色菜单权限请求体
+        system.permission.v1.CreateMenuRequest:
+            type: object
+            properties:
+                name:
+                    example: 系统管理
+                    type: string
+                    description: 菜单名称
+                permission:
+                    example: system:user:list
+                    type: string
+                    description: 权限标识
+                type:
+                    example: 1
+                    type: integer
+                    description: 菜单类型
+                    format: int32
+                sort:
+                    example: 1
+                    type: integer
+                    description: 显示顺序
+                    format: int32
+                parentId:
+                    example: 0
+                    type: string
+                    description: 父菜单ID，根菜单为0
+                path:
+                    example: /system/user
+                    type: string
+                    description: 路由地址
+                icon:
+                    example: user
+                    type: string
+                    description: 菜单图标
+                component:
+                    example: system/user/index
+                    type: string
+                    description: 组件路径
+                componentName:
+                    example: User
+                    type: string
+                    description: 组件名
+                status:
+                    example: 1
+                    type: integer
+                    description: '菜单状态: 0-禁用, 1-正常'
+                    format: int32
+                visible:
+                    example: true
+                    type: boolean
+                    description: 是否可见
+                keepAlive:
+                    example: true
+                    type: boolean
+                    description: 是否缓存
+                alwaysShow:
+                    example: true
+                    type: boolean
+                    description: 是否总是显示
+            description: 创建菜单请求体
+        system.permission.v1.CreateRoleRequest:
+            type: object
+            properties:
+                name:
+                    example: 管理员
+                    type: string
+                    description: 角色名称
+                code:
+                    example: admin
+                    type: string
+                    description: 角色权限字符串
+                sort:
+                    example: 1
+                    type: integer
+                    description: 显示顺序
+                    format: int32
+                dataScope:
+                    example: 1
+                    type: integer
+                    description: 数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）
+                    format: int32
+                dataScopeDeptIds:
+                    type: string
+                    description: 数据范围(指定部门数组)
+                status:
+                    example: 1
+                    type: integer
+                    description: '角色状态: 0-禁用, 1-正常'
+                    format: int32
+                type:
+                    example: 1
+                    type: integer
+                    description: 角色类型
+                    format: int32
+                remark:
+                    type: string
+                    description: 备注信息
+            description: 创建角色请求体
+        system.permission.v1.GetMenuReply:
+            type: object
+            properties:
+                menu:
+                    $ref: '#/components/schemas/system.permission.v1.MenuInfo'
+            description: 获取菜单信息响应体
+        system.permission.v1.GetMenuTreeReply:
+            type: object
+            properties:
+                menus:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/system.permission.v1.MenuInfo'
+                    description: 菜单树结构
+            description: 获取菜单树响应体
+        system.permission.v1.GetRoleMenusReply:
+            type: object
+            properties:
+                menuIds:
+                    type: array
+                    items:
+                        type: string
+                    description: 菜单ID列表
+            description: 获取角色菜单权限响应体
+        system.permission.v1.GetRoleReply:
+            type: object
+            properties:
+                role:
+                    $ref: '#/components/schemas/system.permission.v1.RoleInfo'
+            description: 获取角色信息响应体
+        system.permission.v1.ListRolesReply:
+            type: object
+            properties:
+                roles:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/system.permission.v1.RoleInfo'
+                    description: 角色列表
+                total:
+                    example: 100
+                    type: string
+                    description: 总记录数
+                page:
+                    example: 1
+                    type: integer
+                    description: 当前页码
+                    format: int32
+                pageSize:
+                    example: 10
+                    type: integer
+                    description: 每页数量
+                    format: int32
+                totalPages:
+                    example: 10
+                    type: integer
+                    description: 总页数
+                    format: int32
+            description: 查询角色列表响应体
+        system.permission.v1.ListRolesRequest:
+            type: object
+            properties:
+                page:
+                    example: 1
+                    type: integer
+                    description: 页码，从1开始
+                    format: int32
+                pageSize:
+                    example: 10
+                    type: integer
+                    description: 每页数量，默认10
+                    format: int32
+                keyword:
+                    example: 管理
+                    type: string
+                    description: 搜索关键字
+                status:
+                    example: 1
+                    type: integer
+                    description: '角色状态筛选: 0-禁用, 1-正常'
+                    format: int32
+                sortField:
+                    example: sort
+                    type: string
+                    description: 排序字段
+                sortOrder:
+                    example: asc
+                    type: string
+                    description: '排序方式: asc, desc'
+            description: 查询角色列表请求体
+        system.permission.v1.MenuInfo:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 菜单唯一标识符
+                name:
+                    example: 系统管理
+                    type: string
+                    description: 菜单名称
+                permission:
+                    example: system:user:list
+                    type: string
+                    description: 权限标识
+                type:
+                    example: 1
+                    type: integer
+                    description: 菜单类型
+                    format: int32
+                sort:
+                    example: 1
+                    type: integer
+                    description: 显示顺序
+                    format: int32
+                parentId:
+                    example: 0
+                    type: string
+                    description: 父菜单ID，根菜单为0
+                path:
+                    example: /system/user
+                    type: string
+                    description: 路由地址
+                icon:
+                    example: user
+                    type: string
+                    description: 菜单图标
+                component:
+                    example: system/user/index
+                    type: string
+                    description: 组件路径
+                componentName:
+                    example: User
+                    type: string
+                    description: 组件名
+                status:
+                    example: 1
+                    type: integer
+                    description: '菜单状态: 0-禁用, 1-正常'
+                    format: int32
+                visible:
+                    example: true
+                    type: boolean
+                    description: 是否可见
+                keepAlive:
+                    example: true
+                    type: boolean
+                    description: 是否缓存
+                alwaysShow:
+                    example: true
+                    type: boolean
+                    description: 是否总是显示
+                createAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updateAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+                children:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/system.permission.v1.MenuInfo'
+                    description: 子菜单列表
+            description: 菜单的基本信息
+        system.permission.v1.RoleInfo:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 角色唯一标识符
+                name:
+                    example: 管理员
+                    type: string
+                    description: 角色名称
+                code:
+                    example: admin
+                    type: string
+                    description: 角色权限字符串
+                sort:
+                    example: 1
+                    type: integer
+                    description: 显示顺序
+                    format: int32
+                dataScope:
+                    example: 1
+                    type: integer
+                    description: 数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）
+                    format: int32
+                dataScopeDeptIds:
+                    type: string
+                    description: 数据范围(指定部门数组)
+                status:
+                    example: 1
+                    type: integer
+                    description: '角色状态: 0-禁用, 1-正常'
+                    format: int32
+                type:
+                    example: 1
+                    type: integer
+                    description: 角色类型
+                    format: int32
+                remark:
+                    type: string
+                    description: 备注信息
+                createAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updateAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+                tenantId:
+                    type: string
+                    description: 租户ID
+            description: 角色的基本信息
+        system.permission.v1.UpdateMenuRequest:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 菜单ID
+                name:
+                    example: 系统管理
+                    type: string
+                    description: 菜单名称
+                permission:
+                    example: system:user:list
+                    type: string
+                    description: 权限标识
+                type:
+                    example: 1
+                    type: integer
+                    description: 菜单类型
+                    format: int32
+                sort:
+                    example: 1
+                    type: integer
+                    description: 显示顺序
+                    format: int32
+                parentId:
+                    example: 0
+                    type: string
+                    description: 父菜单ID，根菜单为0
+                path:
+                    example: /system/user
+                    type: string
+                    description: 路由地址
+                icon:
+                    example: user
+                    type: string
+                    description: 菜单图标
+                component:
+                    example: system/user/index
+                    type: string
+                    description: 组件路径
+                componentName:
+                    example: User
+                    type: string
+                    description: 组件名
+                status:
+                    example: 1
+                    type: integer
+                    description: '菜单状态: 0-禁用, 1-正常'
+                    format: int32
+                visible:
+                    example: true
+                    type: boolean
+                    description: 是否可见
+                keepAlive:
+                    example: true
+                    type: boolean
+                    description: 是否缓存
+                alwaysShow:
+                    example: true
+                    type: boolean
+                    description: 是否总是显示
+            description: 更新菜单信息请求体
+        system.permission.v1.UpdateRoleRequest:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 角色ID
+                name:
+                    example: 管理员
+                    type: string
+                    description: 角色名称
+                code:
+                    example: admin
+                    type: string
+                    description: 角色权限字符串
+                sort:
+                    example: 1
+                    type: integer
+                    description: 显示顺序
+                    format: int32
+                dataScope:
+                    example: 1
+                    type: integer
+                    description: 数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）
+                    format: int32
+                dataScopeDeptIds:
+                    type: string
+                    description: 数据范围(指定部门数组)
+                status:
+                    example: 1
+                    type: integer
+                    description: '角色状态: 0-禁用, 1-正常'
+                    format: int32
+                type:
+                    example: 1
+                    type: integer
+                    description: 角色类型
+                    format: int32
+                remark:
+                    type: string
+                    description: 备注信息
+            description: 更新角色信息请求体
+        system.tenant.v1.CreateTenantPackageRequest:
+            type: object
+            properties:
+                name:
+                    example: 基础版
+                    type: string
+                    description: 套餐名称
+                remark:
+                    type: string
+                    description: 备注信息
+                menuIds:
+                    example: 1,2,3,4,5
+                    type: string
+                    description: 关联的菜单编号（逗号分隔）
+            description: 创建租户套餐请求体
+        system.tenant.v1.CreateTenantRequest:
+            type: object
+            properties:
+                name:
+                    example: 示例公司
+                    type: string
+                    description: 租户名称
+                contactUserId:
+                    example: user123
+                    type: string
+                    description: 联系人的用户编号
+                contactName:
+                    example: 张三
+                    type: string
+                    description: 联系人
+                contactMobile:
+                    example: 13800138000
+                    type: string
+                    description: 联系手机
+                website:
+                    example: example.com
+                    type: string
+                    description: 绑定域名
+                packageId:
+                    example: pkg001
+                    type: string
+                    description: 租户套餐编号
+                expireTime:
+                    type: string
+                    description: 过期时间
+                    format: date-time
+                accountCount:
+                    example: 100
+                    type: integer
+                    description: 账号数量
+                    format: int32
+            description: 创建租户请求体
+        system.tenant.v1.GetTenantPackageReply:
+            type: object
+            properties:
+                package:
+                    $ref: '#/components/schemas/system.tenant.v1.TenantPackageInfo'
+            description: 获取租户套餐信息响应体
+        system.tenant.v1.GetTenantReply:
+            type: object
+            properties:
+                tenant:
+                    $ref: '#/components/schemas/system.tenant.v1.TenantInfo'
+            description: 获取租户信息响应体
+        system.tenant.v1.ListTenantPackagesReply:
+            type: object
+            properties:
+                packages:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/system.tenant.v1.TenantPackageInfo'
+                    description: 套餐列表
+                total:
+                    example: 100
+                    type: string
+                    description: 总记录数
+                page:
+                    example: 1
+                    type: integer
+                    description: 当前页码
+                    format: int32
+                pageSize:
+                    example: 10
+                    type: integer
+                    description: 每页数量
+                    format: int32
+                totalPages:
+                    example: 10
+                    type: integer
+                    description: 总页数
+                    format: int32
+            description: 查询租户套餐列表响应体
+        system.tenant.v1.ListTenantPackagesRequest:
+            type: object
+            properties:
+                page:
+                    example: 1
+                    type: integer
+                    description: 页码，从1开始
+                    format: int32
+                pageSize:
+                    example: 10
+                    type: integer
+                    description: 每页数量，默认10
+                    format: int32
+                keyword:
+                    example: 基础
+                    type: string
+                    description: 搜索关键字
+                status:
+                    example: 1
+                    type: integer
+                    description: '套餐状态筛选: 0-停用, 1-正常'
+                    format: int32
+                sortField:
+                    example: create_at
+                    type: string
+                    description: 排序字段
+                sortOrder:
+                    example: desc
+                    type: string
+                    description: '排序方式: asc, desc'
+            description: 查询租户套餐列表请求体
+        system.tenant.v1.ListTenantsReply:
+            type: object
+            properties:
+                tenants:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/system.tenant.v1.TenantInfo'
+                    description: 租户列表
+                total:
+                    example: 100
+                    type: string
+                    description: 总记录数
+                page:
+                    example: 1
+                    type: integer
+                    description: 当前页码
+                    format: int32
+                pageSize:
+                    example: 10
+                    type: integer
+                    description: 每页数量
+                    format: int32
+                totalPages:
+                    example: 10
+                    type: integer
+                    description: 总页数
+                    format: int32
+            description: 查询租户列表响应体
+        system.tenant.v1.ListTenantsRequest:
+            type: object
+            properties:
+                page:
+                    example: 1
+                    type: integer
+                    description: 页码，从1开始
+                    format: int32
+                pageSize:
+                    example: 10
+                    type: integer
+                    description: 每页数量，默认10
+                    format: int32
+                keyword:
+                    example: 示例
+                    type: string
+                    description: 搜索关键字
+                status:
+                    example: 1
+                    type: integer
+                    description: '租户状态筛选: 0-停用, 1-正常'
+                    format: int32
+                sortField:
+                    example: create_at
+                    type: string
+                    description: 排序字段
+                sortOrder:
+                    example: desc
+                    type: string
+                    description: '排序方式: asc, desc'
+            description: 查询租户列表请求体
+        system.tenant.v1.TenantInfo:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 租户唯一标识符
+                name:
+                    example: 示例公司
+                    type: string
+                    description: 租户名称
+                contactUserId:
+                    example: user123
+                    type: string
+                    description: 联系人的用户编号
+                contactName:
+                    example: 张三
+                    type: string
+                    description: 联系人
+                contactMobile:
+                    example: 13800138000
+                    type: string
+                    description: 联系手机
+                status:
+                    example: 1
+                    type: integer
+                    description: '租户状态: 0-停用, 1-正常'
+                    format: int32
+                website:
+                    example: example.com
+                    type: string
+                    description: 绑定域名
+                packageId:
+                    example: pkg001
+                    type: string
+                    description: 租户套餐编号
+                expireTime:
+                    type: string
+                    description: 过期时间
+                    format: date-time
+                accountCount:
+                    example: 100
+                    type: integer
+                    description: 账号数量
+                    format: int32
+                createAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updateAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+            description: 租户的基本信息
+        system.tenant.v1.TenantPackageInfo:
+            type: object
+            properties:
+                id:
+                    example: pkg001
+                    type: string
+                    description: 套餐唯一标识符
+                name:
+                    example: 基础版
+                    type: string
+                    description: 套餐名称
+                status:
+                    example: 1
+                    type: integer
+                    description: '套餐状态: 0-停用, 1-正常'
+                    format: int32
+                remark:
+                    type: string
+                    description: 备注信息
+                menuIds:
+                    example: 1,2,3,4,5
+                    type: string
+                    description: 关联的菜单编号（逗号分隔）
+                createAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updateAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+            description: 租户套餐的基本信息
+        system.tenant.v1.UpdateTenantPackageRequest:
+            type: object
+            properties:
+                id:
+                    example: pkg001
+                    type: string
+                    description: 套餐ID
+                name:
+                    example: 基础版
+                    type: string
+                    description: 套餐名称
+                status:
+                    example: 1
+                    type: integer
+                    description: '套餐状态: 0-停用, 1-正常'
+                    format: int32
+                remark:
+                    type: string
+                    description: 备注信息
+                menuIds:
+                    example: 1,2,3,4,5
+                    type: string
+                    description: 关联的菜单编号（逗号分隔）
+            description: 更新租户套餐信息请求体
+        system.tenant.v1.UpdateTenantRequest:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 租户ID
+                name:
+                    example: 示例公司
+                    type: string
+                    description: 租户名称
+                contactUserId:
+                    example: user123
+                    type: string
+                    description: 联系人的用户编号
+                contactName:
+                    example: 张三
+                    type: string
+                    description: 联系人
+                contactMobile:
+                    example: 13800138000
+                    type: string
+                    description: 联系手机
+                status:
+                    example: 1
+                    type: integer
+                    description: '租户状态: 0-停用, 1-正常'
+                    format: int32
+                website:
+                    example: example.com
+                    type: string
+                    description: 绑定域名
+                packageId:
+                    example: pkg001
+                    type: string
+                    description: 租户套餐编号
+                expireTime:
+                    type: string
+                    description: 过期时间
+                    format: date-time
+                accountCount:
+                    example: 100
+                    type: integer
+                    description: 账号数量
+                    format: int32
+            description: 更新租户信息请求体
         system.user.v1.ChangePasswordRequest:
             type: object
             properties:
@@ -796,6 +2025,15 @@ components:
                 user:
                     $ref: '#/components/schemas/system.user.v1.UserInfo'
             description: 获取用户信息响应体
+        system.user.v1.GetUserRolesReply:
+            type: object
+            properties:
+                roleIds:
+                    type: array
+                    items:
+                        type: string
+                    description: 角色ID列表
+            description: 获取用户角色列表响应体
         system.user.v1.ListUsersReply:
             type: object
             properties:
@@ -841,6 +2079,23 @@ components:
                     type: string
                     description: '操作类型: add-添加, remove-移除, replace-替换'
             description: 管理用户岗位请求体
+        system.user.v1.ManageUserRolesRequest:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 用户ID
+                roleIds:
+                    type: array
+                    items:
+                        type: string
+                    description: 角色ID列表
+                operation:
+                    example: add
+                    type: string
+                    description: '操作类型: add-添加, remove-移除, replace-替换'
+            description: 管理用户角色请求体
         system.user.v1.ResetPasswordRequest:
             type: object
             properties:
@@ -946,11 +2201,29 @@ components:
                     description: 租户ID
             description: 用户的基本信息，包含用户的所有属性
 tags:
+    - name: DepartmentService
+    - name: DepartmentService
+      description: 部门相关操作
     - name: Greeter
       description: The greeting service definition.
-    - name: OrganizationService
-      description: 组织架构相关操作
-    - name: OrganizationService
+    - name: MenuService
+      description: 菜单管理相关操作
+    - name: MenuService
+    - name: PostService
+    - name: PostService
+      description: 岗位相关操作
+    - name: RoleService
+    - name: RoleService
+      description: 角色管理相关操作
+    - name: TenantPackageService
+      description: 租户套餐相关操作
+    - name: TenantPackageService
+    - name: TenantService
+      description: 租户相关操作
+    - name: TenantService
+    - name: UserRoleService
+    - name: UserRoleService
+      description: 用户角色关联相关操作
+    - name: UserService
     - name: UserService
       description: 用户相关操作
-    - name: UserService

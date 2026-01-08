@@ -103,7 +103,7 @@ func (r *userRepo) Create(ctx context.Context, user *biz.User) (*biz.User, error
 	return r.toBizUser(dbUser), nil
 }
 
-func (r *userRepo) GetByID(ctx context.Context, id string) (*biz.User, error) {
+func (r *userRepo) FindByID(ctx context.Context, id string) (*biz.User, error) {
 	dbUser := &User{ID: id}
 	err := r.data.DB(ctx).NewSelect().Model(dbUser).WherePK().Scan(ctx)
 	if err != nil {
@@ -115,7 +115,7 @@ func (r *userRepo) GetByID(ctx context.Context, id string) (*biz.User, error) {
 	return r.toBizUser(dbUser), nil
 }
 
-func (r *userRepo) GetByUsername(ctx context.Context, username string) (*biz.User, error) {
+func (r *userRepo) FindByUsername(ctx context.Context, username string) (*biz.User, error) {
 	dbUser := &User{}
 	err := r.data.DB(ctx).NewSelect().Model(dbUser).Where("username = ?", username).Scan(ctx)
 	if err != nil {
@@ -213,7 +213,7 @@ func (r *userRepo) Update(ctx context.Context, user *biz.User) (*biz.User, error
 		return nil, err
 	}
 
-	return r.GetByID(ctx, user.ID)
+	return r.FindByID(ctx, user.ID)
 }
 
 func (r *userRepo) UpdatePassword(ctx context.Context, bo *biz.UpdatePasswordBO) error {

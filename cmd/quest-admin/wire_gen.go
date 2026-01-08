@@ -34,11 +34,14 @@ func wireApp(bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(),
 	userRepo := user.NewUserRepo(dataData, logger)
 	userUsecase := user2.NewUserUsecase(userRepo, logger)
 	userService := user3.NewUserService(userUsecase, logger)
-	grpcServer := server.NewGRPCServer(bootstrap, logger, userService)
+	userRoleRepo := user.NewUserRoleRepo(dataData, logger)
+	userRoleUsecase := user2.NewUserRoleUsecase(userRoleRepo, logger)
+	userRoleService := user3.NewUserRoleService(userRoleUsecase, logger)
+	grpcServer := server.NewGRPCServer(bootstrap, logger, userService, userRoleService)
 	greeterRepo := greeter.NewGreeterRepo(dataData, logger)
 	greeterUsecase := greeter2.NewGreeterUsecase(greeterRepo, logger)
 	greeterService := greeter3.NewGreeterService(greeterUsecase)
-	httpServer := server.NewHTTPServer(bootstrap, logger, greeterService, userService)
+	httpServer := server.NewHTTPServer(bootstrap, logger, greeterService, userService, userRoleService)
 	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
 	}, nil

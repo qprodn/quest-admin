@@ -1,0 +1,172 @@
+syntax = "proto3";
+
+package system.tenant.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "openapi/v3/annotations.proto";
+
+option go_package = "quest-admin/api/tenant/v1;v1";
+
+
+option (openapi.v3.document) = {
+  tags: [
+    {
+      name: "TenantService";
+      description: "租户相关操作";
+    }
+  ];
+};
+
+service TenantService {
+  // 创建租户
+  rpc CreateTenant (CreateTenantRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/tenants"
+      body: "*"
+    };
+    option (openapi.v3.operation) = {
+      summary: "创建租户";
+      description: "创建一个新的租户";
+    };
+  }
+
+  // 获取租户信息
+  rpc GetTenant (GetTenantRequest) returns (GetTenantReply) {
+    option (google.api.http) = {
+      get: "/api/v1/tenants/{id}"
+    };
+    option (openapi.v3.operation) = {
+      summary: "获取租户详细信息";
+      description: "根据租户ID获取租户的详细信息";
+    };
+  }
+
+  // 获取租户列表
+  rpc ListTenants (ListTenantsRequest) returns (ListTenantsReply) {
+    option (google.api.http) = {
+      post: "/api/v1/tenants/list"
+      body: "*"
+    };
+    option (openapi.v3.operation) = {
+      summary: "获取租户列表";
+      description: "分页查询租户列表";
+    };
+  }
+
+  // 更新租户信息
+  rpc UpdateTenant (UpdateTenantRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/api/v1/tenants/{id}"
+      body: "*"
+    };
+    option (openapi.v3.operation) = {
+      summary: "更新租户信息";
+      description: "更新租户的基本信息";
+    };
+  }
+
+  // 删除租户
+  rpc DeleteTenant (DeleteTenantRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/tenants/{id}"
+    };
+    option (openapi.v3.operation) = {
+      summary: "删除租户";
+      description: "删除租户，此操作不可逆";
+    };
+  }
+}
+
+message TenantInfo {
+  option (openapi.v3.schema) = {
+    description: "租户的基本信息";
+  };
+  string id = 1 [(openapi.v3.property) = {description: "租户唯一标识符"; example: {yaml: "123456789"};}];
+  string name = 2 [(openapi.v3.property) = {description: "租户名称"; example: {yaml: "示例公司"};}];
+  string contact_user_id = 3 [(openapi.v3.property) = {description: "联系人的用户编号"; example: {yaml: "user123"};}];
+  string contact_name = 4 [(openapi.v3.property) = {description: "联系人"; example: {yaml: "张三"};}];
+  string contact_mobile = 5 [(openapi.v3.property) = {description: "联系手机"; example: {yaml: "13800138000"};}];
+  int32 status = 6 [(openapi.v3.property) = {description: "租户状态: 0-停用, 1-正常"; example: {yaml: "1"};}];
+  string website = 7 [(openapi.v3.property) = {description: "绑定域名"; example: {yaml: "example.com"};}];
+  string package_id = 8 [(openapi.v3.property) = {description: "租户套餐编号"; example: {yaml: "pkg001"};}];
+  google.protobuf.Timestamp expire_time = 9 [(openapi.v3.property) = {description: "过期时间";}];
+  int32 account_count = 10 [(openapi.v3.property) = {description: "账号数量"; example: {yaml: "100"};}];
+  google.protobuf.Timestamp create_at = 11 [(openapi.v3.property) = {description: "创建时间";}];
+  google.protobuf.Timestamp update_at = 12 [(openapi.v3.property) = {description: "更新时间";}];
+}
+
+message CreateTenantRequest {
+  option (openapi.v3.schema) = {
+    description: "创建租户请求体";
+  };
+  optional string name = 1 [(openapi.v3.property) = {description: "租户名称"; example: {yaml: "示例公司"};}];
+  optional string contact_user_id = 2 [(openapi.v3.property) = {description: "联系人的用户编号"; example: {yaml: "user123"};}];
+  optional string contact_name = 3 [(openapi.v3.property) = {description: "联系人"; example: {yaml: "张三"};}];
+  optional string contact_mobile = 4 [(openapi.v3.property) = {description: "联系手机"; example: {yaml: "13800138000"};}];
+  optional string website = 5 [(openapi.v3.property) = {description: "绑定域名"; example: {yaml: "example.com"};}];
+  optional string package_id = 6 [(openapi.v3.property) = {description: "租户套餐编号"; example: {yaml: "pkg001"};}];
+  optional google.protobuf.Timestamp expire_time = 7 [(openapi.v3.property) = {description: "过期时间";}];
+  optional int32 account_count = 8 [(openapi.v3.property) = {description: "账号数量"; example: {yaml: "100"};}];
+}
+
+message GetTenantRequest {
+  option (openapi.v3.schema) = {
+    description: "获取租户信息请求体";
+  };
+  optional string id = 1 [(openapi.v3.property) = {description: "租户ID"; example: {yaml: "123456789"};}];
+}
+
+message GetTenantReply {
+  option (openapi.v3.schema) = {
+    description: "获取租户信息响应体";
+  };
+  TenantInfo tenant = 1 [(openapi.v3.property) = {description: "租户详细信息";}];
+}
+
+message ListTenantsRequest {
+  option (openapi.v3.schema) = {
+    description: "查询租户列表请求体";
+  };
+  optional int32 page = 1 [(openapi.v3.property) = {description: "页码，从1开始"; example: {yaml: "1"};}];
+  optional int32 page_size = 2 [(openapi.v3.property) = {description: "每页数量，默认10"; example: {yaml: "10"};}];
+  optional string keyword = 3 [(openapi.v3.property) = {description: "搜索关键字"; example: {yaml: "示例"};}];
+  optional int32 status = 4 [(openapi.v3.property) = {description: "租户状态筛选: 0-停用, 1-正常"; example: {yaml: "1"};}];
+  optional string sort_field = 5 [(openapi.v3.property) = {description: "排序字段"; example: {yaml: "create_at"};}];
+  optional string sort_order = 6 [(openapi.v3.property) = {description: "排序方式: asc, desc"; example: {yaml: "desc"};}];
+}
+
+message ListTenantsReply {
+  option (openapi.v3.schema) = {
+    description: "查询租户列表响应体";
+  };
+  repeated TenantInfo tenants = 1 [(openapi.v3.property) = {description: "租户列表";}];
+  int64 total = 2 [(openapi.v3.property) = {description: "总记录数"; example: {yaml: "100"};}];
+  int32 page = 3 [(openapi.v3.property) = {description: "当前页码"; example: {yaml: "1"};}];
+  int32 page_size = 4 [(openapi.v3.property) = {description: "每页数量"; example: {yaml: "10"};}];
+  int32 total_pages = 5 [(openapi.v3.property) = {description: "总页数"; example: {yaml: "10"};}];
+}
+
+message UpdateTenantRequest {
+  option (openapi.v3.schema) = {
+    description: "更新租户信息请求体";
+  };
+  optional string id = 1 [(openapi.v3.property) = {description: "租户ID"; example: {yaml: "123456789"};}];
+  optional string name = 2 [(openapi.v3.property) = {description: "租户名称"; example: {yaml: "示例公司"};}];
+  optional string contact_user_id = 3 [(openapi.v3.property) = {description: "联系人的用户编号"; example: {yaml: "user123"};}];
+  optional string contact_name = 4 [(openapi.v3.property) = {description: "联系人"; example: {yaml: "张三"};}];
+  optional string contact_mobile = 5 [(openapi.v3.property) = {description: "联系手机"; example: {yaml: "13800138000"};}];
+  optional int32 status = 6 [(openapi.v3.property) = {description: "租户状态: 0-停用, 1-正常"; example: {yaml: "1"};}];
+  optional string website = 7 [(openapi.v3.property) = {description: "绑定域名"; example: {yaml: "example.com"};}];
+  optional string package_id = 8 [(openapi.v3.property) = {description: "租户套餐编号"; example: {yaml: "pkg001"};}];
+  optional google.protobuf.Timestamp expire_time = 9 [(openapi.v3.property) = {description: "过期时间";}];
+  optional int32 account_count = 10 [(openapi.v3.property) = {description: "账号数量"; example: {yaml: "100"};}];
+}
+
+message DeleteTenantRequest {
+  option (openapi.v3.schema) = {
+    description: "删除租户请求体";
+  };
+  optional string id = 1 [(openapi.v3.property) = {description: "租户ID"; example: {yaml: "123456789"};}];
+}
