@@ -23,8 +23,8 @@ func NewUserRoleService(uc *biz.UserRoleUsecase, logger log.Logger) *UserRoleSer
 	}
 }
 
-func (s *UserRoleService) ManageUserRoles(ctx context.Context, in *v1.ManageUserRolesRequest) (*emptypb.Empty, error) {
-	bo := &biz.ManageUserRolesBO{
+func (s *UserRoleService) AssignUserRoles(ctx context.Context, in *v1.AssignUserRolesRequest) (*emptypb.Empty, error) {
+	bo := &biz.AssignUserRolesBO{
 		UserID:    in.GetId(),
 		RoleIDs:   in.GetRoleIds(),
 		Operation: in.GetOperation(),

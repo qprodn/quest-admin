@@ -657,7 +657,7 @@ func (x *DeleteRoleRequest) GetId() string {
 	return ""
 }
 
-type AssignRoleMenusRequest struct {
+type AssignRoleMenuRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            *string                `protobuf:"bytes,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
 	MenuIds       []string               `protobuf:"bytes,2,rep,name=menu_ids,json=menuIds,proto3" json:"menu_ids,omitempty"`
@@ -665,20 +665,20 @@ type AssignRoleMenusRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AssignRoleMenusRequest) Reset() {
-	*x = AssignRoleMenusRequest{}
+func (x *AssignRoleMenuRequest) Reset() {
+	*x = AssignRoleMenuRequest{}
 	mi := &file_permission_v1_role_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AssignRoleMenusRequest) String() string {
+func (x *AssignRoleMenuRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AssignRoleMenusRequest) ProtoMessage() {}
+func (*AssignRoleMenuRequest) ProtoMessage() {}
 
-func (x *AssignRoleMenusRequest) ProtoReflect() protoreflect.Message {
+func (x *AssignRoleMenuRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_permission_v1_role_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -690,19 +690,19 @@ func (x *AssignRoleMenusRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AssignRoleMenusRequest.ProtoReflect.Descriptor instead.
-func (*AssignRoleMenusRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use AssignRoleMenuRequest.ProtoReflect.Descriptor instead.
+func (*AssignRoleMenuRequest) Descriptor() ([]byte, []int) {
 	return file_permission_v1_role_proto_rawDescGZIP(), []int{8}
 }
 
-func (x *AssignRoleMenusRequest) GetId() string {
+func (x *AssignRoleMenuRequest) GetId() string {
 	if x != nil && x.Id != nil {
 		return *x.Id
 	}
 	return ""
 }
 
-func (x *AssignRoleMenusRequest) GetMenuIds() []string {
+func (x *AssignRoleMenuRequest) GetMenuIds() []string {
 	if x != nil {
 		return x.MenuIds
 	}
@@ -886,8 +886,8 @@ const file_permission_v1_role_proto_rawDesc = "" +
 	"\a_remark\"i\n" +
 	"\x11DeleteRoleRequest\x120\n" +
 	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b角色IDH\x00R\x02id\x88\x01\x01:\x1b\xbaG\x18\x92\x02\x15删除角色请求体B\x05\n" +
-	"\x03_id\"\xab\x01\n" +
-	"\x16AssignRoleMenusRequest\x120\n" +
+	"\x03_id\"\xaa\x01\n" +
+	"\x15AssignRoleMenuRequest\x120\n" +
 	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b角色IDH\x00R\x02id\x88\x01\x01\x12/\n" +
 	"\bmenu_ids\x18\x02 \x03(\tB\x14\xbaG\x11\x92\x02\x0e菜单ID列表R\amenuIds:'\xbaG$\x92\x02!分配角色菜单权限请求体B\x05\n" +
 	"\x03_id\"w\n" +
@@ -895,19 +895,19 @@ const file_permission_v1_role_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b角色IDH\x00R\x02id\x88\x01\x01:'\xbaG$\x92\x02!获取角色菜单权限请求体B\x05\n" +
 	"\x03_id\"m\n" +
 	"\x11GetRoleMenusReply\x12/\n" +
-	"\bmenu_ids\x18\x01 \x03(\tB\x14\xbaG\x11\x92\x02\x0e菜单ID列表R\amenuIds:'\xbaG$\x92\x02!获取角色菜单权限响应体2\xa8\n" +
+	"\bmenu_ids\x18\x01 \x03(\tB\x14\xbaG\x11\x92\x02\x0e菜单ID列表R\amenuIds:'\xbaG$\x92\x02!获取角色菜单权限响应体2\x9c\n" +
 	"\n" +
-	"\vRoleService\x12\x9e\x01\n" +
+	"\vRoleService\x12\xa2\x01\n" +
 	"\n" +
-	"CreateRole\x12'.system.permission.v1.CreateRoleRequest\x1a\x16.google.protobuf.Empty\"O\xbaG(\x12\f创建角色\x1a\x18创建一个新的角色\x82\xd3\xe4\x93\x02\x1e:\x01*\"\x19/api/v1/permissions/roles\x12\xc3\x01\n" +
-	"\aGetRole\x12$.system.permission.v1.GetRoleRequest\x1a\".system.permission.v1.GetRoleReply\"n\xbaGE\x12\x18获取角色详细信息\x1a)根据角色ID获取角色的详细信息\x82\xd3\xe4\x93\x02 \x12\x1e/api/v1/permissions/roles/{id}\x12\xb5\x01\n" +
-	"\tListRoles\x12&.system.permission.v1.ListRolesRequest\x1a$.system.permission.v1.ListRolesReply\"Z\xbaG.\x12\x12获取角色列表\x1a\x18分页查询角色列表\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/api/v1/permissions/roles/list\x12\xac\x01\n" +
+	"CreateRole\x12'.system.permission.v1.CreateRoleRequest\x1a\x16.google.protobuf.Empty\"S\xbaG(\x12\f创建角色\x1a\x18创建一个新的角色\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/qs/v1/permission/role/create\x12\xbf\x01\n" +
+	"\aGetRole\x12$.system.permission.v1.GetRoleRequest\x1a\".system.permission.v1.GetRoleReply\"j\xbaGE\x12\x18获取角色详细信息\x1a)根据角色ID获取角色的详细信息\x82\xd3\xe4\x93\x02\x1c\x12\x1a/qs/v1/permission/role/get\x12\xb2\x01\n" +
+	"\tListRoles\x12&.system.permission.v1.ListRolesRequest\x1a$.system.permission.v1.ListRolesReply\"W\xbaG.\x12\x12获取角色列表\x1a\x18分页查询角色列表\x82\xd3\xe4\x93\x02 :\x01*\"\x1b/qs/v1/permission/role/list\x12\xab\x01\n" +
 	"\n" +
-	"UpdateRole\x12'.system.permission.v1.UpdateRoleRequest\x1a\x16.google.protobuf.Empty\"]\xbaG1\x12\x12更新角色信息\x1a\x1b更新角色的基本信息\x82\xd3\xe4\x93\x02#:\x01*\x1a\x1e/api/v1/permissions/roles/{id}\x12\xa9\x01\n" +
+	"UpdateRole\x12'.system.permission.v1.UpdateRoleRequest\x1a\x16.google.protobuf.Empty\"\\\xbaG1\x12\x12更新角色信息\x1a\x1b更新角色的基本信息\x82\xd3\xe4\x93\x02\":\x01*\x1a\x1d/qs/v1/permission/role/update\x12\xa8\x01\n" +
 	"\n" +
-	"DeleteRole\x12'.system.permission.v1.DeleteRoleRequest\x1a\x16.google.protobuf.Empty\"Z\xbaG1\x12\f删除角色\x1a!删除角色，此操作不可逆\x82\xd3\xe4\x93\x02 *\x1e/api/v1/permissions/roles/{id}\x12\xc2\x01\n" +
-	"\x0fAssignRoleMenus\x12,.system.permission.v1.AssignRoleMenusRequest\x1a\x16.google.protobuf.Empty\"i\xbaG7\x12\x18分配角色菜单权限\x1a\x1b为角色分配菜单权限\x82\xd3\xe4\x93\x02):\x01*\"$/api/v1/permissions/roles/{id}/menus\x12\xd9\x01\n" +
-	"\fGetRoleMenus\x12).system.permission.v1.GetRoleMenusRequest\x1a'.system.permission.v1.GetRoleMenusReply\"u\xbaGF\x12\x18获取角色菜单权限\x1a*获取角色已分配的菜单权限列表\x82\xd3\xe4\x93\x02&\x12$/api/v1/permissions/roles/{id}/menusBN\xbaG):'\n" +
+	"DeleteRole\x12'.system.permission.v1.DeleteRoleRequest\x1a\x16.google.protobuf.Empty\"Y\xbaG1\x12\f删除角色\x1a!删除角色，此操作不可逆\x82\xd3\xe4\x93\x02\x1f*\x1d/qs/v1/permission/role/delete\x12\xbe\x01\n" +
+	"\x0eAssignRoleMenu\x12+.system.permission.v1.AssignRoleMenuRequest\x1a\x16.google.protobuf.Empty\"g\xbaG7\x12\x18分配角色菜单权限\x1a\x1b为角色分配菜单权限\x82\xd3\xe4\x93\x02':\x01*\"\"/qs/v1/permission/role/assign-menu\x12\xd6\x01\n" +
+	"\fGetRoleMenus\x12).system.permission.v1.GetRoleMenusRequest\x1a'.system.permission.v1.GetRoleMenusReply\"r\xbaGF\x12\x18获取角色菜单权限\x1a*获取角色已分配的菜单权限列表\x82\xd3\xe4\x93\x02#\x12!/qs/v1/permission/role/list-menusBN\xbaG):'\n" +
 	"\vRoleService\x12\x18角色管理相关操作Z quest-admin/api/permission/v1;v1b\x06proto3"
 
 var (
@@ -924,19 +924,19 @@ func file_permission_v1_role_proto_rawDescGZIP() []byte {
 
 var file_permission_v1_role_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_permission_v1_role_proto_goTypes = []any{
-	(*RoleInfo)(nil),               // 0: system.permission.v1.RoleInfo
-	(*CreateRoleRequest)(nil),      // 1: system.permission.v1.CreateRoleRequest
-	(*GetRoleRequest)(nil),         // 2: system.permission.v1.GetRoleRequest
-	(*GetRoleReply)(nil),           // 3: system.permission.v1.GetRoleReply
-	(*ListRolesRequest)(nil),       // 4: system.permission.v1.ListRolesRequest
-	(*ListRolesReply)(nil),         // 5: system.permission.v1.ListRolesReply
-	(*UpdateRoleRequest)(nil),      // 6: system.permission.v1.UpdateRoleRequest
-	(*DeleteRoleRequest)(nil),      // 7: system.permission.v1.DeleteRoleRequest
-	(*AssignRoleMenusRequest)(nil), // 8: system.permission.v1.AssignRoleMenusRequest
-	(*GetRoleMenusRequest)(nil),    // 9: system.permission.v1.GetRoleMenusRequest
-	(*GetRoleMenusReply)(nil),      // 10: system.permission.v1.GetRoleMenusReply
-	(*timestamppb.Timestamp)(nil),  // 11: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),          // 12: google.protobuf.Empty
+	(*RoleInfo)(nil),              // 0: system.permission.v1.RoleInfo
+	(*CreateRoleRequest)(nil),     // 1: system.permission.v1.CreateRoleRequest
+	(*GetRoleRequest)(nil),        // 2: system.permission.v1.GetRoleRequest
+	(*GetRoleReply)(nil),          // 3: system.permission.v1.GetRoleReply
+	(*ListRolesRequest)(nil),      // 4: system.permission.v1.ListRolesRequest
+	(*ListRolesReply)(nil),        // 5: system.permission.v1.ListRolesReply
+	(*UpdateRoleRequest)(nil),     // 6: system.permission.v1.UpdateRoleRequest
+	(*DeleteRoleRequest)(nil),     // 7: system.permission.v1.DeleteRoleRequest
+	(*AssignRoleMenuRequest)(nil), // 8: system.permission.v1.AssignRoleMenuRequest
+	(*GetRoleMenusRequest)(nil),   // 9: system.permission.v1.GetRoleMenusRequest
+	(*GetRoleMenusReply)(nil),     // 10: system.permission.v1.GetRoleMenusReply
+	(*timestamppb.Timestamp)(nil), // 11: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),         // 12: google.protobuf.Empty
 }
 var file_permission_v1_role_proto_depIdxs = []int32{
 	11, // 0: system.permission.v1.RoleInfo.create_at:type_name -> google.protobuf.Timestamp
@@ -948,14 +948,14 @@ var file_permission_v1_role_proto_depIdxs = []int32{
 	4,  // 6: system.permission.v1.RoleService.ListRoles:input_type -> system.permission.v1.ListRolesRequest
 	6,  // 7: system.permission.v1.RoleService.UpdateRole:input_type -> system.permission.v1.UpdateRoleRequest
 	7,  // 8: system.permission.v1.RoleService.DeleteRole:input_type -> system.permission.v1.DeleteRoleRequest
-	8,  // 9: system.permission.v1.RoleService.AssignRoleMenus:input_type -> system.permission.v1.AssignRoleMenusRequest
+	8,  // 9: system.permission.v1.RoleService.AssignRoleMenu:input_type -> system.permission.v1.AssignRoleMenuRequest
 	9,  // 10: system.permission.v1.RoleService.GetRoleMenus:input_type -> system.permission.v1.GetRoleMenusRequest
 	12, // 11: system.permission.v1.RoleService.CreateRole:output_type -> google.protobuf.Empty
 	3,  // 12: system.permission.v1.RoleService.GetRole:output_type -> system.permission.v1.GetRoleReply
 	5,  // 13: system.permission.v1.RoleService.ListRoles:output_type -> system.permission.v1.ListRolesReply
 	12, // 14: system.permission.v1.RoleService.UpdateRole:output_type -> google.protobuf.Empty
 	12, // 15: system.permission.v1.RoleService.DeleteRole:output_type -> google.protobuf.Empty
-	12, // 16: system.permission.v1.RoleService.AssignRoleMenus:output_type -> google.protobuf.Empty
+	12, // 16: system.permission.v1.RoleService.AssignRoleMenu:output_type -> google.protobuf.Empty
 	10, // 17: system.permission.v1.RoleService.GetRoleMenus:output_type -> system.permission.v1.GetRoleMenusReply
 	11, // [11:18] is the sub-list for method output_type
 	4,  // [4:11] is the sub-list for method input_type

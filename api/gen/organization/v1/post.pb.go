@@ -646,15 +646,15 @@ const file_organization_v1_post_proto_rawDesc = "" +
 	"\x11DeletePostRequest\x120\n" +
 	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b岗位IDH\x00R\x02id\x88\x01\x01:\x1b\xbaG\x18\x92\x02\x15删除岗位请求体B\x05\n" +
 	"\x03_id2\x9f\a\n" +
-	"\vPostService\x12\xa2\x01\n" +
+	"\vPostService\x12\xa7\x01\n" +
 	"\n" +
-	"CreatePost\x12).system.organization.v1.CreatePostRequest\x1a\x16.google.protobuf.Empty\"Q\xbaG(\x12\f创建岗位\x1a\x18创建一个新的岗位\x82\xd3\xe4\x93\x02 :\x01*\"\x1b/api/v1/organizations/posts\x12\xc9\x01\n" +
-	"\aGetPost\x12&.system.organization.v1.GetPostRequest\x1a$.system.organization.v1.GetPostReply\"p\xbaGE\x12\x18获取岗位详细信息\x1a)根据岗位ID获取岗位的详细信息\x82\xd3\xe4\x93\x02\"\x12 /api/v1/organizations/posts/{id}\x12\xbb\x01\n" +
-	"\tListPosts\x12(.system.organization.v1.ListPostsRequest\x1a&.system.organization.v1.ListPostsReply\"\\\xbaG.\x12\x12获取岗位列表\x1a\x18分页查询岗位列表\x82\xd3\xe4\x93\x02%:\x01*\" /api/v1/organizations/posts/list\x12\xb0\x01\n" +
+	"CreatePost\x12).system.organization.v1.CreatePostRequest\x1a\x16.google.protobuf.Empty\"V\xbaG(\x12\f创建岗位\x1a\x18创建一个新的岗位\x82\xd3\xe4\x93\x02%:\x01*\" /qs/v1/organizations/post/create\x12\xc6\x01\n" +
+	"\aGetPost\x12&.system.organization.v1.GetPostRequest\x1a$.system.organization.v1.GetPostReply\"m\xbaGE\x12\x18获取岗位详细信息\x1a)根据岗位ID获取岗位的详细信息\x82\xd3\xe4\x93\x02\x1f\x12\x1d/qs/v1/organizations/post/get\x12\xb9\x01\n" +
+	"\tListPosts\x12(.system.organization.v1.ListPostsRequest\x1a&.system.organization.v1.ListPostsReply\"Z\xbaG.\x12\x12获取岗位列表\x1a\x18分页查询岗位列表\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/qs/v1/organizations/post/list\x12\xb0\x01\n" +
 	"\n" +
-	"UpdatePost\x12).system.organization.v1.UpdatePostRequest\x1a\x16.google.protobuf.Empty\"_\xbaG1\x12\x12更新岗位信息\x1a\x1b更新岗位的基本信息\x82\xd3\xe4\x93\x02%:\x01*\x1a /api/v1/organizations/posts/{id}\x12\xad\x01\n" +
+	"UpdatePost\x12).system.organization.v1.UpdatePostRequest\x1a\x16.google.protobuf.Empty\"_\xbaG1\x12\x12更新岗位信息\x1a\x1b更新岗位的基本信息\x82\xd3\xe4\x93\x02%:\x01*\x1a /qs/v1/organizations/post/update\x12\xad\x01\n" +
 	"\n" +
-	"DeletePost\x12).system.organization.v1.DeletePostRequest\x1a\x16.google.protobuf.Empty\"\\\xbaG1\x12\f删除岗位\x1a!删除岗位，此操作不可逆\x82\xd3\xe4\x93\x02\"* /api/v1/organizations/posts/{id}BJ\xbaG#:!\n" +
+	"DeletePost\x12).system.organization.v1.DeletePostRequest\x1a\x16.google.protobuf.Empty\"\\\xbaG1\x12\f删除岗位\x1a!删除岗位，此操作不可逆\x82\xd3\xe4\x93\x02\"* /qs/v1/organizations/post/deleteBJ\xbaG#:!\n" +
 	"\vPostService\x12\x12岗位相关操作Z\"quest-admin/api/organization/v1;v1b\x06proto3"
 
 var (

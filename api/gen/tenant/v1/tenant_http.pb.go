@@ -41,11 +41,11 @@ type TenantServiceHTTPServer interface {
 
 func RegisterTenantServiceHTTPServer(s *http.Server, srv TenantServiceHTTPServer) {
 	r := s.Route("/")
-	r.POST("/api/v1/tenants", _TenantService_CreateTenant0_HTTP_Handler(srv))
-	r.GET("/api/v1/tenants/{id}", _TenantService_GetTenant0_HTTP_Handler(srv))
-	r.POST("/api/v1/tenants/list", _TenantService_ListTenants0_HTTP_Handler(srv))
-	r.PUT("/api/v1/tenants/{id}", _TenantService_UpdateTenant0_HTTP_Handler(srv))
-	r.DELETE("/api/v1/tenants/{id}", _TenantService_DeleteTenant0_HTTP_Handler(srv))
+	r.POST("/qs/v1/tenant/create", _TenantService_CreateTenant0_HTTP_Handler(srv))
+	r.GET("/qs/v1/tenant/get", _TenantService_GetTenant0_HTTP_Handler(srv))
+	r.POST("/qs/v1/tenant/list", _TenantService_ListTenants0_HTTP_Handler(srv))
+	r.PUT("/qs/v1/tenant/update", _TenantService_UpdateTenant0_HTTP_Handler(srv))
+	r.DELETE("/qs/v1/tenant/delete", _TenantService_DeleteTenant0_HTTP_Handler(srv))
 }
 
 func _TenantService_CreateTenant0_HTTP_Handler(srv TenantServiceHTTPServer) func(ctx http.Context) error {
@@ -74,9 +74,6 @@ func _TenantService_GetTenant0_HTTP_Handler(srv TenantServiceHTTPServer) func(ct
 	return func(ctx http.Context) error {
 		var in GetTenantRequest
 		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, OperationTenantServiceGetTenant)
@@ -123,9 +120,6 @@ func _TenantService_UpdateTenant0_HTTP_Handler(srv TenantServiceHTTPServer) func
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		if err := ctx.BindVars(&in); err != nil {
-			return err
-		}
 		http.SetOperation(ctx, OperationTenantServiceUpdateTenant)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.UpdateTenant(ctx, req.(*UpdateTenantRequest))
@@ -143,9 +137,6 @@ func _TenantService_DeleteTenant0_HTTP_Handler(srv TenantServiceHTTPServer) func
 	return func(ctx http.Context) error {
 		var in DeleteTenantRequest
 		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, OperationTenantServiceDeleteTenant)
@@ -185,7 +176,7 @@ func NewTenantServiceHTTPClient(client *http.Client) TenantServiceHTTPClient {
 // CreateTenant 创建租户
 func (c *TenantServiceHTTPClientImpl) CreateTenant(ctx context.Context, in *CreateTenantRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/tenants"
+	pattern := "/qs/v1/tenant/create"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationTenantServiceCreateTenant))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -199,7 +190,7 @@ func (c *TenantServiceHTTPClientImpl) CreateTenant(ctx context.Context, in *Crea
 // DeleteTenant 删除租户
 func (c *TenantServiceHTTPClientImpl) DeleteTenant(ctx context.Context, in *DeleteTenantRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/tenants/{id}"
+	pattern := "/qs/v1/tenant/delete"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationTenantServiceDeleteTenant))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -213,7 +204,7 @@ func (c *TenantServiceHTTPClientImpl) DeleteTenant(ctx context.Context, in *Dele
 // GetTenant 获取租户信息
 func (c *TenantServiceHTTPClientImpl) GetTenant(ctx context.Context, in *GetTenantRequest, opts ...http.CallOption) (*GetTenantReply, error) {
 	var out GetTenantReply
-	pattern := "/api/v1/tenants/{id}"
+	pattern := "/qs/v1/tenant/get"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationTenantServiceGetTenant))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -227,7 +218,7 @@ func (c *TenantServiceHTTPClientImpl) GetTenant(ctx context.Context, in *GetTena
 // ListTenants 获取租户列表
 func (c *TenantServiceHTTPClientImpl) ListTenants(ctx context.Context, in *ListTenantsRequest, opts ...http.CallOption) (*ListTenantsReply, error) {
 	var out ListTenantsReply
-	pattern := "/api/v1/tenants/list"
+	pattern := "/qs/v1/tenant/list"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationTenantServiceListTenants))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -241,7 +232,7 @@ func (c *TenantServiceHTTPClientImpl) ListTenants(ctx context.Context, in *ListT
 // UpdateTenant 更新租户信息
 func (c *TenantServiceHTTPClientImpl) UpdateTenant(ctx context.Context, in *UpdateTenantRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/tenants/{id}"
+	pattern := "/qs/v1/tenant/update"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationTenantServiceUpdateTenant))
 	opts = append(opts, http.PathTemplate(pattern))

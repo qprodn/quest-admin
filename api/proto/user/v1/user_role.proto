@@ -20,9 +20,9 @@ option (openapi.v3.document) = {
 
 service UserRoleService {
   // 管理用户角色
-  rpc ManageUserRoles (ManageUserRolesRequest) returns (google.protobuf.Empty) {
+  rpc AssignUserRoles (AssignUserRolesRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      put: "/api/v1/users/{id}/roles"
+      put: "/qs/v1/users/roles"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -34,7 +34,7 @@ service UserRoleService {
   // 获取用户角色列表
   rpc GetUserRoles (GetUserRolesRequest) returns (GetUserRolesReply) {
     option (google.api.http) = {
-      get: "/api/v1/users/{id}/roles"
+      get: "/qs/v1/users/roles/{id}"
     };
     option (openapi.v3.operation) = {
       summary: "获取用户角色列表";
@@ -43,7 +43,7 @@ service UserRoleService {
   }
 }
 
-message ManageUserRolesRequest {
+message AssignUserRolesRequest {
   option (openapi.v3.schema) = {
     description: "管理用户角色请求体";
   };

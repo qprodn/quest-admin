@@ -580,12 +580,12 @@ const file_organization_v1_department_proto_rawDesc = "" +
 	"\x17DeleteDepartmentRequest\x120\n" +
 	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b部门IDH\x00R\x02id\x88\x01\x01:\x1b\xbaG\x18\x92\x02\x15删除部门请求体B\x05\n" +
 	"\x03_id2\xf7\a\n" +
-	"\x11DepartmentService\x12\xb4\x01\n" +
-	"\x10CreateDepartment\x12/.system.organization.v1.CreateDepartmentRequest\x1a\x16.google.protobuf.Empty\"W\xbaG(\x12\f创建部门\x1a\x18创建一个新的部门\x82\xd3\xe4\x93\x02&:\x01*\"!/api/v1/organizations/departments\x12\xe1\x01\n" +
-	"\rGetDepartment\x12,.system.organization.v1.GetDepartmentRequest\x1a*.system.organization.v1.GetDepartmentReply\"v\xbaGE\x12\x18获取部门详细信息\x1a)根据部门ID获取部门的详细信息\x82\xd3\xe4\x93\x02(\x12&/api/v1/organizations/departments/{id}\x12\xbf\x01\n" +
-	"\x11GetDepartmentTree\x12\x16.google.protobuf.Empty\x1a..system.organization.v1.GetDepartmentTreeReply\"b\xbaG1\x12\x0f获取部门树\x1a\x1e获取完整的部门树结构\x82\xd3\xe4\x93\x02(\x12&/api/v1/organizations/departments/tree\x12\xc2\x01\n" +
-	"\x10UpdateDepartment\x12/.system.organization.v1.UpdateDepartmentRequest\x1a\x16.google.protobuf.Empty\"e\xbaG1\x12\x12更新部门信息\x1a\x1b更新部门的基本信息\x82\xd3\xe4\x93\x02+:\x01*\x1a&/api/v1/organizations/departments/{id}\x12\xbf\x01\n" +
-	"\x10DeleteDepartment\x12/.system.organization.v1.DeleteDepartmentRequest\x1a\x16.google.protobuf.Empty\"b\xbaG1\x12\f删除部门\x1a!删除部门，此操作不可逆\x82\xd3\xe4\x93\x02(*&/api/v1/organizations/departments/{id}BP\xbaG):'\n" +
+	"\x11DepartmentService\x12\xb9\x01\n" +
+	"\x10CreateDepartment\x12/.system.organization.v1.CreateDepartmentRequest\x1a\x16.google.protobuf.Empty\"\\\xbaG(\x12\f创建部门\x1a\x18创建一个新的部门\x82\xd3\xe4\x93\x02+:\x01*\"&/qs/v1/organizations/department/create\x12\xde\x01\n" +
+	"\rGetDepartment\x12,.system.organization.v1.GetDepartmentRequest\x1a*.system.organization.v1.GetDepartmentReply\"s\xbaGE\x12\x18获取部门详细信息\x1a)根据部门ID获取部门的详细信息\x82\xd3\xe4\x93\x02%\x12#/qs/v1/organizations/department/get\x12\xbd\x01\n" +
+	"\x11GetDepartmentTree\x12\x16.google.protobuf.Empty\x1a..system.organization.v1.GetDepartmentTreeReply\"`\xbaG1\x12\x0f获取部门树\x1a\x1e获取完整的部门树结构\x82\xd3\xe4\x93\x02&\x12$/qs/v1/organizations/department/tree\x12\xc2\x01\n" +
+	"\x10UpdateDepartment\x12/.system.organization.v1.UpdateDepartmentRequest\x1a\x16.google.protobuf.Empty\"e\xbaG1\x12\x12更新部门信息\x1a\x1b更新部门的基本信息\x82\xd3\xe4\x93\x02+:\x01*\x1a&/qs/v1/organizations/department/update\x12\xbf\x01\n" +
+	"\x10DeleteDepartment\x12/.system.organization.v1.DeleteDepartmentRequest\x1a\x16.google.protobuf.Empty\"b\xbaG1\x12\f删除部门\x1a!删除部门，此操作不可逆\x82\xd3\xe4\x93\x02(*&/qs/v1/organizations/department/deleteBP\xbaG):'\n" +
 	"\x11DepartmentService\x12\x12部门相关操作Z\"quest-admin/api/organization/v1;v1b\x06proto3"
 
 var (

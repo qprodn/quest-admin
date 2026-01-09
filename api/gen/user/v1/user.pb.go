@@ -838,7 +838,7 @@ func (x *ChangeUserStatusRequest) GetStatus() int32 {
 	return 0
 }
 
-type ManageUserPostsRequest struct {
+type AssignUserPostRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            *string                `protobuf:"bytes,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
 	PostIds       []string               `protobuf:"bytes,2,rep,name=post_ids,json=postIds,proto3" json:"post_ids,omitempty"`
@@ -847,20 +847,20 @@ type ManageUserPostsRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ManageUserPostsRequest) Reset() {
-	*x = ManageUserPostsRequest{}
+func (x *AssignUserPostRequest) Reset() {
+	*x = AssignUserPostRequest{}
 	mi := &file_user_v1_user_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ManageUserPostsRequest) String() string {
+func (x *AssignUserPostRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ManageUserPostsRequest) ProtoMessage() {}
+func (*AssignUserPostRequest) ProtoMessage() {}
 
-func (x *ManageUserPostsRequest) ProtoReflect() protoreflect.Message {
+func (x *AssignUserPostRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_user_v1_user_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -872,26 +872,26 @@ func (x *ManageUserPostsRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ManageUserPostsRequest.ProtoReflect.Descriptor instead.
-func (*ManageUserPostsRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use AssignUserPostRequest.ProtoReflect.Descriptor instead.
+func (*AssignUserPostRequest) Descriptor() ([]byte, []int) {
 	return file_user_v1_user_proto_rawDescGZIP(), []int{11}
 }
 
-func (x *ManageUserPostsRequest) GetId() string {
+func (x *AssignUserPostRequest) GetId() string {
 	if x != nil && x.Id != nil {
 		return *x.Id
 	}
 	return ""
 }
 
-func (x *ManageUserPostsRequest) GetPostIds() []string {
+func (x *AssignUserPostRequest) GetPostIds() []string {
 	if x != nil {
 		return x.PostIds
 	}
 	return nil
 }
 
-func (x *ManageUserPostsRequest) GetOperation() string {
+func (x *AssignUserPostRequest) GetOperation() string {
 	if x != nil && x.Operation != nil {
 		return *x.Operation
 	}
@@ -1047,8 +1047,8 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b用户IDH\x00R\x02id\x88\x01\x01\x12H\n" +
 	"\x06status\x18\x02 \x01(\x05B+\xbaG(:\x03\x12\x011\x92\x02 目标状态: 0-禁用, 1-正常H\x01R\x06status\x88\x01\x01:!\xbaG\x1e\x92\x02\x1b变更用户状态请求体B\x05\n" +
 	"\x03_idB\t\n" +
-	"\a_status\"\x9c\x02\n" +
-	"\x16ManageUserPostsRequest\x120\n" +
+	"\a_status\"\x9b\x02\n" +
+	"\x15AssignUserPostRequest\x120\n" +
 	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b用户IDH\x00R\x02id\x88\x01\x01\x12/\n" +
 	"\bpost_ids\x18\x02 \x03(\tB\x14\xbaG\x11\x92\x02\x0e岗位ID列表R\apostIds\x12g\n" +
 	"\toperation\x18\x03 \x01(\tBD\xbaGA:\x05\x12\x03add\x92\x027操作类型: add-添加, remove-移除, replace-替换H\x01R\toperation\x88\x01\x01:!\xbaG\x1e\x92\x02\x1b管理用户岗位请求体B\x05\n" +
@@ -1057,20 +1057,20 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"_operation\"i\n" +
 	"\x11DeleteUserRequest\x120\n" +
 	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b用户IDH\x00R\x02id\x88\x01\x01:\x1b\xbaG\x18\x92\x02\x15删除用户请求体B\x05\n" +
-	"\x03_id2\xc9\r\n" +
-	"\vUserService\x12\xbf\x01\n" +
+	"\x03_id2\xc4\r\n" +
+	"\vUserService\x12\xc4\x01\n" +
 	"\n" +
-	"CreateUser\x12!.system.user.v1.CreateUserRequest\x1a\x16.google.protobuf.Empty\"v\xbaG[\x12\x0f创建新用户\x1aH创建一个新的用户，需要提供用户名、密码等基本信息\x82\xd3\xe4\x93\x02\x12:\x01*\"\r/api/v1/users\x12\xab\x01\n" +
-	"\aGetUser\x12\x1e.system.user.v1.GetUserRequest\x1a\x1c.system.user.v1.GetUserReply\"b\xbaGE\x12\x18获取用户详细信息\x1a)根据用户ID获取用户的详细信息\x82\xd3\xe4\x93\x02\x14\x12\x12/api/v1/users/{id}\x12\xbf\x01\n" +
-	"\tListUsers\x12 .system.user.v1.ListUsersRequest\x1a\x1e.system.user.v1.ListUsersReply\"p\xbaGX\x12\x12获取用户列表\x1aB分页查询用户列表，支持关键字搜索、状态筛选等\x82\xd3\xe4\x93\x02\x0f\x12\r/api/v1/users\x12\xbe\x01\n" +
+	"CreateUser\x12!.system.user.v1.CreateUserRequest\x1a\x16.google.protobuf.Empty\"{\xbaG[\x12\x0f创建新用户\x1aH创建一个新的用户，需要提供用户名、密码等基本信息\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/qs/v1/user/create\x12\xa8\x01\n" +
+	"\aGetUser\x12\x1e.system.user.v1.GetUserRequest\x1a\x1c.system.user.v1.GetUserReply\"_\xbaGE\x12\x18获取用户详细信息\x1a)根据用户ID获取用户的详细信息\x82\xd3\xe4\x93\x02\x11\x12\x0f/qs/v1/user/get\x12\xc2\x01\n" +
+	"\tListUsers\x12 .system.user.v1.ListUsersRequest\x1a\x1e.system.user.v1.ListUsersReply\"s\xbaGX\x12\x12获取用户列表\x1aB分页查询用户列表，支持关键字搜索、状态筛选等\x82\xd3\xe4\x93\x02\x12\x12\x10/qs/v1/user/list\x12\xbe\x01\n" +
 	"\n" +
-	"UpdateUser\x12!.system.user.v1.UpdateUserRequest\x1a\x16.google.protobuf.Empty\"u\xbaGU\x12\x12更新用户信息\x1a?更新用户的基本信息，如昵称、邮箱、手机号等\x82\xd3\xe4\x93\x02\x17:\x01*\x1a\x12/api/v1/users/{id}\x12\xcf\x01\n" +
-	"\x0eChangePassword\x12%.system.user.v1.ChangePasswordRequest\x1a\x16.google.protobuf.Empty\"~\xbaGU\x12\x12修改用户密码\x1a?用户主动修改自己的登录密码，需要验证原密码\x82\xd3\xe4\x93\x02 :\x01*\x1a\x1b/api/v1/users/{id}/password\x12\xc4\x01\n" +
-	"\rResetPassword\x12$.system.user.v1.ResetPasswordRequest\x1a\x16.google.protobuf.Empty\"u\xbaGF\x12\x12重置用户密码\x1a0管理员重置用户密码，生成临时密码\x82\xd3\xe4\x93\x02&:\x01*\x1a!/api/v1/users/{id}/password/reset\x12\xc5\x01\n" +
-	"\x10ChangeUserStatus\x12'.system.user.v1.ChangeUserStatusRequest\x1a\x16.google.protobuf.Empty\"p\xbaGI\x12\x12变更用户状态\x1a3启用或禁用用户，管理用户的使用权限\x82\xd3\xe4\x93\x02\x1e:\x01*2\x19/api/v1/users/{id}/status\x12\xcb\x01\n" +
-	"\x0fManageUserPosts\x12&.system.user.v1.ManageUserPostsRequest\x1a\x16.google.protobuf.Empty\"x\xbaGR\x12\x12管理用户岗位\x1a<为用户分配或移除岗位，管理用户的职位信息\x82\xd3\xe4\x93\x02\x1d:\x01*\x1a\x18/api/v1/users/{id}/posts\x12\x97\x01\n" +
+	"UpdateUser\x12!.system.user.v1.UpdateUserRequest\x1a\x16.google.protobuf.Empty\"u\xbaGU\x12\x12更新用户信息\x1a?更新用户的基本信息，如昵称、邮箱、手机号等\x82\xd3\xe4\x93\x02\x17:\x01*\x1a\x12/qs/v1/user/update\x12\xcf\x01\n" +
+	"\x0eChangePassword\x12%.system.user.v1.ChangePasswordRequest\x1a\x16.google.protobuf.Empty\"~\xbaGU\x12\x12修改用户密码\x1a?用户主动修改自己的登录密码，需要验证原密码\x82\xd3\xe4\x93\x02 :\x01*\x1a\x1b/qs/v1/user/change-password\x12\xbd\x01\n" +
+	"\rResetPassword\x12$.system.user.v1.ResetPasswordRequest\x1a\x16.google.protobuf.Empty\"n\xbaGF\x12\x12重置用户密码\x1a0管理员重置用户密码，生成临时密码\x82\xd3\xe4\x93\x02\x1f:\x01*\x1a\x1a/qs/v1/user/reset-password\x12\xc5\x01\n" +
+	"\x10ChangeUserStatus\x12'.system.user.v1.ChangeUserStatusRequest\x1a\x16.google.protobuf.Empty\"p\xbaGI\x12\x12变更用户状态\x1a3启用或禁用用户，管理用户的使用权限\x82\xd3\xe4\x93\x02\x1e:\x01*\x1a\x19/qs/v1/user/update-status\x12\xc8\x01\n" +
+	"\x0eAssignUserPost\x12%.system.user.v1.AssignUserPostRequest\x1a\x16.google.protobuf.Empty\"w\xbaGR\x12\x12管理用户岗位\x1a<为用户分配或移除岗位，管理用户的职位信息\x82\xd3\xe4\x93\x02\x1c:\x01*\x1a\x17/qs/v1/user/assign-post\x12\x97\x01\n" +
 	"\n" +
-	"DeleteUser\x12!.system.user.v1.DeleteUserRequest\x1a\x16.google.protobuf.Empty\"N\xbaG1\x12\f删除用户\x1a!删除用户，此操作不可逆\x82\xd3\xe4\x93\x02\x14*\x12/api/v1/users/{id}BB\xbaG#:!\n" +
+	"DeleteUser\x12!.system.user.v1.DeleteUserRequest\x1a\x16.google.protobuf.Empty\"N\xbaG1\x12\f删除用户\x1a!删除用户，此操作不可逆\x82\xd3\xe4\x93\x02\x14*\x12/qs/v1/user/deleteBB\xbaG#:!\n" +
 	"\vUserService\x12\x12用户相关操作Z\x1aquest-admin/api/user/v1;v1b\x06proto3"
 
 var (
@@ -1098,7 +1098,7 @@ var file_user_v1_user_proto_goTypes = []any{
 	(*ChangePasswordRequest)(nil),   // 8: system.user.v1.ChangePasswordRequest
 	(*ResetPasswordRequest)(nil),    // 9: system.user.v1.ResetPasswordRequest
 	(*ChangeUserStatusRequest)(nil), // 10: system.user.v1.ChangeUserStatusRequest
-	(*ManageUserPostsRequest)(nil),  // 11: system.user.v1.ManageUserPostsRequest
+	(*AssignUserPostRequest)(nil),   // 11: system.user.v1.AssignUserPostRequest
 	(*DeleteUserRequest)(nil),       // 12: system.user.v1.DeleteUserRequest
 	(*timestamppb.Timestamp)(nil),   // 13: google.protobuf.Timestamp
 	(*emptypb.Empty)(nil),           // 14: google.protobuf.Empty
@@ -1116,7 +1116,7 @@ var file_user_v1_user_proto_depIdxs = []int32{
 	8,  // 9: system.user.v1.UserService.ChangePassword:input_type -> system.user.v1.ChangePasswordRequest
 	9,  // 10: system.user.v1.UserService.ResetPassword:input_type -> system.user.v1.ResetPasswordRequest
 	10, // 11: system.user.v1.UserService.ChangeUserStatus:input_type -> system.user.v1.ChangeUserStatusRequest
-	11, // 12: system.user.v1.UserService.ManageUserPosts:input_type -> system.user.v1.ManageUserPostsRequest
+	11, // 12: system.user.v1.UserService.AssignUserPost:input_type -> system.user.v1.AssignUserPostRequest
 	12, // 13: system.user.v1.UserService.DeleteUser:input_type -> system.user.v1.DeleteUserRequest
 	14, // 14: system.user.v1.UserService.CreateUser:output_type -> google.protobuf.Empty
 	4,  // 15: system.user.v1.UserService.GetUser:output_type -> system.user.v1.GetUserReply
@@ -1125,7 +1125,7 @@ var file_user_v1_user_proto_depIdxs = []int32{
 	14, // 18: system.user.v1.UserService.ChangePassword:output_type -> google.protobuf.Empty
 	14, // 19: system.user.v1.UserService.ResetPassword:output_type -> google.protobuf.Empty
 	14, // 20: system.user.v1.UserService.ChangeUserStatus:output_type -> google.protobuf.Empty
-	14, // 21: system.user.v1.UserService.ManageUserPosts:output_type -> google.protobuf.Empty
+	14, // 21: system.user.v1.UserService.AssignUserPost:output_type -> google.protobuf.Empty
 	14, // 22: system.user.v1.UserService.DeleteUser:output_type -> google.protobuf.Empty
 	14, // [14:23] is the sub-list for method output_type
 	5,  // [5:14] is the sub-list for method input_type

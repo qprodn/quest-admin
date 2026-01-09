@@ -117,8 +117,8 @@ func (s *RoleService) DeleteRole(ctx context.Context, in *v1.DeleteRoleRequest) 
 	return &emptypb.Empty{}, nil
 }
 
-func (s *RoleService) AssignRoleMenus(ctx context.Context, in *v1.AssignRoleMenusRequest) (*emptypb.Empty, error) {
-	err := s.rc.AssignRoleMenus(ctx, in.GetId(), in.GetMenuIds())
+func (s *RoleService) AssignRoleMenu(ctx context.Context, in *v1.AssignRoleMenuRequest) (*emptypb.Empty, error) {
+	err := s.rc.AssignRoleMenu(ctx, in.GetId(), in.GetMenuIds())
 	if err != nil {
 		return nil, err
 	}

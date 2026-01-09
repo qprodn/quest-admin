@@ -147,8 +147,8 @@ func (s *UserService) ChangeUserStatus(ctx context.Context, in *v1.ChangeUserSta
 	return &emptypb.Empty{}, nil
 }
 
-func (s *UserService) ManageUserPosts(ctx context.Context, in *v1.ManageUserPostsRequest) (*emptypb.Empty, error) {
-	bo := &biz.ManageUserPostsBO{
+func (s *UserService) AssignUserPosts(ctx context.Context, in *v1.AssignUserPostRequest) (*emptypb.Empty, error) {
+	bo := &biz.AssignUserPostsBO{
 		UserID:    in.GetId(),
 		PostIDs:   in.GetPostIds(),
 		Operation: in.GetOperation(),

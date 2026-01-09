@@ -41,11 +41,11 @@ type MenuServiceHTTPServer interface {
 
 func RegisterMenuServiceHTTPServer(s *http.Server, srv MenuServiceHTTPServer) {
 	r := s.Route("/")
-	r.POST("/api/v1/permissions/menus", _MenuService_CreateMenu0_HTTP_Handler(srv))
-	r.GET("/api/v1/permissions/menus/{id}", _MenuService_GetMenu0_HTTP_Handler(srv))
-	r.GET("/api/v1/permissions/menus/tree", _MenuService_GetMenuTree0_HTTP_Handler(srv))
-	r.PUT("/api/v1/permissions/menus/{id}", _MenuService_UpdateMenu0_HTTP_Handler(srv))
-	r.DELETE("/api/v1/permissions/menus/{id}", _MenuService_DeleteMenu0_HTTP_Handler(srv))
+	r.POST("/qs/v1/permissions/menu/create", _MenuService_CreateMenu0_HTTP_Handler(srv))
+	r.GET("/qs/v1/permissions/menu/get", _MenuService_GetMenu0_HTTP_Handler(srv))
+	r.GET("/qs/v1/permissions/menu/tree", _MenuService_GetMenuTree0_HTTP_Handler(srv))
+	r.PUT("/qs/v1/permissions/menu/update", _MenuService_UpdateMenu0_HTTP_Handler(srv))
+	r.DELETE("/qs/v1/permissions/menu/delete", _MenuService_DeleteMenu0_HTTP_Handler(srv))
 }
 
 func _MenuService_CreateMenu0_HTTP_Handler(srv MenuServiceHTTPServer) func(ctx http.Context) error {
@@ -74,9 +74,6 @@ func _MenuService_GetMenu0_HTTP_Handler(srv MenuServiceHTTPServer) func(ctx http
 	return func(ctx http.Context) error {
 		var in GetMenuRequest
 		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, OperationMenuServiceGetMenu)
@@ -120,9 +117,6 @@ func _MenuService_UpdateMenu0_HTTP_Handler(srv MenuServiceHTTPServer) func(ctx h
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		if err := ctx.BindVars(&in); err != nil {
-			return err
-		}
 		http.SetOperation(ctx, OperationMenuServiceUpdateMenu)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.UpdateMenu(ctx, req.(*UpdateMenuRequest))
@@ -140,9 +134,6 @@ func _MenuService_DeleteMenu0_HTTP_Handler(srv MenuServiceHTTPServer) func(ctx h
 	return func(ctx http.Context) error {
 		var in DeleteMenuRequest
 		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, OperationMenuServiceDeleteMenu)
@@ -182,7 +173,7 @@ func NewMenuServiceHTTPClient(client *http.Client) MenuServiceHTTPClient {
 // CreateMenu 创建菜单
 func (c *MenuServiceHTTPClientImpl) CreateMenu(ctx context.Context, in *CreateMenuRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/permissions/menus"
+	pattern := "/qs/v1/permissions/menu/create"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationMenuServiceCreateMenu))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -196,7 +187,7 @@ func (c *MenuServiceHTTPClientImpl) CreateMenu(ctx context.Context, in *CreateMe
 // DeleteMenu 删除菜单
 func (c *MenuServiceHTTPClientImpl) DeleteMenu(ctx context.Context, in *DeleteMenuRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/permissions/menus/{id}"
+	pattern := "/qs/v1/permissions/menu/delete"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationMenuServiceDeleteMenu))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -210,7 +201,7 @@ func (c *MenuServiceHTTPClientImpl) DeleteMenu(ctx context.Context, in *DeleteMe
 // GetMenu 获取菜单信息
 func (c *MenuServiceHTTPClientImpl) GetMenu(ctx context.Context, in *GetMenuRequest, opts ...http.CallOption) (*GetMenuReply, error) {
 	var out GetMenuReply
-	pattern := "/api/v1/permissions/menus/{id}"
+	pattern := "/qs/v1/permissions/menu/get"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationMenuServiceGetMenu))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -224,7 +215,7 @@ func (c *MenuServiceHTTPClientImpl) GetMenu(ctx context.Context, in *GetMenuRequ
 // GetMenuTree 获取菜单树
 func (c *MenuServiceHTTPClientImpl) GetMenuTree(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*GetMenuTreeReply, error) {
 	var out GetMenuTreeReply
-	pattern := "/api/v1/permissions/menus/tree"
+	pattern := "/qs/v1/permissions/menu/tree"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationMenuServiceGetMenuTree))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -238,7 +229,7 @@ func (c *MenuServiceHTTPClientImpl) GetMenuTree(ctx context.Context, in *emptypb
 // UpdateMenu 更新菜单信息
 func (c *MenuServiceHTTPClientImpl) UpdateMenu(ctx context.Context, in *UpdateMenuRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/permissions/menus/{id}"
+	pattern := "/qs/v1/permissions/menu/update"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationMenuServiceUpdateMenu))
 	opts = append(opts, http.PathTemplate(pattern))

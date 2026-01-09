@@ -41,11 +41,11 @@ type DepartmentServiceHTTPServer interface {
 
 func RegisterDepartmentServiceHTTPServer(s *http.Server, srv DepartmentServiceHTTPServer) {
 	r := s.Route("/")
-	r.POST("/api/v1/organizations/departments", _DepartmentService_CreateDepartment0_HTTP_Handler(srv))
-	r.GET("/api/v1/organizations/departments/{id}", _DepartmentService_GetDepartment0_HTTP_Handler(srv))
-	r.GET("/api/v1/organizations/departments/tree", _DepartmentService_GetDepartmentTree0_HTTP_Handler(srv))
-	r.PUT("/api/v1/organizations/departments/{id}", _DepartmentService_UpdateDepartment0_HTTP_Handler(srv))
-	r.DELETE("/api/v1/organizations/departments/{id}", _DepartmentService_DeleteDepartment0_HTTP_Handler(srv))
+	r.POST("/qs/v1/organizations/department/create", _DepartmentService_CreateDepartment0_HTTP_Handler(srv))
+	r.GET("/qs/v1/organizations/department/get", _DepartmentService_GetDepartment0_HTTP_Handler(srv))
+	r.GET("/qs/v1/organizations/department/tree", _DepartmentService_GetDepartmentTree0_HTTP_Handler(srv))
+	r.PUT("/qs/v1/organizations/department/update", _DepartmentService_UpdateDepartment0_HTTP_Handler(srv))
+	r.DELETE("/qs/v1/organizations/department/delete", _DepartmentService_DeleteDepartment0_HTTP_Handler(srv))
 }
 
 func _DepartmentService_CreateDepartment0_HTTP_Handler(srv DepartmentServiceHTTPServer) func(ctx http.Context) error {
@@ -74,9 +74,6 @@ func _DepartmentService_GetDepartment0_HTTP_Handler(srv DepartmentServiceHTTPSer
 	return func(ctx http.Context) error {
 		var in GetDepartmentRequest
 		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, OperationDepartmentServiceGetDepartment)
@@ -120,9 +117,6 @@ func _DepartmentService_UpdateDepartment0_HTTP_Handler(srv DepartmentServiceHTTP
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		if err := ctx.BindVars(&in); err != nil {
-			return err
-		}
 		http.SetOperation(ctx, OperationDepartmentServiceUpdateDepartment)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.UpdateDepartment(ctx, req.(*UpdateDepartmentRequest))
@@ -140,9 +134,6 @@ func _DepartmentService_DeleteDepartment0_HTTP_Handler(srv DepartmentServiceHTTP
 	return func(ctx http.Context) error {
 		var in DeleteDepartmentRequest
 		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, OperationDepartmentServiceDeleteDepartment)
@@ -182,7 +173,7 @@ func NewDepartmentServiceHTTPClient(client *http.Client) DepartmentServiceHTTPCl
 // CreateDepartment 创建部门
 func (c *DepartmentServiceHTTPClientImpl) CreateDepartment(ctx context.Context, in *CreateDepartmentRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/organizations/departments"
+	pattern := "/qs/v1/organizations/department/create"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationDepartmentServiceCreateDepartment))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -196,7 +187,7 @@ func (c *DepartmentServiceHTTPClientImpl) CreateDepartment(ctx context.Context, 
 // DeleteDepartment 删除部门
 func (c *DepartmentServiceHTTPClientImpl) DeleteDepartment(ctx context.Context, in *DeleteDepartmentRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/organizations/departments/{id}"
+	pattern := "/qs/v1/organizations/department/delete"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationDepartmentServiceDeleteDepartment))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -210,7 +201,7 @@ func (c *DepartmentServiceHTTPClientImpl) DeleteDepartment(ctx context.Context, 
 // GetDepartment 获取部门信息
 func (c *DepartmentServiceHTTPClientImpl) GetDepartment(ctx context.Context, in *GetDepartmentRequest, opts ...http.CallOption) (*GetDepartmentReply, error) {
 	var out GetDepartmentReply
-	pattern := "/api/v1/organizations/departments/{id}"
+	pattern := "/qs/v1/organizations/department/get"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationDepartmentServiceGetDepartment))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -224,7 +215,7 @@ func (c *DepartmentServiceHTTPClientImpl) GetDepartment(ctx context.Context, in 
 // GetDepartmentTree 获取部门树
 func (c *DepartmentServiceHTTPClientImpl) GetDepartmentTree(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*GetDepartmentTreeReply, error) {
 	var out GetDepartmentTreeReply
-	pattern := "/api/v1/organizations/departments/tree"
+	pattern := "/qs/v1/organizations/department/tree"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationDepartmentServiceGetDepartmentTree))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -238,7 +229,7 @@ func (c *DepartmentServiceHTTPClientImpl) GetDepartmentTree(ctx context.Context,
 // UpdateDepartment 更新部门信息
 func (c *DepartmentServiceHTTPClientImpl) UpdateDepartment(ctx context.Context, in *UpdateDepartmentRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/organizations/departments/{id}"
+	pattern := "/qs/v1/organizations/department/update"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationDepartmentServiceUpdateDepartment))
 	opts = append(opts, http.PathTemplate(pattern))

@@ -23,7 +23,7 @@ service TenantService {
   // 创建租户
   rpc CreateTenant (CreateTenantRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/api/v1/tenants"
+      post: "/qs/v1/tenant/create"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -35,7 +35,7 @@ service TenantService {
   // 获取租户信息
   rpc GetTenant (GetTenantRequest) returns (GetTenantReply) {
     option (google.api.http) = {
-      get: "/api/v1/tenants/{id}"
+      get: "/qs/v1/tenant/get"
     };
     option (openapi.v3.operation) = {
       summary: "获取租户详细信息";
@@ -46,7 +46,7 @@ service TenantService {
   // 获取租户列表
   rpc ListTenants (ListTenantsRequest) returns (ListTenantsReply) {
     option (google.api.http) = {
-      post: "/api/v1/tenants/list"
+      post: "/qs/v1/tenant/list"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -58,7 +58,7 @@ service TenantService {
   // 更新租户信息
   rpc UpdateTenant (UpdateTenantRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      put: "/api/v1/tenants/{id}"
+      put: "/qs/v1/tenant/update"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -70,7 +70,7 @@ service TenantService {
   // 删除租户
   rpc DeleteTenant (DeleteTenantRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/api/v1/tenants/{id}"
+      delete: "/qs/v1/tenant/delete"
     };
     option (openapi.v3.operation) = {
       summary: "删除租户";

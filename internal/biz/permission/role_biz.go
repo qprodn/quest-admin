@@ -108,8 +108,8 @@ func (uc *RoleUsecase) DeleteRole(ctx context.Context, id string) error {
 	return uc.repo.Delete(ctx, id)
 }
 
-func (uc *RoleUsecase) AssignRoleMenus(ctx context.Context, roleID string, menuIDs []string) error {
-	uc.log.WithContext(ctx).Infof("AssignRoleMenus: roleID=%s, menuIDs=%v", roleID, menuIDs)
+func (uc *RoleUsecase) AssignRoleMenu(ctx context.Context, roleID string, menuIDs []string) error {
+	uc.log.WithContext(ctx).Infof("AssignRoleMenu: roleID=%s, menuIDs=%v", roleID, menuIDs)
 
 	_, err := uc.repo.FindByID(ctx, roleID)
 	if err != nil {

@@ -20,37 +20,34 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
+const OperationUserRoleServiceAssignUserRoles = "/system.user.v1.UserRoleService/AssignUserRoles"
 const OperationUserRoleServiceGetUserRoles = "/system.user.v1.UserRoleService/GetUserRoles"
-const OperationUserRoleServiceManageUserRoles = "/system.user.v1.UserRoleService/ManageUserRoles"
 
 type UserRoleServiceHTTPServer interface {
+	// AssignUserRoles 管理用户角色
+	AssignUserRoles(context.Context, *AssignUserRolesRequest) (*emptypb.Empty, error)
 	// GetUserRoles 获取用户角色列表
 	GetUserRoles(context.Context, *GetUserRolesRequest) (*GetUserRolesReply, error)
-	// ManageUserRoles 管理用户角色
-	ManageUserRoles(context.Context, *ManageUserRolesRequest) (*emptypb.Empty, error)
 }
 
 func RegisterUserRoleServiceHTTPServer(s *http.Server, srv UserRoleServiceHTTPServer) {
 	r := s.Route("/")
-	r.PUT("/api/v1/users/{id}/roles", _UserRoleService_ManageUserRoles0_HTTP_Handler(srv))
-	r.GET("/api/v1/users/{id}/roles", _UserRoleService_GetUserRoles0_HTTP_Handler(srv))
+	r.PUT("/qs/v1/users/roles", _UserRoleService_AssignUserRoles0_HTTP_Handler(srv))
+	r.GET("/qs/v1/users/roles/{id}", _UserRoleService_GetUserRoles0_HTTP_Handler(srv))
 }
 
-func _UserRoleService_ManageUserRoles0_HTTP_Handler(srv UserRoleServiceHTTPServer) func(ctx http.Context) error {
+func _UserRoleService_AssignUserRoles0_HTTP_Handler(srv UserRoleServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in ManageUserRolesRequest
+		var in AssignUserRolesRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		if err := ctx.BindVars(&in); err != nil {
-			return err
-		}
-		http.SetOperation(ctx, OperationUserRoleServiceManageUserRoles)
+		http.SetOperation(ctx, OperationUserRoleServiceAssignUserRoles)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.ManageUserRoles(ctx, req.(*ManageUserRolesRequest))
+			return srv.AssignUserRoles(ctx, req.(*AssignUserRolesRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
@@ -84,10 +81,10 @@ func _UserRoleService_GetUserRoles0_HTTP_Handler(srv UserRoleServiceHTTPServer) 
 }
 
 type UserRoleServiceHTTPClient interface {
+	// AssignUserRoles 管理用户角色
+	AssignUserRoles(ctx context.Context, req *AssignUserRolesRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// GetUserRoles 获取用户角色列表
 	GetUserRoles(ctx context.Context, req *GetUserRolesRequest, opts ...http.CallOption) (rsp *GetUserRolesReply, err error)
-	// ManageUserRoles 管理用户角色
-	ManageUserRoles(ctx context.Context, req *ManageUserRolesRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 }
 
 type UserRoleServiceHTTPClientImpl struct {
@@ -98,28 +95,28 @@ func NewUserRoleServiceHTTPClient(client *http.Client) UserRoleServiceHTTPClient
 	return &UserRoleServiceHTTPClientImpl{client}
 }
 
-// GetUserRoles 获取用户角色列表
-func (c *UserRoleServiceHTTPClientImpl) GetUserRoles(ctx context.Context, in *GetUserRolesRequest, opts ...http.CallOption) (*GetUserRolesReply, error) {
-	var out GetUserRolesReply
-	pattern := "/api/v1/users/{id}/roles"
-	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation(OperationUserRoleServiceGetUserRoles))
+// AssignUserRoles 管理用户角色
+func (c *UserRoleServiceHTTPClientImpl) AssignUserRoles(ctx context.Context, in *AssignUserRolesRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "/qs/v1/users/roles"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserRoleServiceAssignUserRoles))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return &out, nil
 }
 
-// ManageUserRoles 管理用户角色
-func (c *UserRoleServiceHTTPClientImpl) ManageUserRoles(ctx context.Context, in *ManageUserRolesRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
-	var out emptypb.Empty
-	pattern := "/api/v1/users/{id}/roles"
-	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationUserRoleServiceManageUserRoles))
+// GetUserRoles 获取用户角色列表
+func (c *UserRoleServiceHTTPClientImpl) GetUserRoles(ctx context.Context, in *GetUserRolesRequest, opts ...http.CallOption) (*GetUserRolesReply, error) {
+	var out GetUserRolesReply
+	pattern := "/qs/v1/users/roles/{id}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationUserRoleServiceGetUserRoles))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

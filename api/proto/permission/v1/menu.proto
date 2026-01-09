@@ -23,7 +23,7 @@ service MenuService {
   // 创建菜单
   rpc CreateMenu (CreateMenuRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/api/v1/permissions/menus"
+      post: "/qs/v1/permissions/menu/create"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -35,7 +35,7 @@ service MenuService {
   // 获取菜单信息
   rpc GetMenu (GetMenuRequest) returns (GetMenuReply) {
     option (google.api.http) = {
-      get: "/api/v1/permissions/menus/{id}"
+      get: "/qs/v1/permissions/menu/get"
     };
     option (openapi.v3.operation) = {
       summary: "获取菜单详细信息";
@@ -46,7 +46,7 @@ service MenuService {
   // 获取菜单树
   rpc GetMenuTree (google.protobuf.Empty) returns (GetMenuTreeReply) {
     option (google.api.http) = {
-      get: "/api/v1/permissions/menus/tree"
+      get: "/qs/v1/permissions/menu/tree"
     };
     option (openapi.v3.operation) = {
       summary: "获取菜单树";
@@ -57,7 +57,7 @@ service MenuService {
   // 更新菜单信息
   rpc UpdateMenu (UpdateMenuRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      put: "/api/v1/permissions/menus/{id}"
+      put: "/qs/v1/permissions/menu/update"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -69,7 +69,7 @@ service MenuService {
   // 删除菜单
   rpc DeleteMenu (DeleteMenuRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/api/v1/permissions/menus/{id}"
+      delete: "/qs/v1/permissions/menu/delete"
     };
     option (openapi.v3.operation) = {
       summary: "删除菜单";

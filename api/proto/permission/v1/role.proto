@@ -23,7 +23,7 @@ service RoleService {
   // 创建角色
   rpc CreateRole (CreateRoleRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/api/v1/permissions/roles"
+      post: "/qs/v1/permission/role/create"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -35,7 +35,7 @@ service RoleService {
   // 获取角色信息
   rpc GetRole (GetRoleRequest) returns (GetRoleReply) {
     option (google.api.http) = {
-      get: "/api/v1/permissions/roles/{id}"
+      get: "/qs/v1/permission/role/get"
     };
     option (openapi.v3.operation) = {
       summary: "获取角色详细信息";
@@ -46,7 +46,7 @@ service RoleService {
   // 获取角色列表
   rpc ListRoles (ListRolesRequest) returns (ListRolesReply) {
     option (google.api.http) = {
-      post: "/api/v1/permissions/roles/list"
+      post: "/qs/v1/permission/role/list"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -58,7 +58,7 @@ service RoleService {
   // 更新角色信息
   rpc UpdateRole (UpdateRoleRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      put: "/api/v1/permissions/roles/{id}"
+      put: "/qs/v1/permission/role/update"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -70,7 +70,7 @@ service RoleService {
   // 删除角色
   rpc DeleteRole (DeleteRoleRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/api/v1/permissions/roles/{id}"
+      delete: "/qs/v1/permission/role/delete"
     };
     option (openapi.v3.operation) = {
       summary: "删除角色";
@@ -79,9 +79,9 @@ service RoleService {
   }
 
   // 分配角色菜单权限
-  rpc AssignRoleMenus (AssignRoleMenusRequest) returns (google.protobuf.Empty) {
+  rpc AssignRoleMenu (AssignRoleMenuRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/api/v1/permissions/roles/{id}/menus"
+      post: "/qs/v1/permission/role/assign-menu"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -93,7 +93,7 @@ service RoleService {
   // 获取角色菜单权限
   rpc GetRoleMenus (GetRoleMenusRequest) returns (GetRoleMenusReply) {
     option (google.api.http) = {
-      get: "/api/v1/permissions/roles/{id}/menus"
+      get: "/qs/v1/permission/role/list-menus"
     };
     option (openapi.v3.operation) = {
       summary: "获取角色菜单权限";
@@ -193,7 +193,7 @@ message DeleteRoleRequest {
   optional string id = 1 [(openapi.v3.property) = {description: "角色ID"; example: {yaml: "123456789"};}];
 }
 
-message AssignRoleMenusRequest {
+message AssignRoleMenuRequest {
   option (openapi.v3.schema) = {
     description: "分配角色菜单权限请求体";
   };

@@ -23,7 +23,7 @@ service TenantPackageService {
   // 创建租户套餐
   rpc CreateTenantPackage (CreateTenantPackageRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/api/v1/tenant-packages"
+      post: "/qs/v1/tenant-package/create"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -35,7 +35,7 @@ service TenantPackageService {
   // 获取租户套餐信息
   rpc GetTenantPackage (GetTenantPackageRequest) returns (GetTenantPackageReply) {
     option (google.api.http) = {
-      get: "/api/v1/tenant-packages/{id}"
+      get: "/qs/v1/tenant-package/get"
     };
     option (openapi.v3.operation) = {
       summary: "获取租户套餐详细信息";
@@ -46,7 +46,7 @@ service TenantPackageService {
   // 获取租户套餐列表
   rpc ListTenantPackages (ListTenantPackagesRequest) returns (ListTenantPackagesReply) {
     option (google.api.http) = {
-      post: "/api/v1/tenant-packages/list"
+      post: "/qs/v1/tenant-package/list"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -58,7 +58,7 @@ service TenantPackageService {
   // 更新租户套餐信息
   rpc UpdateTenantPackage (UpdateTenantPackageRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      put: "/api/v1/tenant-packages/{id}"
+      put: "/qs/v1/tenant-package/update"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -70,7 +70,7 @@ service TenantPackageService {
   // 删除租户套餐
   rpc DeleteTenantPackage (DeleteTenantPackageRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/api/v1/tenant-packages/{id}"
+      delete: "/qs/v1/tenant-package/delete"
     };
     option (openapi.v3.operation) = {
       summary: "删除租户套餐";

@@ -764,12 +764,12 @@ const file_tenant_v1_tenant_proto_rawDesc = "" +
 	"\x13DeleteTenantRequest\x120\n" +
 	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b租户IDH\x00R\x02id\x88\x01\x01:\x1b\xbaG\x18\x92\x02\x15删除租户请求体B\x05\n" +
 	"\x03_id2\xd3\x06\n" +
-	"\rTenantService\x12\x94\x01\n" +
-	"\fCreateTenant\x12%.system.tenant.v1.CreateTenantRequest\x1a\x16.google.protobuf.Empty\"E\xbaG(\x12\f创建租户\x1a\x18创建一个新的租户\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/v1/tenants\x12\xb7\x01\n" +
-	"\tGetTenant\x12\".system.tenant.v1.GetTenantRequest\x1a .system.tenant.v1.GetTenantReply\"d\xbaGE\x12\x18获取租户详细信息\x1a)根据租户ID获取租户的详细信息\x82\xd3\xe4\x93\x02\x16\x12\x14/api/v1/tenants/{id}\x12\xa9\x01\n" +
-	"\vListTenants\x12$.system.tenant.v1.ListTenantsRequest\x1a\".system.tenant.v1.ListTenantsReply\"P\xbaG.\x12\x12获取租户列表\x1a\x18分页查询租户列表\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/api/v1/tenants/list\x12\xa2\x01\n" +
-	"\fUpdateTenant\x12%.system.tenant.v1.UpdateTenantRequest\x1a\x16.google.protobuf.Empty\"S\xbaG1\x12\x12更新租户信息\x1a\x1b更新租户的基本信息\x82\xd3\xe4\x93\x02\x19:\x01*\x1a\x14/api/v1/tenants/{id}\x12\x9f\x01\n" +
-	"\fDeleteTenant\x12%.system.tenant.v1.DeleteTenantRequest\x1a\x16.google.protobuf.Empty\"P\xbaG1\x12\f删除租户\x1a!删除租户，此操作不可逆\x82\xd3\xe4\x93\x02\x16*\x14/api/v1/tenants/{id}BF\xbaG%:#\n" +
+	"\rTenantService\x12\x99\x01\n" +
+	"\fCreateTenant\x12%.system.tenant.v1.CreateTenantRequest\x1a\x16.google.protobuf.Empty\"J\xbaG(\x12\f创建租户\x1a\x18创建一个新的租户\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/qs/v1/tenant/create\x12\xb4\x01\n" +
+	"\tGetTenant\x12\".system.tenant.v1.GetTenantRequest\x1a .system.tenant.v1.GetTenantReply\"a\xbaGE\x12\x18获取租户详细信息\x1a)根据租户ID获取租户的详细信息\x82\xd3\xe4\x93\x02\x13\x12\x11/qs/v1/tenant/get\x12\xa7\x01\n" +
+	"\vListTenants\x12$.system.tenant.v1.ListTenantsRequest\x1a\".system.tenant.v1.ListTenantsReply\"N\xbaG.\x12\x12获取租户列表\x1a\x18分页查询租户列表\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/qs/v1/tenant/list\x12\xa2\x01\n" +
+	"\fUpdateTenant\x12%.system.tenant.v1.UpdateTenantRequest\x1a\x16.google.protobuf.Empty\"S\xbaG1\x12\x12更新租户信息\x1a\x1b更新租户的基本信息\x82\xd3\xe4\x93\x02\x19:\x01*\x1a\x14/qs/v1/tenant/update\x12\x9f\x01\n" +
+	"\fDeleteTenant\x12%.system.tenant.v1.DeleteTenantRequest\x1a\x16.google.protobuf.Empty\"P\xbaG1\x12\f删除租户\x1a!删除租户，此操作不可逆\x82\xd3\xe4\x93\x02\x16*\x14/qs/v1/tenant/deleteBF\xbaG%:#\n" +
 	"\rTenantService\x12\x12租户相关操作Z\x1cquest-admin/api/tenant/v1;v1b\x06proto3"
 
 var (

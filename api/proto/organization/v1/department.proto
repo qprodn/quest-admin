@@ -23,7 +23,7 @@ service DepartmentService {
   // 创建部门
   rpc CreateDepartment (CreateDepartmentRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/api/v1/organizations/departments"
+      post: "/qs/v1/organizations/department/create"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -35,7 +35,7 @@ service DepartmentService {
   // 获取部门信息
   rpc GetDepartment (GetDepartmentRequest) returns (GetDepartmentReply) {
     option (google.api.http) = {
-      get: "/api/v1/organizations/departments/{id}"
+      get: "/qs/v1/organizations/department/get"
     };
     option (openapi.v3.operation) = {
       summary: "获取部门详细信息";
@@ -46,7 +46,7 @@ service DepartmentService {
   // 获取部门树
   rpc GetDepartmentTree (google.protobuf.Empty) returns (GetDepartmentTreeReply) {
     option (google.api.http) = {
-      get: "/api/v1/organizations/departments/tree"
+      get: "/qs/v1/organizations/department/tree"
     };
     option (openapi.v3.operation) = {
       summary: "获取部门树";
@@ -57,7 +57,7 @@ service DepartmentService {
   // 更新部门信息
   rpc UpdateDepartment (UpdateDepartmentRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      put: "/api/v1/organizations/departments/{id}"
+      put: "/qs/v1/organizations/department/update"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -69,7 +69,7 @@ service DepartmentService {
   // 删除部门
   rpc DeleteDepartment (DeleteDepartmentRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/api/v1/organizations/departments/{id}"
+      delete: "/qs/v1/organizations/department/delete"
     };
     option (openapi.v3.operation) = {
       summary: "删除部门";

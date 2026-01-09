@@ -14,7 +14,7 @@ var (
 
 type UserRoleRepo interface {
 	GetUserRoles(ctx context.Context, userID string) ([]string, error)
-	ManageUserRoles(ctx context.Context, bo *ManageUserRolesBO) error
+	ManageUserRoles(ctx context.Context, bo *AssignUserRolesBO) error
 }
 
 type UserRoleUsecase struct {
@@ -34,7 +34,7 @@ func (uc *UserRoleUsecase) GetUserRoles(ctx context.Context, userID string) ([]s
 	return uc.repo.GetUserRoles(ctx, userID)
 }
 
-func (uc *UserRoleUsecase) ManageUserRoles(ctx context.Context, bo *ManageUserRolesBO) error {
+func (uc *UserRoleUsecase) ManageUserRoles(ctx context.Context, bo *AssignUserRolesBO) error {
 	uc.log.WithContext(ctx).Infof("ManageUserRoles: userID=%s, operation=%s, roleCount=%d", bo.UserID, bo.Operation, len(bo.RoleIDs))
 	return uc.repo.ManageUserRoles(ctx, bo)
 }

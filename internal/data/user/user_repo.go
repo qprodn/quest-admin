@@ -264,7 +264,7 @@ func (r *userRepo) GetUserPosts(ctx context.Context, id string) ([]string, error
 	return postIDs, nil
 }
 
-func (r *userRepo) ManageUserPosts(ctx context.Context, bo *biz.ManageUserPostsBO) error {
+func (r *userRepo) ManageUserPosts(ctx context.Context, bo *biz.AssignUserPostsBO) error {
 	switch bo.Operation {
 	case "add":
 		return r.addUserPosts(ctx, bo.UserID, bo.PostIDs)

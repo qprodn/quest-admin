@@ -20,13 +20,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	RoleService_CreateRole_FullMethodName      = "/system.permission.v1.RoleService/CreateRole"
-	RoleService_GetRole_FullMethodName         = "/system.permission.v1.RoleService/GetRole"
-	RoleService_ListRoles_FullMethodName       = "/system.permission.v1.RoleService/ListRoles"
-	RoleService_UpdateRole_FullMethodName      = "/system.permission.v1.RoleService/UpdateRole"
-	RoleService_DeleteRole_FullMethodName      = "/system.permission.v1.RoleService/DeleteRole"
-	RoleService_AssignRoleMenus_FullMethodName = "/system.permission.v1.RoleService/AssignRoleMenus"
-	RoleService_GetRoleMenus_FullMethodName    = "/system.permission.v1.RoleService/GetRoleMenus"
+	RoleService_CreateRole_FullMethodName     = "/system.permission.v1.RoleService/CreateRole"
+	RoleService_GetRole_FullMethodName        = "/system.permission.v1.RoleService/GetRole"
+	RoleService_ListRoles_FullMethodName      = "/system.permission.v1.RoleService/ListRoles"
+	RoleService_UpdateRole_FullMethodName     = "/system.permission.v1.RoleService/UpdateRole"
+	RoleService_DeleteRole_FullMethodName     = "/system.permission.v1.RoleService/DeleteRole"
+	RoleService_AssignRoleMenu_FullMethodName = "/system.permission.v1.RoleService/AssignRoleMenu"
+	RoleService_GetRoleMenus_FullMethodName   = "/system.permission.v1.RoleService/GetRoleMenus"
 )
 
 // RoleServiceClient is the client API for RoleService service.
@@ -44,7 +44,7 @@ type RoleServiceClient interface {
 	// 删除角色
 	DeleteRole(ctx context.Context, in *DeleteRoleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 分配角色菜单权限
-	AssignRoleMenus(ctx context.Context, in *AssignRoleMenusRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	AssignRoleMenu(ctx context.Context, in *AssignRoleMenuRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 获取角色菜单权限
 	GetRoleMenus(ctx context.Context, in *GetRoleMenusRequest, opts ...grpc.CallOption) (*GetRoleMenusReply, error)
 }
@@ -107,10 +107,10 @@ func (c *roleServiceClient) DeleteRole(ctx context.Context, in *DeleteRoleReques
 	return out, nil
 }
 
-func (c *roleServiceClient) AssignRoleMenus(ctx context.Context, in *AssignRoleMenusRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *roleServiceClient) AssignRoleMenu(ctx context.Context, in *AssignRoleMenuRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, RoleService_AssignRoleMenus_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, RoleService_AssignRoleMenu_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -142,7 +142,7 @@ type RoleServiceServer interface {
 	// 删除角色
 	DeleteRole(context.Context, *DeleteRoleRequest) (*emptypb.Empty, error)
 	// 分配角色菜单权限
-	AssignRoleMenus(context.Context, *AssignRoleMenusRequest) (*emptypb.Empty, error)
+	AssignRoleMenu(context.Context, *AssignRoleMenuRequest) (*emptypb.Empty, error)
 	// 获取角色菜单权限
 	GetRoleMenus(context.Context, *GetRoleMenusRequest) (*GetRoleMenusReply, error)
 	mustEmbedUnimplementedRoleServiceServer()
@@ -170,8 +170,8 @@ func (UnimplementedRoleServiceServer) UpdateRole(context.Context, *UpdateRoleReq
 func (UnimplementedRoleServiceServer) DeleteRole(context.Context, *DeleteRoleRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteRole not implemented")
 }
-func (UnimplementedRoleServiceServer) AssignRoleMenus(context.Context, *AssignRoleMenusRequest) (*emptypb.Empty, error) {
-	return nil, status.Error(codes.Unimplemented, "method AssignRoleMenus not implemented")
+func (UnimplementedRoleServiceServer) AssignRoleMenu(context.Context, *AssignRoleMenuRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method AssignRoleMenu not implemented")
 }
 func (UnimplementedRoleServiceServer) GetRoleMenus(context.Context, *GetRoleMenusRequest) (*GetRoleMenusReply, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetRoleMenus not implemented")
@@ -287,20 +287,20 @@ func _RoleService_DeleteRole_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _RoleService_AssignRoleMenus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AssignRoleMenusRequest)
+func _RoleService_AssignRoleMenu_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AssignRoleMenuRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RoleServiceServer).AssignRoleMenus(ctx, in)
+		return srv.(RoleServiceServer).AssignRoleMenu(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: RoleService_AssignRoleMenus_FullMethodName,
+		FullMethod: RoleService_AssignRoleMenu_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RoleServiceServer).AssignRoleMenus(ctx, req.(*AssignRoleMenusRequest))
+		return srv.(RoleServiceServer).AssignRoleMenu(ctx, req.(*AssignRoleMenuRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -351,8 +351,8 @@ var RoleService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _RoleService_DeleteRole_Handler,
 		},
 		{
-			MethodName: "AssignRoleMenus",
-			Handler:    _RoleService_AssignRoleMenus_Handler,
+			MethodName: "AssignRoleMenu",
+			Handler:    _RoleService_AssignRoleMenu_Handler,
 		},
 		{
 			MethodName: "GetRoleMenus",

@@ -24,7 +24,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type ManageUserRolesRequest struct {
+type AssignUserRolesRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            *string                `protobuf:"bytes,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
 	RoleIds       []string               `protobuf:"bytes,2,rep,name=role_ids,json=roleIds,proto3" json:"role_ids,omitempty"`
@@ -33,20 +33,20 @@ type ManageUserRolesRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ManageUserRolesRequest) Reset() {
-	*x = ManageUserRolesRequest{}
+func (x *AssignUserRolesRequest) Reset() {
+	*x = AssignUserRolesRequest{}
 	mi := &file_user_v1_user_role_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ManageUserRolesRequest) String() string {
+func (x *AssignUserRolesRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ManageUserRolesRequest) ProtoMessage() {}
+func (*AssignUserRolesRequest) ProtoMessage() {}
 
-func (x *ManageUserRolesRequest) ProtoReflect() protoreflect.Message {
+func (x *AssignUserRolesRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_user_v1_user_role_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,26 +58,26 @@ func (x *ManageUserRolesRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ManageUserRolesRequest.ProtoReflect.Descriptor instead.
-func (*ManageUserRolesRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use AssignUserRolesRequest.ProtoReflect.Descriptor instead.
+func (*AssignUserRolesRequest) Descriptor() ([]byte, []int) {
 	return file_user_v1_user_role_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ManageUserRolesRequest) GetId() string {
+func (x *AssignUserRolesRequest) GetId() string {
 	if x != nil && x.Id != nil {
 		return *x.Id
 	}
 	return ""
 }
 
-func (x *ManageUserRolesRequest) GetRoleIds() []string {
+func (x *AssignUserRolesRequest) GetRoleIds() []string {
 	if x != nil {
 		return x.RoleIds
 	}
 	return nil
 }
 
-func (x *ManageUserRolesRequest) GetOperation() string {
+func (x *AssignUserRolesRequest) GetOperation() string {
 	if x != nil && x.Operation != nil {
 		return *x.Operation
 	}
@@ -177,7 +177,7 @@ var File_user_v1_user_role_proto protoreflect.FileDescriptor
 const file_user_v1_user_role_proto_rawDesc = "" +
 	"\n" +
 	"\x17user/v1/user_role.proto\x12\x0esystem.user.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1copenapi/v3/annotations.proto\"\x9c\x02\n" +
-	"\x16ManageUserRolesRequest\x120\n" +
+	"\x16AssignUserRolesRequest\x120\n" +
 	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b用户IDH\x00R\x02id\x88\x01\x01\x12/\n" +
 	"\brole_ids\x18\x02 \x03(\tB\x14\xbaG\x11\x92\x02\x0e角色ID列表R\aroleIds\x12g\n" +
 	"\toperation\x18\x03 \x01(\tBD\xbaGA:\x05\x12\x03add\x92\x027操作类型: add-添加, remove-移除, replace-替换H\x01R\toperation\x88\x01\x01:!\xbaG\x1e\x92\x02\x1b管理用户角色请求体B\x05\n" +
@@ -188,10 +188,10 @@ const file_user_v1_user_role_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b用户IDH\x00R\x02id\x88\x01\x01:'\xbaG$\x92\x02!获取用户角色列表请求体B\x05\n" +
 	"\x03_id\"m\n" +
 	"\x11GetUserRolesReply\x12/\n" +
-	"\brole_ids\x18\x01 \x03(\tB\x14\xbaG\x11\x92\x02\x0e角色ID列表R\aroleIds:'\xbaG$\x92\x02!获取用户角色列表响应体2\x9d\x03\n" +
-	"\x0fUserRoleService\x12\xcb\x01\n" +
-	"\x0fManageUserRoles\x12&.system.user.v1.ManageUserRolesRequest\x1a\x16.google.protobuf.Empty\"x\xbaGR\x12\x12管理用户角色\x1a<为用户分配或移除角色，管理用户的角色信息\x82\xd3\xe4\x93\x02\x1d:\x01*\x1a\x18/api/v1/users/{id}/roles\x12\xbb\x01\n" +
-	"\fGetUserRoles\x12#.system.user.v1.GetUserRolesRequest\x1a!.system.user.v1.GetUserRolesReply\"c\xbaG@\x12\x18获取用户角色列表\x1a$获取用户已分配的角色列表\x82\xd3\xe4\x93\x02\x1a\x12\x18/api/v1/users/{id}/rolesBR\xbaG3:1\n" +
+	"\brole_ids\x18\x01 \x03(\tB\x14\xbaG\x11\x92\x02\x0e角色ID列表R\aroleIds:'\xbaG$\x92\x02!获取用户角色列表响应体2\x96\x03\n" +
+	"\x0fUserRoleService\x12\xc5\x01\n" +
+	"\x0fAssignUserRoles\x12&.system.user.v1.AssignUserRolesRequest\x1a\x16.google.protobuf.Empty\"r\xbaGR\x12\x12管理用户角色\x1a<为用户分配或移除角色，管理用户的角色信息\x82\xd3\xe4\x93\x02\x17:\x01*\x1a\x12/qs/v1/users/roles\x12\xba\x01\n" +
+	"\fGetUserRoles\x12#.system.user.v1.GetUserRolesRequest\x1a!.system.user.v1.GetUserRolesReply\"b\xbaG@\x12\x18获取用户角色列表\x1a$获取用户已分配的角色列表\x82\xd3\xe4\x93\x02\x19\x12\x17/qs/v1/users/roles/{id}BR\xbaG3:1\n" +
 	"\x0fUserRoleService\x12\x1e用户角色关联相关操作Z\x1aquest-admin/api/user/v1;v1b\x06proto3"
 
 var (
@@ -208,15 +208,15 @@ func file_user_v1_user_role_proto_rawDescGZIP() []byte {
 
 var file_user_v1_user_role_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_user_v1_user_role_proto_goTypes = []any{
-	(*ManageUserRolesRequest)(nil), // 0: system.user.v1.ManageUserRolesRequest
+	(*AssignUserRolesRequest)(nil), // 0: system.user.v1.AssignUserRolesRequest
 	(*GetUserRolesRequest)(nil),    // 1: system.user.v1.GetUserRolesRequest
 	(*GetUserRolesReply)(nil),      // 2: system.user.v1.GetUserRolesReply
 	(*emptypb.Empty)(nil),          // 3: google.protobuf.Empty
 }
 var file_user_v1_user_role_proto_depIdxs = []int32{
-	0, // 0: system.user.v1.UserRoleService.ManageUserRoles:input_type -> system.user.v1.ManageUserRolesRequest
+	0, // 0: system.user.v1.UserRoleService.AssignUserRoles:input_type -> system.user.v1.AssignUserRolesRequest
 	1, // 1: system.user.v1.UserRoleService.GetUserRoles:input_type -> system.user.v1.GetUserRolesRequest
-	3, // 2: system.user.v1.UserRoleService.ManageUserRoles:output_type -> google.protobuf.Empty
+	3, // 2: system.user.v1.UserRoleService.AssignUserRoles:output_type -> google.protobuf.Empty
 	2, // 3: system.user.v1.UserRoleService.GetUserRoles:output_type -> system.user.v1.GetUserRolesReply
 	2, // [2:4] is the sub-list for method output_type
 	0, // [0:2] is the sub-list for method input_type

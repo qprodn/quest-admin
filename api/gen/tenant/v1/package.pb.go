@@ -608,12 +608,12 @@ const file_tenant_v1_package_proto_rawDesc = "" +
 	"\x1aDeleteTenantPackageRequest\x12-\n" +
 	"\x02id\x18\x01 \x01(\tB\x18\xbaG\x15:\b\x12\x06pkg001\x92\x02\b套餐IDH\x00R\x02id\x88\x01\x01:!\xbaG\x1e\x92\x02\x1b删除租户套餐请求体B\x05\n" +
 	"\x03_id2\x8c\b\n" +
-	"\x14TenantPackageService\x12\xb6\x01\n" +
-	"\x13CreateTenantPackage\x12,.system.tenant.v1.CreateTenantPackageRequest\x1a\x16.google.protobuf.Empty\"Y\xbaG4\x12\x12创建租户套餐\x1a\x1e创建一个新的租户套餐\x82\xd3\xe4\x93\x02\x1c:\x01*\"\x17/api/v1/tenant-packages\x12\xda\x01\n" +
-	"\x10GetTenantPackage\x12).system.tenant.v1.GetTenantPackageRequest\x1a'.system.tenant.v1.GetTenantPackageReply\"r\xbaGK\x12\x1e获取租户套餐详细信息\x1a)根据套餐ID获取套餐的详细信息\x82\xd3\xe4\x93\x02\x1e\x12\x1c/api/v1/tenant-packages/{id}\x12\xd2\x01\n" +
-	"\x12ListTenantPackages\x12+.system.tenant.v1.ListTenantPackagesRequest\x1a).system.tenant.v1.ListTenantPackagesReply\"d\xbaG:\x12\x18获取租户套餐列表\x1a\x1e分页查询租户套餐列表\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/api/v1/tenant-packages/list\x12\xc4\x01\n" +
-	"\x13UpdateTenantPackage\x12,.system.tenant.v1.UpdateTenantPackageRequest\x1a\x16.google.protobuf.Empty\"g\xbaG=\x12\x18更新租户套餐信息\x1a!更新租户套餐的基本信息\x82\xd3\xe4\x93\x02!:\x01*\x1a\x1c/api/v1/tenant-packages/{id}\x12\xc1\x01\n" +
-	"\x13DeleteTenantPackage\x12,.system.tenant.v1.DeleteTenantPackageRequest\x1a\x16.google.protobuf.Empty\"d\xbaG=\x12\x12删除租户套餐\x1a'删除租户套餐，此操作不可逆\x82\xd3\xe4\x93\x02\x1e*\x1c/api/v1/tenant-packages/{id}BS\xbaG2:0\n" +
+	"\x14TenantPackageService\x12\xbb\x01\n" +
+	"\x13CreateTenantPackage\x12,.system.tenant.v1.CreateTenantPackageRequest\x1a\x16.google.protobuf.Empty\"^\xbaG4\x12\x12创建租户套餐\x1a\x1e创建一个新的租户套餐\x82\xd3\xe4\x93\x02!:\x01*\"\x1c/qs/v1/tenant-package/create\x12\xd7\x01\n" +
+	"\x10GetTenantPackage\x12).system.tenant.v1.GetTenantPackageRequest\x1a'.system.tenant.v1.GetTenantPackageReply\"o\xbaGK\x12\x1e获取租户套餐详细信息\x1a)根据套餐ID获取套餐的详细信息\x82\xd3\xe4\x93\x02\x1b\x12\x19/qs/v1/tenant-package/get\x12\xd0\x01\n" +
+	"\x12ListTenantPackages\x12+.system.tenant.v1.ListTenantPackagesRequest\x1a).system.tenant.v1.ListTenantPackagesReply\"b\xbaG:\x12\x18获取租户套餐列表\x1a\x1e分页查询租户套餐列表\x82\xd3\xe4\x93\x02\x1f:\x01*\"\x1a/qs/v1/tenant-package/list\x12\xc4\x01\n" +
+	"\x13UpdateTenantPackage\x12,.system.tenant.v1.UpdateTenantPackageRequest\x1a\x16.google.protobuf.Empty\"g\xbaG=\x12\x18更新租户套餐信息\x1a!更新租户套餐的基本信息\x82\xd3\xe4\x93\x02!:\x01*\x1a\x1c/qs/v1/tenant-package/update\x12\xc1\x01\n" +
+	"\x13DeleteTenantPackage\x12,.system.tenant.v1.DeleteTenantPackageRequest\x1a\x16.google.protobuf.Empty\"d\xbaG=\x12\x12删除租户套餐\x1a'删除租户套餐，此操作不可逆\x82\xd3\xe4\x93\x02\x1e*\x1c/qs/v1/tenant-package/deleteBS\xbaG2:0\n" +
 	"\x14TenantPackageService\x12\x18租户套餐相关操作Z\x1cquest-admin/api/tenant/v1;v1b\x06proto3"
 
 var (

@@ -23,7 +23,7 @@ service PostService {
   // 创建岗位
   rpc CreatePost (CreatePostRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/api/v1/organizations/posts"
+      post: "/qs/v1/organizations/post/create"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -35,7 +35,7 @@ service PostService {
   // 获取岗位信息
   rpc GetPost (GetPostRequest) returns (GetPostReply) {
     option (google.api.http) = {
-      get: "/api/v1/organizations/posts/{id}"
+      get: "/qs/v1/organizations/post/get"
     };
     option (openapi.v3.operation) = {
       summary: "获取岗位详细信息";
@@ -46,7 +46,7 @@ service PostService {
   // 获取岗位列表
   rpc ListPosts (ListPostsRequest) returns (ListPostsReply) {
     option (google.api.http) = {
-      post: "/api/v1/organizations/posts/list"
+      post: "/qs/v1/organizations/post/list"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -58,7 +58,7 @@ service PostService {
   // 更新岗位信息
   rpc UpdatePost (UpdatePostRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      put: "/api/v1/organizations/posts/{id}"
+      put: "/qs/v1/organizations/post/update"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -70,7 +70,7 @@ service PostService {
   // 删除岗位
   rpc DeletePost (DeletePostRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/api/v1/organizations/posts/{id}"
+      delete: "/qs/v1/organizations/post/delete"
     };
     option (openapi.v3.operation) = {
       summary: "删除岗位";

@@ -23,7 +23,7 @@ service UserService {
   // 创建用户
   rpc CreateUser (CreateUserRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/api/v1/users"
+      post: "/qs/v1/user/create"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -35,7 +35,7 @@ service UserService {
   // 获取用户信息
   rpc GetUser (GetUserRequest) returns (GetUserReply) {
     option (google.api.http) = {
-      get: "/api/v1/users/{id}"
+      get: "/qs/v1/user/get"
     };
     option (openapi.v3.operation) = {
       summary: "获取用户详细信息";
@@ -46,7 +46,7 @@ service UserService {
   // 用户列表查询
   rpc ListUsers (ListUsersRequest) returns (ListUsersReply) {
     option (google.api.http) = {
-      get: "/api/v1/users"
+      get: "/qs/v1/user/list"
     };
     option (openapi.v3.operation) = {
       summary: "获取用户列表";
@@ -57,7 +57,7 @@ service UserService {
   // 更新用户信息
   rpc UpdateUser (UpdateUserRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      put: "/api/v1/users/{id}"
+      put: "/qs/v1/user/update"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -69,7 +69,7 @@ service UserService {
   // 修改用户密码
   rpc ChangePassword (ChangePasswordRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      put: "/api/v1/users/{id}/password"
+      put: "/qs/v1/user/change-password"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -81,7 +81,7 @@ service UserService {
   // 重置用户密码
   rpc ResetPassword (ResetPasswordRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      put: "/api/v1/users/{id}/password/reset"
+      put: "/qs/v1/user/reset-password"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -93,7 +93,7 @@ service UserService {
   // 变更用户状态
   rpc ChangeUserStatus (ChangeUserStatusRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      patch: "/api/v1/users/{id}/status"
+      put: "/qs/v1/user/update-status"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -103,9 +103,9 @@ service UserService {
   }
 
   // 管理用户岗位
-  rpc ManageUserPosts (ManageUserPostsRequest) returns (google.protobuf.Empty) {
+  rpc AssignUserPost (AssignUserPostRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      put: "/api/v1/users/{id}/posts"
+      put: "/qs/v1/user/assign-post"
       body: "*"
     };
     option (openapi.v3.operation) = {
@@ -117,7 +117,7 @@ service UserService {
   // 删除用户
   rpc DeleteUser (DeleteUserRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/api/v1/users/{id}"
+      delete: "/qs/v1/user/delete"
     };
     option (openapi.v3.operation) = {
       summary: "删除用户";
@@ -251,7 +251,7 @@ message ChangeUserStatusRequest {
   optional int32 status = 2 [(openapi.v3.property) = {description: "目标状态: 0-禁用, 1-正常"; example: {yaml: "1"};}];
 }
 
-message ManageUserPostsRequest {
+message AssignUserPostRequest {
   option (openapi.v3.schema) = {
     description: "管理用户岗位请求体";
   };

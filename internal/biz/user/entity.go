@@ -39,7 +39,7 @@ type UpdateLoginInfoBO struct {
 	LoginDate time.Time
 }
 
-type ManageUserPostsBO struct {
+type AssignUserPostsBO struct {
 	UserID    string
 	PostIDs   []string
 	Operation string
@@ -63,7 +63,7 @@ type ListUsersResult struct {
 	TotalPages int32
 }
 
-type ManageUserRolesBO struct {
+type AssignUserRolesBO struct {
 	UserID    string
 	RoleIDs   []string
 	Operation string

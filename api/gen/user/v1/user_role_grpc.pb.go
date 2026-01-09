@@ -20,7 +20,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	UserRoleService_ManageUserRoles_FullMethodName = "/system.user.v1.UserRoleService/ManageUserRoles"
+	UserRoleService_AssignUserRoles_FullMethodName = "/system.user.v1.UserRoleService/AssignUserRoles"
 	UserRoleService_GetUserRoles_FullMethodName    = "/system.user.v1.UserRoleService/GetUserRoles"
 )
 
@@ -29,7 +29,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserRoleServiceClient interface {
 	// 管理用户角色
-	ManageUserRoles(ctx context.Context, in *ManageUserRolesRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	AssignUserRoles(ctx context.Context, in *AssignUserRolesRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 获取用户角色列表
 	GetUserRoles(ctx context.Context, in *GetUserRolesRequest, opts ...grpc.CallOption) (*GetUserRolesReply, error)
 }
@@ -42,10 +42,10 @@ func NewUserRoleServiceClient(cc grpc.ClientConnInterface) UserRoleServiceClient
 	return &userRoleServiceClient{cc}
 }
 
-func (c *userRoleServiceClient) ManageUserRoles(ctx context.Context, in *ManageUserRolesRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *userRoleServiceClient) AssignUserRoles(ctx context.Context, in *AssignUserRolesRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, UserRoleService_ManageUserRoles_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, UserRoleService_AssignUserRoles_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func (c *userRoleServiceClient) GetUserRoles(ctx context.Context, in *GetUserRol
 // for forward compatibility.
 type UserRoleServiceServer interface {
 	// 管理用户角色
-	ManageUserRoles(context.Context, *ManageUserRolesRequest) (*emptypb.Empty, error)
+	AssignUserRoles(context.Context, *AssignUserRolesRequest) (*emptypb.Empty, error)
 	// 获取用户角色列表
 	GetUserRoles(context.Context, *GetUserRolesRequest) (*GetUserRolesReply, error)
 	mustEmbedUnimplementedUserRoleServiceServer()
@@ -80,8 +80,8 @@ type UserRoleServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedUserRoleServiceServer struct{}
 
-func (UnimplementedUserRoleServiceServer) ManageUserRoles(context.Context, *ManageUserRolesRequest) (*emptypb.Empty, error) {
-	return nil, status.Error(codes.Unimplemented, "method ManageUserRoles not implemented")
+func (UnimplementedUserRoleServiceServer) AssignUserRoles(context.Context, *AssignUserRolesRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method AssignUserRoles not implemented")
 }
 func (UnimplementedUserRoleServiceServer) GetUserRoles(context.Context, *GetUserRolesRequest) (*GetUserRolesReply, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetUserRoles not implemented")
@@ -107,20 +107,20 @@ func RegisterUserRoleServiceServer(s grpc.ServiceRegistrar, srv UserRoleServiceS
 	s.RegisterService(&UserRoleService_ServiceDesc, srv)
 }
 
-func _UserRoleService_ManageUserRoles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ManageUserRolesRequest)
+func _UserRoleService_AssignUserRoles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AssignUserRolesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserRoleServiceServer).ManageUserRoles(ctx, in)
+		return srv.(UserRoleServiceServer).AssignUserRoles(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UserRoleService_ManageUserRoles_FullMethodName,
+		FullMethod: UserRoleService_AssignUserRoles_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserRoleServiceServer).ManageUserRoles(ctx, req.(*ManageUserRolesRequest))
+		return srv.(UserRoleServiceServer).AssignUserRoles(ctx, req.(*AssignUserRolesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -151,8 +151,8 @@ var UserRoleService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*UserRoleServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "ManageUserRoles",
-			Handler:    _UserRoleService_ManageUserRoles_Handler,
+			MethodName: "AssignUserRoles",
+			Handler:    _UserRoleService_AssignUserRoles_Handler,
 		},
 		{
 			MethodName: "GetUserRoles",

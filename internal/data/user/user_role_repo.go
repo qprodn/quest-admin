@@ -56,7 +56,7 @@ func (r *userRoleRepo) GetUserRoles(ctx context.Context, userID string) ([]strin
 	return roleIDs, nil
 }
 
-func (r *userRoleRepo) ManageUserRoles(ctx context.Context, bo *biz.ManageUserRolesBO) error {
+func (r *userRoleRepo) ManageUserRoles(ctx context.Context, bo *biz.AssignUserRolesBO) error {
 	switch bo.Operation {
 	case "add":
 		return r.addUserRoles(ctx, bo.UserID, bo.RoleIDs)

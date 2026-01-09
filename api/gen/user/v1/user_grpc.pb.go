@@ -27,7 +27,7 @@ const (
 	UserService_ChangePassword_FullMethodName   = "/system.user.v1.UserService/ChangePassword"
 	UserService_ResetPassword_FullMethodName    = "/system.user.v1.UserService/ResetPassword"
 	UserService_ChangeUserStatus_FullMethodName = "/system.user.v1.UserService/ChangeUserStatus"
-	UserService_ManageUserPosts_FullMethodName  = "/system.user.v1.UserService/ManageUserPosts"
+	UserService_AssignUserPost_FullMethodName   = "/system.user.v1.UserService/AssignUserPost"
 	UserService_DeleteUser_FullMethodName       = "/system.user.v1.UserService/DeleteUser"
 )
 
@@ -50,7 +50,7 @@ type UserServiceClient interface {
 	// 变更用户状态
 	ChangeUserStatus(ctx context.Context, in *ChangeUserStatusRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 管理用户岗位
-	ManageUserPosts(ctx context.Context, in *ManageUserPostsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	AssignUserPost(ctx context.Context, in *AssignUserPostRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 删除用户
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
@@ -133,10 +133,10 @@ func (c *userServiceClient) ChangeUserStatus(ctx context.Context, in *ChangeUser
 	return out, nil
 }
 
-func (c *userServiceClient) ManageUserPosts(ctx context.Context, in *ManageUserPostsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *userServiceClient) AssignUserPost(ctx context.Context, in *AssignUserPostRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, UserService_ManageUserPosts_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, UserService_AssignUserPost_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -172,7 +172,7 @@ type UserServiceServer interface {
 	// 变更用户状态
 	ChangeUserStatus(context.Context, *ChangeUserStatusRequest) (*emptypb.Empty, error)
 	// 管理用户岗位
-	ManageUserPosts(context.Context, *ManageUserPostsRequest) (*emptypb.Empty, error)
+	AssignUserPost(context.Context, *AssignUserPostRequest) (*emptypb.Empty, error)
 	// 删除用户
 	DeleteUser(context.Context, *DeleteUserRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedUserServiceServer()
@@ -206,8 +206,8 @@ func (UnimplementedUserServiceServer) ResetPassword(context.Context, *ResetPassw
 func (UnimplementedUserServiceServer) ChangeUserStatus(context.Context, *ChangeUserStatusRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method ChangeUserStatus not implemented")
 }
-func (UnimplementedUserServiceServer) ManageUserPosts(context.Context, *ManageUserPostsRequest) (*emptypb.Empty, error) {
-	return nil, status.Error(codes.Unimplemented, "method ManageUserPosts not implemented")
+func (UnimplementedUserServiceServer) AssignUserPost(context.Context, *AssignUserPostRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method AssignUserPost not implemented")
 }
 func (UnimplementedUserServiceServer) DeleteUser(context.Context, *DeleteUserRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteUser not implemented")
@@ -359,20 +359,20 @@ func _UserService_ChangeUserStatus_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_ManageUserPosts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ManageUserPostsRequest)
+func _UserService_AssignUserPost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AssignUserPostRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).ManageUserPosts(ctx, in)
+		return srv.(UserServiceServer).AssignUserPost(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UserService_ManageUserPosts_FullMethodName,
+		FullMethod: UserService_AssignUserPost_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).ManageUserPosts(ctx, req.(*ManageUserPostsRequest))
+		return srv.(UserServiceServer).AssignUserPost(ctx, req.(*AssignUserPostRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -431,8 +431,8 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserService_ChangeUserStatus_Handler,
 		},
 		{
-			MethodName: "ManageUserPosts",
-			Handler:    _UserService_ManageUserPosts_Handler,
+			MethodName: "AssignUserPost",
+			Handler:    _UserService_AssignUserPost_Handler,
 		},
 		{
 			MethodName: "DeleteUser",

@@ -773,15 +773,15 @@ const file_permission_v1_menu_proto_rawDesc = "" +
 	"\x11DeleteMenuRequest\x120\n" +
 	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b菜单IDH\x00R\x02id\x88\x01\x01:\x1b\xbaG\x18\x92\x02\x15删除菜单请求体B\x05\n" +
 	"\x03_id2\xfb\x06\n" +
-	"\vMenuService\x12\x9e\x01\n" +
+	"\vMenuService\x12\xa3\x01\n" +
 	"\n" +
-	"CreateMenu\x12'.system.permission.v1.CreateMenuRequest\x1a\x16.google.protobuf.Empty\"O\xbaG(\x12\f创建菜单\x1a\x18创建一个新的菜单\x82\xd3\xe4\x93\x02\x1e:\x01*\"\x19/api/v1/permissions/menus\x12\xc3\x01\n" +
-	"\aGetMenu\x12$.system.permission.v1.GetMenuRequest\x1a\".system.permission.v1.GetMenuReply\"n\xbaGE\x12\x18获取菜单详细信息\x1a)根据菜单ID获取菜单的详细信息\x82\xd3\xe4\x93\x02 \x12\x1e/api/v1/permissions/menus/{id}\x12\xa9\x01\n" +
-	"\vGetMenuTree\x12\x16.google.protobuf.Empty\x1a&.system.permission.v1.GetMenuTreeReply\"Z\xbaG1\x12\x0f获取菜单树\x1a\x1e获取完整的菜单树结构\x82\xd3\xe4\x93\x02 \x12\x1e/api/v1/permissions/menus/tree\x12\xac\x01\n" +
+	"CreateMenu\x12'.system.permission.v1.CreateMenuRequest\x1a\x16.google.protobuf.Empty\"T\xbaG(\x12\f创建菜单\x1a\x18创建一个新的菜单\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/qs/v1/permissions/menu/create\x12\xc0\x01\n" +
+	"\aGetMenu\x12$.system.permission.v1.GetMenuRequest\x1a\".system.permission.v1.GetMenuReply\"k\xbaGE\x12\x18获取菜单详细信息\x1a)根据菜单ID获取菜单的详细信息\x82\xd3\xe4\x93\x02\x1d\x12\x1b/qs/v1/permissions/menu/get\x12\xa7\x01\n" +
+	"\vGetMenuTree\x12\x16.google.protobuf.Empty\x1a&.system.permission.v1.GetMenuTreeReply\"X\xbaG1\x12\x0f获取菜单树\x1a\x1e获取完整的菜单树结构\x82\xd3\xe4\x93\x02\x1e\x12\x1c/qs/v1/permissions/menu/tree\x12\xac\x01\n" +
 	"\n" +
-	"UpdateMenu\x12'.system.permission.v1.UpdateMenuRequest\x1a\x16.google.protobuf.Empty\"]\xbaG1\x12\x12更新菜单信息\x1a\x1b更新菜单的基本信息\x82\xd3\xe4\x93\x02#:\x01*\x1a\x1e/api/v1/permissions/menus/{id}\x12\xa9\x01\n" +
+	"UpdateMenu\x12'.system.permission.v1.UpdateMenuRequest\x1a\x16.google.protobuf.Empty\"]\xbaG1\x12\x12更新菜单信息\x1a\x1b更新菜单的基本信息\x82\xd3\xe4\x93\x02#:\x01*\x1a\x1e/qs/v1/permissions/menu/update\x12\xa9\x01\n" +
 	"\n" +
-	"DeleteMenu\x12'.system.permission.v1.DeleteMenuRequest\x1a\x16.google.protobuf.Empty\"Z\xbaG1\x12\f删除菜单\x1a!删除菜单，此操作不可逆\x82\xd3\xe4\x93\x02 *\x1e/api/v1/permissions/menus/{id}BN\xbaG):'\n" +
+	"DeleteMenu\x12'.system.permission.v1.DeleteMenuRequest\x1a\x16.google.protobuf.Empty\"Z\xbaG1\x12\f删除菜单\x1a!删除菜单，此操作不可逆\x82\xd3\xe4\x93\x02 *\x1e/qs/v1/permissions/menu/deleteBN\xbaG):'\n" +
 	"\vMenuService\x12\x18菜单管理相关操作Z quest-admin/api/permission/v1;v1b\x06proto3"
 
 var (

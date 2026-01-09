@@ -28,7 +28,7 @@ type UserRepo interface {
 	UpdateStatus(ctx context.Context, bo *UpdateStatusBO) error
 	UpdateLoginInfo(ctx context.Context, bo *UpdateLoginInfoBO) error
 	GetUserPosts(ctx context.Context, id string) ([]string, error)
-	ManageUserPosts(ctx context.Context, bo *ManageUserPostsBO) error
+	ManageUserPosts(ctx context.Context, bo *AssignUserPostsBO) error
 	Delete(ctx context.Context, id string) error
 }
 
@@ -120,7 +120,7 @@ func (uc *UserUsecase) ChangeUserStatus(ctx context.Context, bo *UpdateStatusBO)
 	return uc.repo.UpdateStatus(ctx, bo)
 }
 
-func (uc *UserUsecase) ManageUserPosts(ctx context.Context, bo *ManageUserPostsBO) error {
+func (uc *UserUsecase) ManageUserPosts(ctx context.Context, bo *AssignUserPostsBO) error {
 	uc.log.WithContext(ctx).Infof("ManageUserPosts: id=%s, operation=%s, postCount=%d", bo.UserID, bo.Operation, len(bo.PostIDs))
 
 	_, err := uc.repo.FindByID(ctx, bo.UserID)

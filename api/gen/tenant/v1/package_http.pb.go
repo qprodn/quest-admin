@@ -41,11 +41,11 @@ type TenantPackageServiceHTTPServer interface {
 
 func RegisterTenantPackageServiceHTTPServer(s *http.Server, srv TenantPackageServiceHTTPServer) {
 	r := s.Route("/")
-	r.POST("/api/v1/tenant-packages", _TenantPackageService_CreateTenantPackage0_HTTP_Handler(srv))
-	r.GET("/api/v1/tenant-packages/{id}", _TenantPackageService_GetTenantPackage0_HTTP_Handler(srv))
-	r.POST("/api/v1/tenant-packages/list", _TenantPackageService_ListTenantPackages0_HTTP_Handler(srv))
-	r.PUT("/api/v1/tenant-packages/{id}", _TenantPackageService_UpdateTenantPackage0_HTTP_Handler(srv))
-	r.DELETE("/api/v1/tenant-packages/{id}", _TenantPackageService_DeleteTenantPackage0_HTTP_Handler(srv))
+	r.POST("/qs/v1/tenant-package/create", _TenantPackageService_CreateTenantPackage0_HTTP_Handler(srv))
+	r.GET("/qs/v1/tenant-package/get", _TenantPackageService_GetTenantPackage0_HTTP_Handler(srv))
+	r.POST("/qs/v1/tenant-package/list", _TenantPackageService_ListTenantPackages0_HTTP_Handler(srv))
+	r.PUT("/qs/v1/tenant-package/update", _TenantPackageService_UpdateTenantPackage0_HTTP_Handler(srv))
+	r.DELETE("/qs/v1/tenant-package/delete", _TenantPackageService_DeleteTenantPackage0_HTTP_Handler(srv))
 }
 
 func _TenantPackageService_CreateTenantPackage0_HTTP_Handler(srv TenantPackageServiceHTTPServer) func(ctx http.Context) error {
@@ -74,9 +74,6 @@ func _TenantPackageService_GetTenantPackage0_HTTP_Handler(srv TenantPackageServi
 	return func(ctx http.Context) error {
 		var in GetTenantPackageRequest
 		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, OperationTenantPackageServiceGetTenantPackage)
@@ -123,9 +120,6 @@ func _TenantPackageService_UpdateTenantPackage0_HTTP_Handler(srv TenantPackageSe
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		if err := ctx.BindVars(&in); err != nil {
-			return err
-		}
 		http.SetOperation(ctx, OperationTenantPackageServiceUpdateTenantPackage)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.UpdateTenantPackage(ctx, req.(*UpdateTenantPackageRequest))
@@ -143,9 +137,6 @@ func _TenantPackageService_DeleteTenantPackage0_HTTP_Handler(srv TenantPackageSe
 	return func(ctx http.Context) error {
 		var in DeleteTenantPackageRequest
 		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, OperationTenantPackageServiceDeleteTenantPackage)
@@ -185,7 +176,7 @@ func NewTenantPackageServiceHTTPClient(client *http.Client) TenantPackageService
 // CreateTenantPackage 创建租户套餐
 func (c *TenantPackageServiceHTTPClientImpl) CreateTenantPackage(ctx context.Context, in *CreateTenantPackageRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/tenant-packages"
+	pattern := "/qs/v1/tenant-package/create"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationTenantPackageServiceCreateTenantPackage))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -199,7 +190,7 @@ func (c *TenantPackageServiceHTTPClientImpl) CreateTenantPackage(ctx context.Con
 // DeleteTenantPackage 删除租户套餐
 func (c *TenantPackageServiceHTTPClientImpl) DeleteTenantPackage(ctx context.Context, in *DeleteTenantPackageRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/tenant-packages/{id}"
+	pattern := "/qs/v1/tenant-package/delete"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationTenantPackageServiceDeleteTenantPackage))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -213,7 +204,7 @@ func (c *TenantPackageServiceHTTPClientImpl) DeleteTenantPackage(ctx context.Con
 // GetTenantPackage 获取租户套餐信息
 func (c *TenantPackageServiceHTTPClientImpl) GetTenantPackage(ctx context.Context, in *GetTenantPackageRequest, opts ...http.CallOption) (*GetTenantPackageReply, error) {
 	var out GetTenantPackageReply
-	pattern := "/api/v1/tenant-packages/{id}"
+	pattern := "/qs/v1/tenant-package/get"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationTenantPackageServiceGetTenantPackage))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -227,7 +218,7 @@ func (c *TenantPackageServiceHTTPClientImpl) GetTenantPackage(ctx context.Contex
 // ListTenantPackages 获取租户套餐列表
 func (c *TenantPackageServiceHTTPClientImpl) ListTenantPackages(ctx context.Context, in *ListTenantPackagesRequest, opts ...http.CallOption) (*ListTenantPackagesReply, error) {
 	var out ListTenantPackagesReply
-	pattern := "/api/v1/tenant-packages/list"
+	pattern := "/qs/v1/tenant-package/list"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationTenantPackageServiceListTenantPackages))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -241,7 +232,7 @@ func (c *TenantPackageServiceHTTPClientImpl) ListTenantPackages(ctx context.Cont
 // UpdateTenantPackage 更新租户套餐信息
 func (c *TenantPackageServiceHTTPClientImpl) UpdateTenantPackage(ctx context.Context, in *UpdateTenantPackageRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/tenant-packages/{id}"
+	pattern := "/qs/v1/tenant-package/update"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationTenantPackageServiceUpdateTenantPackage))
 	opts = append(opts, http.PathTemplate(pattern))

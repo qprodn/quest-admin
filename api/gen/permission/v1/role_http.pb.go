@@ -20,7 +20,7 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-const OperationRoleServiceAssignRoleMenus = "/system.permission.v1.RoleService/AssignRoleMenus"
+const OperationRoleServiceAssignRoleMenu = "/system.permission.v1.RoleService/AssignRoleMenu"
 const OperationRoleServiceCreateRole = "/system.permission.v1.RoleService/CreateRole"
 const OperationRoleServiceDeleteRole = "/system.permission.v1.RoleService/DeleteRole"
 const OperationRoleServiceGetRole = "/system.permission.v1.RoleService/GetRole"
@@ -29,8 +29,8 @@ const OperationRoleServiceListRoles = "/system.permission.v1.RoleService/ListRol
 const OperationRoleServiceUpdateRole = "/system.permission.v1.RoleService/UpdateRole"
 
 type RoleServiceHTTPServer interface {
-	// AssignRoleMenus 分配角色菜单权限
-	AssignRoleMenus(context.Context, *AssignRoleMenusRequest) (*emptypb.Empty, error)
+	// AssignRoleMenu 分配角色菜单权限
+	AssignRoleMenu(context.Context, *AssignRoleMenuRequest) (*emptypb.Empty, error)
 	// CreateRole 创建角色
 	CreateRole(context.Context, *CreateRoleRequest) (*emptypb.Empty, error)
 	// DeleteRole 删除角色
@@ -47,13 +47,13 @@ type RoleServiceHTTPServer interface {
 
 func RegisterRoleServiceHTTPServer(s *http.Server, srv RoleServiceHTTPServer) {
 	r := s.Route("/")
-	r.POST("/api/v1/permissions/roles", _RoleService_CreateRole0_HTTP_Handler(srv))
-	r.GET("/api/v1/permissions/roles/{id}", _RoleService_GetRole0_HTTP_Handler(srv))
-	r.POST("/api/v1/permissions/roles/list", _RoleService_ListRoles0_HTTP_Handler(srv))
-	r.PUT("/api/v1/permissions/roles/{id}", _RoleService_UpdateRole0_HTTP_Handler(srv))
-	r.DELETE("/api/v1/permissions/roles/{id}", _RoleService_DeleteRole0_HTTP_Handler(srv))
-	r.POST("/api/v1/permissions/roles/{id}/menus", _RoleService_AssignRoleMenus0_HTTP_Handler(srv))
-	r.GET("/api/v1/permissions/roles/{id}/menus", _RoleService_GetRoleMenus0_HTTP_Handler(srv))
+	r.POST("/qs/v1/permission/role/create", _RoleService_CreateRole0_HTTP_Handler(srv))
+	r.GET("/qs/v1/permission/role/get", _RoleService_GetRole0_HTTP_Handler(srv))
+	r.POST("/qs/v1/permission/role/list", _RoleService_ListRoles0_HTTP_Handler(srv))
+	r.PUT("/qs/v1/permission/role/update", _RoleService_UpdateRole0_HTTP_Handler(srv))
+	r.DELETE("/qs/v1/permission/role/delete", _RoleService_DeleteRole0_HTTP_Handler(srv))
+	r.POST("/qs/v1/permission/role/assign-menu", _RoleService_AssignRoleMenu0_HTTP_Handler(srv))
+	r.GET("/qs/v1/permission/role/list-menus", _RoleService_GetRoleMenus0_HTTP_Handler(srv))
 }
 
 func _RoleService_CreateRole0_HTTP_Handler(srv RoleServiceHTTPServer) func(ctx http.Context) error {
@@ -82,9 +82,6 @@ func _RoleService_GetRole0_HTTP_Handler(srv RoleServiceHTTPServer) func(ctx http
 	return func(ctx http.Context) error {
 		var in GetRoleRequest
 		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, OperationRoleServiceGetRole)
@@ -131,9 +128,6 @@ func _RoleService_UpdateRole0_HTTP_Handler(srv RoleServiceHTTPServer) func(ctx h
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		if err := ctx.BindVars(&in); err != nil {
-			return err
-		}
 		http.SetOperation(ctx, OperationRoleServiceUpdateRole)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.UpdateRole(ctx, req.(*UpdateRoleRequest))
@@ -153,9 +147,6 @@ func _RoleService_DeleteRole0_HTTP_Handler(srv RoleServiceHTTPServer) func(ctx h
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		if err := ctx.BindVars(&in); err != nil {
-			return err
-		}
 		http.SetOperation(ctx, OperationRoleServiceDeleteRole)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.DeleteRole(ctx, req.(*DeleteRoleRequest))
@@ -169,21 +160,18 @@ func _RoleService_DeleteRole0_HTTP_Handler(srv RoleServiceHTTPServer) func(ctx h
 	}
 }
 
-func _RoleService_AssignRoleMenus0_HTTP_Handler(srv RoleServiceHTTPServer) func(ctx http.Context) error {
+func _RoleService_AssignRoleMenu0_HTTP_Handler(srv RoleServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in AssignRoleMenusRequest
+		var in AssignRoleMenuRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		if err := ctx.BindVars(&in); err != nil {
-			return err
-		}
-		http.SetOperation(ctx, OperationRoleServiceAssignRoleMenus)
+		http.SetOperation(ctx, OperationRoleServiceAssignRoleMenu)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.AssignRoleMenus(ctx, req.(*AssignRoleMenusRequest))
+			return srv.AssignRoleMenu(ctx, req.(*AssignRoleMenuRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
@@ -200,9 +188,6 @@ func _RoleService_GetRoleMenus0_HTTP_Handler(srv RoleServiceHTTPServer) func(ctx
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		if err := ctx.BindVars(&in); err != nil {
-			return err
-		}
 		http.SetOperation(ctx, OperationRoleServiceGetRoleMenus)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetRoleMenus(ctx, req.(*GetRoleMenusRequest))
@@ -217,8 +202,8 @@ func _RoleService_GetRoleMenus0_HTTP_Handler(srv RoleServiceHTTPServer) func(ctx
 }
 
 type RoleServiceHTTPClient interface {
-	// AssignRoleMenus 分配角色菜单权限
-	AssignRoleMenus(ctx context.Context, req *AssignRoleMenusRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	// AssignRoleMenu 分配角色菜单权限
+	AssignRoleMenu(ctx context.Context, req *AssignRoleMenuRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// CreateRole 创建角色
 	CreateRole(ctx context.Context, req *CreateRoleRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// DeleteRole 删除角色
@@ -241,12 +226,12 @@ func NewRoleServiceHTTPClient(client *http.Client) RoleServiceHTTPClient {
 	return &RoleServiceHTTPClientImpl{client}
 }
 
-// AssignRoleMenus 分配角色菜单权限
-func (c *RoleServiceHTTPClientImpl) AssignRoleMenus(ctx context.Context, in *AssignRoleMenusRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+// AssignRoleMenu 分配角色菜单权限
+func (c *RoleServiceHTTPClientImpl) AssignRoleMenu(ctx context.Context, in *AssignRoleMenuRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/permissions/roles/{id}/menus"
+	pattern := "/qs/v1/permission/role/assign-menu"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationRoleServiceAssignRoleMenus))
+	opts = append(opts, http.Operation(OperationRoleServiceAssignRoleMenu))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -258,7 +243,7 @@ func (c *RoleServiceHTTPClientImpl) AssignRoleMenus(ctx context.Context, in *Ass
 // CreateRole 创建角色
 func (c *RoleServiceHTTPClientImpl) CreateRole(ctx context.Context, in *CreateRoleRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/permissions/roles"
+	pattern := "/qs/v1/permission/role/create"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationRoleServiceCreateRole))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -272,7 +257,7 @@ func (c *RoleServiceHTTPClientImpl) CreateRole(ctx context.Context, in *CreateRo
 // DeleteRole 删除角色
 func (c *RoleServiceHTTPClientImpl) DeleteRole(ctx context.Context, in *DeleteRoleRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/permissions/roles/{id}"
+	pattern := "/qs/v1/permission/role/delete"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationRoleServiceDeleteRole))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -286,7 +271,7 @@ func (c *RoleServiceHTTPClientImpl) DeleteRole(ctx context.Context, in *DeleteRo
 // GetRole 获取角色信息
 func (c *RoleServiceHTTPClientImpl) GetRole(ctx context.Context, in *GetRoleRequest, opts ...http.CallOption) (*GetRoleReply, error) {
 	var out GetRoleReply
-	pattern := "/api/v1/permissions/roles/{id}"
+	pattern := "/qs/v1/permission/role/get"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationRoleServiceGetRole))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -300,7 +285,7 @@ func (c *RoleServiceHTTPClientImpl) GetRole(ctx context.Context, in *GetRoleRequ
 // GetRoleMenus 获取角色菜单权限
 func (c *RoleServiceHTTPClientImpl) GetRoleMenus(ctx context.Context, in *GetRoleMenusRequest, opts ...http.CallOption) (*GetRoleMenusReply, error) {
 	var out GetRoleMenusReply
-	pattern := "/api/v1/permissions/roles/{id}/menus"
+	pattern := "/qs/v1/permission/role/list-menus"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationRoleServiceGetRoleMenus))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -314,7 +299,7 @@ func (c *RoleServiceHTTPClientImpl) GetRoleMenus(ctx context.Context, in *GetRol
 // ListRoles 获取角色列表
 func (c *RoleServiceHTTPClientImpl) ListRoles(ctx context.Context, in *ListRolesRequest, opts ...http.CallOption) (*ListRolesReply, error) {
 	var out ListRolesReply
-	pattern := "/api/v1/permissions/roles/list"
+	pattern := "/qs/v1/permission/role/list"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationRoleServiceListRoles))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -328,7 +313,7 @@ func (c *RoleServiceHTTPClientImpl) ListRoles(ctx context.Context, in *ListRoles
 // UpdateRole 更新角色信息
 func (c *RoleServiceHTTPClientImpl) UpdateRole(ctx context.Context, in *UpdateRoleRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/api/v1/permissions/roles/{id}"
+	pattern := "/qs/v1/permission/role/update"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationRoleServiceUpdateRole))
 	opts = append(opts, http.PathTemplate(pattern))
