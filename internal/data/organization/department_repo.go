@@ -33,6 +33,20 @@ type Department struct {
 	DeleteAt     *time.Time `bun:"delete_at,soft_delete,nullzero"`
 }
 
+type UserDept struct {
+	bun.BaseModel `bun:"table:qa_user_dept,alias:ud"`
+
+	ID       string     `bun:"id,pk"`
+	UserID   string     `bun:"user_id,notnull"`
+	DeptID   string     `bun:"dept_id,notnull"`
+	CreateBy string     `bun:"create_by"`
+	CreateAt time.Time  `bun:"create_at,notnull,default:current_timestamp()"`
+	UpdateBy string     `bun:"update_by"`
+	UpdateAt time.Time  `bun:"update_at,notnull,default:current_timestamp()"`
+	TenantID string     `bun:"tenant_id"`
+	DeleteAt *time.Time `bun:"delete_at,soft_delete,nullzero"`
+}
+
 type departmentRepo struct {
 	data *data.Data
 	log  *log.Helper
@@ -160,7 +174,14 @@ func (r *departmentRepo) Delete(ctx context.Context, id string) error {
 }
 
 func (r *departmentRepo) HasUsers(ctx context.Context, id string) (bool, error) {
-	return false, nil
+	count, err := r.data.DB(ctx).NewSelect().
+		Model((*UserDept)(nil)).
+		Where("dept_id = ?", id).
+		Count(ctx)
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }
 
 func (r *departmentRepo) toBizDepartment(dbDept *Department) *biz.Department {

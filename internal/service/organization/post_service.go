@@ -20,7 +20,7 @@ type PostService struct {
 func NewPostService(pc *biz.PostUsecase, logger log.Logger) *PostService {
 	return &PostService{
 		pc:  pc,
-		log: log.NewHelper(logger),
+		log: log.NewHelper(log.With(logger, "module", "organization/service")),
 	}
 }
 

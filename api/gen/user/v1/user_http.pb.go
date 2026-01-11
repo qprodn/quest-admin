@@ -20,6 +20,7 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
+const OperationUserServiceAssignUserDept = "/system.user.v1.UserService/AssignUserDept"
 const OperationUserServiceAssignUserPost = "/system.user.v1.UserService/AssignUserPost"
 const OperationUserServiceChangePassword = "/system.user.v1.UserService/ChangePassword"
 const OperationUserServiceChangeUserStatus = "/system.user.v1.UserService/ChangeUserStatus"
@@ -27,10 +28,11 @@ const OperationUserServiceCreateUser = "/system.user.v1.UserService/CreateUser"
 const OperationUserServiceDeleteUser = "/system.user.v1.UserService/DeleteUser"
 const OperationUserServiceGetUser = "/system.user.v1.UserService/GetUser"
 const OperationUserServiceListUsers = "/system.user.v1.UserService/ListUsers"
-const OperationUserServiceResetPassword = "/system.user.v1.UserService/ResetPassword"
 const OperationUserServiceUpdateUser = "/system.user.v1.UserService/UpdateUser"
 
 type UserServiceHTTPServer interface {
+	// AssignUserDept 管理用户部门
+	AssignUserDept(context.Context, *AssignUserDeptRequest) (*emptypb.Empty, error)
 	// AssignUserPost 管理用户岗位
 	AssignUserPost(context.Context, *AssignUserPostRequest) (*emptypb.Empty, error)
 	// ChangePassword 修改用户密码
@@ -45,8 +47,6 @@ type UserServiceHTTPServer interface {
 	GetUser(context.Context, *GetUserRequest) (*GetUserReply, error)
 	// ListUsers 用户列表查询
 	ListUsers(context.Context, *ListUsersRequest) (*ListUsersReply, error)
-	// ResetPassword 重置用户密码
-	ResetPassword(context.Context, *ResetPasswordRequest) (*emptypb.Empty, error)
 	// UpdateUser 更新用户信息
 	UpdateUser(context.Context, *UpdateUserRequest) (*emptypb.Empty, error)
 }
@@ -58,9 +58,9 @@ func RegisterUserServiceHTTPServer(s *http.Server, srv UserServiceHTTPServer) {
 	r.GET("/qs/v1/user/list", _UserService_ListUsers0_HTTP_Handler(srv))
 	r.PUT("/qs/v1/user/update", _UserService_UpdateUser0_HTTP_Handler(srv))
 	r.PUT("/qs/v1/user/change-password", _UserService_ChangePassword0_HTTP_Handler(srv))
-	r.PUT("/qs/v1/user/reset-password", _UserService_ResetPassword0_HTTP_Handler(srv))
 	r.PUT("/qs/v1/user/update-status", _UserService_ChangeUserStatus0_HTTP_Handler(srv))
 	r.PUT("/qs/v1/user/assign-post", _UserService_AssignUserPost0_HTTP_Handler(srv))
+	r.PUT("/qs/v1/user/assign-dept", _UserService_AssignUserDept0_HTTP_Handler(srv))
 	r.DELETE("/qs/v1/user/delete", _UserService_DeleteUser0_HTTP_Handler(srv))
 }
 
@@ -168,28 +168,6 @@ func _UserService_ChangePassword0_HTTP_Handler(srv UserServiceHTTPServer) func(c
 	}
 }
 
-func _UserService_ResetPassword0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx http.Context) error {
-	return func(ctx http.Context) error {
-		var in ResetPasswordRequest
-		if err := ctx.Bind(&in); err != nil {
-			return err
-		}
-		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		http.SetOperation(ctx, OperationUserServiceResetPassword)
-		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.ResetPassword(ctx, req.(*ResetPasswordRequest))
-		})
-		out, err := h(ctx, &in)
-		if err != nil {
-			return err
-		}
-		reply := out.(*emptypb.Empty)
-		return ctx.Result(200, reply)
-	}
-}
-
 func _UserService_ChangeUserStatus0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in ChangeUserStatusRequest
@@ -234,6 +212,28 @@ func _UserService_AssignUserPost0_HTTP_Handler(srv UserServiceHTTPServer) func(c
 	}
 }
 
+func _UserService_AssignUserDept0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in AssignUserDeptRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserServiceAssignUserDept)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.AssignUserDept(ctx, req.(*AssignUserDeptRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*emptypb.Empty)
+		return ctx.Result(200, reply)
+	}
+}
+
 func _UserService_DeleteUser0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in DeleteUserRequest
@@ -254,6 +254,8 @@ func _UserService_DeleteUser0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx h
 }
 
 type UserServiceHTTPClient interface {
+	// AssignUserDept 管理用户部门
+	AssignUserDept(ctx context.Context, req *AssignUserDeptRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// AssignUserPost 管理用户岗位
 	AssignUserPost(ctx context.Context, req *AssignUserPostRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// ChangePassword 修改用户密码
@@ -268,8 +270,6 @@ type UserServiceHTTPClient interface {
 	GetUser(ctx context.Context, req *GetUserRequest, opts ...http.CallOption) (rsp *GetUserReply, err error)
 	// ListUsers 用户列表查询
 	ListUsers(ctx context.Context, req *ListUsersRequest, opts ...http.CallOption) (rsp *ListUsersReply, err error)
-	// ResetPassword 重置用户密码
-	ResetPassword(ctx context.Context, req *ResetPasswordRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// UpdateUser 更新用户信息
 	UpdateUser(ctx context.Context, req *UpdateUserRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 }
@@ -280,6 +280,20 @@ type UserServiceHTTPClientImpl struct {
 
 func NewUserServiceHTTPClient(client *http.Client) UserServiceHTTPClient {
 	return &UserServiceHTTPClientImpl{client}
+}
+
+// AssignUserDept 管理用户部门
+func (c *UserServiceHTTPClientImpl) AssignUserDept(ctx context.Context, in *AssignUserDeptRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "/qs/v1/user/assign-dept"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserServiceAssignUserDept))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
 }
 
 // AssignUserPost 管理用户岗位
@@ -374,20 +388,6 @@ func (c *UserServiceHTTPClientImpl) ListUsers(ctx context.Context, in *ListUsers
 	opts = append(opts, http.Operation(OperationUserServiceListUsers))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return &out, nil
-}
-
-// ResetPassword 重置用户密码
-func (c *UserServiceHTTPClientImpl) ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
-	var out emptypb.Empty
-	pattern := "/qs/v1/user/reset-password"
-	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationUserServiceResetPassword))
-	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

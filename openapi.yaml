@@ -583,6 +583,23 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /qs/v1/user/assign-dept:
+        put:
+            tags:
+                - UserService
+            summary: 管理用户部门
+            description: 为用户分配或移除部门，管理用户的部门信息
+            operationId: UserService_AssignUserDept
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.user.v1.AssignUserDeptRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
     /qs/v1/user/assign-post:
         put:
             tags:
@@ -687,7 +704,15 @@ paths:
                   schema:
                     type: integer
                     format: int32
-                - name: keyword
+                - name: username
+                  in: query
+                  schema:
+                    type: string
+                - name: mobile
+                  in: query
+                  schema:
+                    type: string
+                - name: nikeName
                   in: query
                   schema:
                     type: string
@@ -716,23 +741,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/system.user.v1.ListUsersReply'
-    /qs/v1/user/reset-password:
-        put:
-            tags:
-                - UserService
-            summary: 重置用户密码
-            description: 管理员重置用户密码，生成临时密码
-            operationId: UserService_ResetPassword
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.user.v1.ResetPasswordRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
     /qs/v1/user/update:
         put:
             tags:
@@ -1873,6 +1881,23 @@ components:
                     description: 账号数量
                     format: int32
             description: 更新租户信息请求体
+        system.user.v1.AssignUserDeptRequest:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 用户ID
+                deptIds:
+                    type: array
+                    items:
+                        type: string
+                    description: 部门ID列表
+                operation:
+                    example: add
+                    type: string
+                    description: '操作类型: add-添加, remove-移除, replace-替换'
+            description: 管理用户部门请求体
         system.user.v1.AssignUserPostRequest:
             type: object
             properties:
@@ -2020,18 +2045,6 @@ components:
                     description: 总页数
                     format: int32
             description: 查询用户列表响应体
-        system.user.v1.ResetPasswordRequest:
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 用户ID
-                reason:
-                    example: 用户忘记密码
-                    type: string
-                    description: 重置原因
-            description: 重置密码请求体
         system.user.v1.UpdateUserRequest:
             type: object
             properties:

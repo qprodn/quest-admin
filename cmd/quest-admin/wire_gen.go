@@ -10,14 +10,23 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	greeter2 "quest-admin/internal/biz/greeter"
+	organization2 "quest-admin/internal/biz/organization"
+	permission2 "quest-admin/internal/biz/permission"
+	tenant2 "quest-admin/internal/biz/tenant"
 	user2 "quest-admin/internal/biz/user"
 	"quest-admin/internal/conf"
 	"quest-admin/internal/data/data"
 	"quest-admin/internal/data/greeter"
+	"quest-admin/internal/data/organization"
+	"quest-admin/internal/data/permission"
 	"quest-admin/internal/data/pg"
+	"quest-admin/internal/data/tenant"
 	"quest-admin/internal/data/user"
 	"quest-admin/internal/server"
 	greeter3 "quest-admin/internal/service/greeter"
+	organization3 "quest-admin/internal/service/organization"
+	permission3 "quest-admin/internal/service/permission"
+	tenant3 "quest-admin/internal/service/tenant"
 	user3 "quest-admin/internal/service/user"
 )
 
@@ -33,7 +42,11 @@ func wireApp(bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(),
 	dataData := data.NewData(db)
 	userRepo := user.NewUserRepo(dataData, logger)
 	userUsecase := user2.NewUserUsecase(userRepo, logger)
-	userService := user3.NewUserService(userUsecase, logger)
+	userPostRepo := user.NewUserPostRepo(dataData, logger)
+	userPostUsecase := user2.NewUserPostUsecase(userPostRepo, logger)
+	userDeptRepo := user.NewUserDeptRepo(dataData, logger)
+	userDeptUsecase := user2.NewUserDeptUsecase(userDeptRepo, logger)
+	userService := user3.NewUserService(userUsecase, userPostUsecase, userDeptUsecase, logger)
 	userRoleRepo := user.NewUserRoleRepo(dataData, logger)
 	userRoleUsecase := user2.NewUserRoleUsecase(userRoleRepo, logger)
 	userRoleService := user3.NewUserRoleService(userRoleUsecase, logger)
@@ -41,7 +54,25 @@ func wireApp(bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(),
 	greeterRepo := greeter.NewGreeterRepo(dataData, logger)
 	greeterUsecase := greeter2.NewGreeterUsecase(greeterRepo, logger)
 	greeterService := greeter3.NewGreeterService(greeterUsecase)
-	httpServer := server.NewHTTPServer(bootstrap, logger, greeterService, userService, userRoleService)
+	tenantRepo := tenant.NewTenantRepo(dataData, logger)
+	tenantUsecase := tenant2.NewTenantUsecase(tenantRepo, logger)
+	tenantPackageRepo := tenant.NewTenantPackageRepo(dataData, logger)
+	tenantPackageUsecase := tenant2.NewTenantPackageUsecase(tenantPackageRepo, logger)
+	tenantService := tenant3.NewTenantService(tenantUsecase, tenantPackageUsecase, logger)
+	roleRepo := permission.NewRoleRepo(dataData, logger)
+	roleMenuRepo := permission.NewRoleMenuRepo(dataData, logger)
+	roleUsecase := permission2.NewRoleUsecase(roleRepo, roleMenuRepo, logger)
+	roleService := permission3.NewRoleService(roleUsecase, logger)
+	menuRepo := permission.NewMenuRepo(dataData, logger)
+	menuUsecase := permission2.NewMenuUsecase(menuRepo, logger)
+	menuService := permission3.NewMenuService(menuUsecase, logger)
+	departmentRepo := organization.NewDepartmentRepo(dataData, logger)
+	departmentUsecase := organization2.NewDepartmentUsecase(departmentRepo, logger)
+	departmentService := organization3.NewDepartmentService(departmentUsecase, logger)
+	postRepo := organization.NewPostRepo(dataData, logger)
+	postUsecase := organization2.NewPostUsecase(postRepo, logger)
+	postService := organization3.NewPostService(postUsecase, logger)
+	httpServer := server.NewHTTPServer(bootstrap, logger, greeterService, userService, userRoleService, tenantService, roleService, menuService, departmentService, postService)
 	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
 	}, nil

@@ -20,7 +20,7 @@ type DepartmentService struct {
 func NewDepartmentService(dc *biz.DepartmentUsecase, logger log.Logger) *DepartmentService {
 	return &DepartmentService{
 		dc:  dc,
-		log: log.NewHelper(logger),
+		log: log.NewHelper(log.With(logger, "module", "organization/service")),
 	}
 }
 
@@ -93,9 +93,11 @@ func (s *DepartmentService) UpdateDepartment(ctx context.Context, in *v1.UpdateD
 func (s *DepartmentService) DeleteDepartment(ctx context.Context, in *v1.DeleteDepartmentRequest) (*emptypb.Empty, error) {
 	err := s.dc.DeleteDepartment(ctx, in.GetId())
 	if err != nil {
+		s.log.WithContext(ctx).Errorw("failed to delete department", "id", in.GetId(), "error", err)
 		return nil, err
 	}
 
+	s.log.WithContext(ctx).Infow("department deleted successfully", "id", in.GetId())
 	return &emptypb.Empty{}, nil
 }
 

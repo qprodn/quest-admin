@@ -83,10 +83,10 @@ COMMENT ON COLUMN qa_role.delete_at IS '删除时间';
 COMMENT ON COLUMN qa_role.tenant_id IS '租户编号';
 
 -- ----------------------------
--- Table structure for qa_role_map_menu
+-- Table structure for qa_role_menu
 -- ----------------------------
-DROP TABLE IF EXISTS qa_role_map_menu CASCADE;
-CREATE TABLE qa_role_map_menu
+DROP TABLE IF EXISTS qa_role_menu CASCADE;
+CREATE TABLE qa_role_menu
 (
     id        varchar(32) PRIMARY KEY,
     role_id   varchar(32)                           NOT NULL,
@@ -99,16 +99,16 @@ CREATE TABLE qa_role_map_menu
     tenant_id varchar(32) DEFAULT ''                NOT NULL
 );
 
-COMMENT ON TABLE qa_role_map_menu IS '角色和菜单关联表';
-COMMENT ON COLUMN qa_role_map_menu.id IS '自增编号';
-COMMENT ON COLUMN qa_role_map_menu.role_id IS '角色ID';
-COMMENT ON COLUMN qa_role_map_menu.menu_id IS '菜单ID';
-COMMENT ON COLUMN qa_role_map_menu.create_by IS '创建者';
-COMMENT ON COLUMN qa_role_map_menu.create_at IS '创建时间';
-COMMENT ON COLUMN qa_role_map_menu.update_by IS '更新者';
-COMMENT ON COLUMN qa_role_map_menu.update_at IS '更新时间';
-COMMENT ON COLUMN qa_role_map_menu.delete_at IS '删除时间';
-COMMENT ON COLUMN qa_role_map_menu.tenant_id IS '租户编号';
+COMMENT ON TABLE qa_role_menu IS '角色和菜单关联表';
+COMMENT ON COLUMN qa_role_menu.id IS '自增编号';
+COMMENT ON COLUMN qa_role_menu.role_id IS '角色ID';
+COMMENT ON COLUMN qa_role_menu.menu_id IS '菜单ID';
+COMMENT ON COLUMN qa_role_menu.create_by IS '创建者';
+COMMENT ON COLUMN qa_role_menu.create_at IS '创建时间';
+COMMENT ON COLUMN qa_role_menu.update_by IS '更新者';
+COMMENT ON COLUMN qa_role_menu.update_at IS '更新时间';
+COMMENT ON COLUMN qa_role_menu.delete_at IS '删除时间';
+COMMENT ON COLUMN qa_role_menu.tenant_id IS '租户编号';
 
 DROP TABLE IF EXISTS qa_menu CASCADE;
 CREATE TABLE qa_menu
@@ -155,8 +155,8 @@ COMMENT ON COLUMN qa_menu.update_by IS '更新者';
 COMMENT ON COLUMN qa_menu.update_at IS '更新时间';
 COMMENT ON COLUMN qa_menu.delete_at IS '删除时间';
 
-DROP TABLE IF EXISTS qa_user_map_role CASCADE;
-CREATE TABLE qa_user_map_role
+DROP TABLE IF EXISTS qa_user_role CASCADE;
+CREATE TABLE qa_user_role
 (
     id        varchar(32) PRIMARY KEY,
     user_id   varchar(32)            NOT NULL,
@@ -169,16 +169,16 @@ CREATE TABLE qa_user_map_role
     tenant_id varchar(32) DEFAULT '' NOT NULL
 );
 
-COMMENT ON TABLE qa_user_map_role IS '用户和角色关联表';
-COMMENT ON COLUMN qa_user_map_role.id IS '自增编号';
-COMMENT ON COLUMN qa_user_map_role.user_id IS '用户ID';
-COMMENT ON COLUMN qa_user_map_role.role_id IS '角色ID';
-COMMENT ON COLUMN qa_user_map_role.create_by IS '创建者';
-COMMENT ON COLUMN qa_user_map_role.create_at IS '创建时间';
-COMMENT ON COLUMN qa_user_map_role.update_by IS '更新者';
-COMMENT ON COLUMN qa_user_map_role.update_at IS '更新时间';
-COMMENT ON COLUMN qa_user_map_role.delete_at IS '删除时间';
-COMMENT ON COLUMN qa_user_map_role.tenant_id IS '租户编号';
+COMMENT ON TABLE qa_user_role IS '用户和角色关联表';
+COMMENT ON COLUMN qa_user_role.id IS '自增编号';
+COMMENT ON COLUMN qa_user_role.user_id IS '用户ID';
+COMMENT ON COLUMN qa_user_role.role_id IS '角色ID';
+COMMENT ON COLUMN qa_user_role.create_by IS '创建者';
+COMMENT ON COLUMN qa_user_role.create_at IS '创建时间';
+COMMENT ON COLUMN qa_user_role.update_by IS '更新者';
+COMMENT ON COLUMN qa_user_role.update_at IS '更新时间';
+COMMENT ON COLUMN qa_user_role.delete_at IS '删除时间';
+COMMENT ON COLUMN qa_user_role.tenant_id IS '租户编号';
 
 DROP TABLE IF EXISTS qa_post CASCADE;
 CREATE TABLE qa_post
@@ -211,8 +211,8 @@ COMMENT ON COLUMN qa_post.update_at IS '更新时间';
 COMMENT ON COLUMN qa_post.delete_at IS '删除时间';
 COMMENT ON COLUMN qa_post.tenant_id IS '租户编号';
 
-DROP TABLE IF EXISTS qa_user_map_post CASCADE;
-CREATE TABLE qa_user_map_post
+DROP TABLE IF EXISTS qa_user_post CASCADE;
+CREATE TABLE qa_user_post
 (
     id        varchar(32) PRIMARY KEY,
     user_id   varchar(32)                           NOT NULL,
@@ -225,16 +225,41 @@ CREATE TABLE qa_user_map_post
     tenant_id varchar(32) DEFAULT ''                NOT NULL
 );
 
-COMMENT ON TABLE qa_user_map_post IS '用户岗位表';
-COMMENT ON COLUMN qa_user_map_post.id IS 'id';
-COMMENT ON COLUMN qa_user_map_post.user_id IS '用户ID';
-COMMENT ON COLUMN qa_user_map_post.post_id IS '岗位ID';
-COMMENT ON COLUMN qa_user_map_post.create_by IS '创建者';
-COMMENT ON COLUMN qa_user_map_post.create_at IS '创建时间';
-COMMENT ON COLUMN qa_user_map_post.update_by IS '更新者';
-COMMENT ON COLUMN qa_user_map_post.update_at IS '更新时间';
-COMMENT ON COLUMN qa_user_map_post.delete_at IS '删除时间';
-COMMENT ON COLUMN qa_user_map_post.tenant_id IS '租户编号';
+COMMENT ON TABLE qa_user_post IS '用户岗位表';
+COMMENT ON COLUMN qa_user_post.id IS 'id';
+COMMENT ON COLUMN qa_user_post.user_id IS '用户ID';
+COMMENT ON COLUMN qa_user_post.post_id IS '岗位ID';
+COMMENT ON COLUMN qa_user_post.create_by IS '创建者';
+COMMENT ON COLUMN qa_user_post.create_at IS '创建时间';
+COMMENT ON COLUMN qa_user_post.update_by IS '更新者';
+COMMENT ON COLUMN qa_user_post.update_at IS '更新时间';
+COMMENT ON COLUMN qa_user_post.delete_at IS '删除时间';
+COMMENT ON COLUMN qa_user_post.tenant_id IS '租户编号';
+
+DROP TABLE IF EXISTS qa_user_dept CASCADE;
+CREATE TABLE qa_user_dept
+(
+    id        varchar(32) PRIMARY KEY,
+    user_id   varchar(32)                           NOT NULL,
+    dept_id   varchar(32)                           NOT NULL,
+    create_by varchar(64) DEFAULT '',
+    create_at timestamp   DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    update_by varchar(64) DEFAULT '',
+    update_at timestamp   DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    delete_at timestamp,
+    tenant_id varchar(32) DEFAULT ''                NOT NULL
+);
+
+COMMENT ON TABLE qa_user_dept IS '用户部门表';
+COMMENT ON COLUMN qa_user_dept.id IS 'id';
+COMMENT ON COLUMN qa_user_dept.user_id IS '用户ID';
+COMMENT ON COLUMN qa_user_dept.dept_id IS '部门ID';
+COMMENT ON COLUMN qa_user_dept.create_by IS '创建者';
+COMMENT ON COLUMN qa_user_dept.create_at IS '创建时间';
+COMMENT ON COLUMN qa_user_dept.update_by IS '更新者';
+COMMENT ON COLUMN qa_user_dept.update_at IS '更新时间';
+COMMENT ON COLUMN qa_user_dept.delete_at IS '删除时间';
+COMMENT ON COLUMN qa_user_dept.tenant_id IS '租户编号';
 
 DROP TABLE IF EXISTS qa_dept CASCADE;
 CREATE TABLE qa_dept

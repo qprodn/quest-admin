@@ -13,14 +13,18 @@ import (
 
 type UserService struct {
 	v1.UnimplementedUserServiceServer
-	uc  *biz.UserUsecase
-	log *log.Helper
+	uc         *biz.UserUsecase
+	userPostUc *biz.UserPostUsecase
+	userDeptUc *biz.UserDeptUsecase
+	log        *log.Helper
 }
 
-func NewUserService(uc *biz.UserUsecase, logger log.Logger) *UserService {
+func NewUserService(uc *biz.UserUsecase, userPostUc *biz.UserPostUsecase, userDeptUc *biz.UserDeptUsecase, logger log.Logger) *UserService {
 	return &UserService{
-		uc:  uc,
-		log: log.NewHelper(logger),
+		uc:         uc,
+		userPostUc: userPostUc,
+		userDeptUc: userDeptUc,
+		log:        log.NewHelper(log.With(logger, "module", "user/service")),
 	}
 }
 
@@ -37,7 +41,7 @@ func (s *UserService) CreateUser(ctx context.Context, in *v1.CreateUserRequest) 
 		Status:   1,
 	}
 
-	_, err := s.uc.CreateUser(ctx, user)
+	err := s.uc.CreateUser(ctx, user)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +64,9 @@ func (s *UserService) ListUsers(ctx context.Context, in *v1.ListUsersRequest) (*
 	query := &biz.ListUsersQuery{
 		Page:      in.GetPage(),
 		PageSize:  in.GetPageSize(),
-		Keyword:   in.GetKeyword(),
+		Username:  in.GetUsername(),
+		Mobile:    in.GetMobile(),
+		Nickname:  in.GetNikeName(),
 		SortField: in.GetSortField(),
 		SortOrder: in.GetSortOrder(),
 	}
@@ -103,7 +109,7 @@ func (s *UserService) UpdateUser(ctx context.Context, in *v1.UpdateUserRequest) 
 		Remark:   in.GetRemark(),
 	}
 
-	_, err := s.uc.UpdateUser(ctx, user)
+	err := s.uc.UpdateUser(ctx, user)
 	if err != nil {
 		return nil, err
 	}
@@ -118,15 +124,6 @@ func (s *UserService) ChangePassword(ctx context.Context, in *v1.ChangePasswordR
 		NewPassword: in.GetNewPassword(),
 	}
 	err := s.uc.ChangePassword(ctx, bo)
-	if err != nil {
-		return nil, err
-	}
-
-	return &emptypb.Empty{}, nil
-}
-
-func (s *UserService) ResetPassword(ctx context.Context, in *v1.ResetPasswordRequest) (*emptypb.Empty, error) {
-	_, err := s.uc.ResetPassword(ctx, in.GetId())
 	if err != nil {
 		return nil, err
 	}
@@ -153,7 +150,21 @@ func (s *UserService) AssignUserPosts(ctx context.Context, in *v1.AssignUserPost
 		PostIDs:   in.GetPostIds(),
 		Operation: in.GetOperation(),
 	}
-	err := s.uc.ManageUserPosts(ctx, bo)
+	err := s.userPostUc.ManageUserPosts(ctx, bo)
+	if err != nil {
+		return nil, err
+	}
+
+	return &emptypb.Empty{}, nil
+}
+
+func (s *UserService) AssignUserDepts(ctx context.Context, in *v1.AssignUserDeptRequest) (*emptypb.Empty, error) {
+	bo := &biz.AssignUserDeptsBO{
+		UserID:    in.GetId(),
+		DeptIDs:   in.GetDeptIds(),
+		Operation: in.GetOperation(),
+	}
+	err := s.userDeptUc.ManageUserDepts(ctx, bo)
 	if err != nil {
 		return nil, err
 	}

@@ -2,17 +2,9 @@ package tenant
 
 import (
 	"context"
-	v1 "quest-admin/api/gen/tenant/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
-)
-
-var (
-	ErrTenantPackageNotFound      = errors.NotFound(v1.ErrorReason_TENANT_PACKAGE_NOT_FOUND.String(), "tenant package not found")
-	ErrTenantPackageNameExists    = errors.Conflict(v1.ErrorReason_TENANT_PACKAGE_NAME_EXISTS.String(), "tenant package name already exists")
-	ErrTenantPackageInUse         = errors.BadRequest(v1.ErrorReason_TENANT_PACKAGE_IN_USE.String(), "tenant package is in use")
-	ErrInvalidTenantPackageStatus = errors.BadRequest(v1.ErrorReason_INVALID_TENANT_PACKAGE_STATUS.String(), "invalid tenant package status")
 )
 
 type TenantPackageRepo interface {
@@ -33,7 +25,7 @@ type TenantPackageUsecase struct {
 func NewTenantPackageUsecase(repo TenantPackageRepo, logger log.Logger) *TenantPackageUsecase {
 	return &TenantPackageUsecase{
 		repo: repo,
-		log:  log.NewHelper(logger),
+		log:  log.NewHelper(log.With(logger, "module", "tenant/biz/package")),
 	}
 }
 

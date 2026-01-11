@@ -2,18 +2,9 @@ package organization
 
 import (
 	"context"
-	v1 "quest-admin/api/gen/organization/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
-)
-
-var (
-	ErrDepartmentNotFound      = errors.NotFound(v1.ErrorReason_DEPARTMENT_NOT_FOUND.String(), "department not found")
-	ErrDepartmentNameExists    = errors.Conflict(v1.ErrorReason_DEPARTMENT_NAME_EXISTS.String(), "department name already exists")
-	ErrDepartmentHasChildren   = errors.BadRequest(v1.ErrorReason_DEPARTMENT_HAS_CHILDREN.String(), "department has children")
-	ErrDepartmentHasUsers      = errors.BadRequest(v1.ErrorReason_DEPARTMENT_HAS_USERS.String(), "department has users")
-	ErrInvalidParentDepartment = errors.BadRequest(v1.ErrorReason_INVALID_PARENT_DEPARTMENT.String(), "invalid parent department")
 )
 
 type DepartmentRepo interface {
@@ -35,13 +26,11 @@ type DepartmentUsecase struct {
 func NewDepartmentUsecase(repo DepartmentRepo, logger log.Logger) *DepartmentUsecase {
 	return &DepartmentUsecase{
 		repo: repo,
-		log:  log.NewHelper(logger),
+		log:  log.NewHelper(log.With(logger, "module", "organization/biz/dept")),
 	}
 }
 
 func (uc *DepartmentUsecase) CreateDepartment(ctx context.Context, dept *Department) (*Department, error) {
-	uc.log.WithContext(ctx).Infof("CreateDepartment: name=%s, parentID=%s", dept.Name, dept.ParentID)
-
 	existing, err := uc.repo.FindByName(ctx, dept.Name)
 	if err != nil && !errors.Is(err, ErrDepartmentNotFound) {
 		return nil, err
@@ -59,8 +48,6 @@ func (uc *DepartmentUsecase) GetDepartment(ctx context.Context, id string) (*Dep
 }
 
 func (uc *DepartmentUsecase) GetDepartmentTree(ctx context.Context) ([]*Department, error) {
-	uc.log.WithContext(ctx).Infof("GetDepartmentTree")
-
 	departments, err := uc.repo.List(ctx)
 	if err != nil {
 		return nil, err
@@ -84,8 +71,6 @@ func (uc *DepartmentUsecase) GetDepartmentTree(ctx context.Context) ([]*Departme
 }
 
 func (uc *DepartmentUsecase) UpdateDepartment(ctx context.Context, dept *Department) (*Department, error) {
-	uc.log.WithContext(ctx).Infof("UpdateDepartment: id=%s, name=%s", dept.ID, dept.Name)
-
 	_, err := uc.repo.FindByID(ctx, dept.ID)
 	if err != nil {
 		return nil, err
@@ -95,8 +80,6 @@ func (uc *DepartmentUsecase) UpdateDepartment(ctx context.Context, dept *Departm
 }
 
 func (uc *DepartmentUsecase) DeleteDepartment(ctx context.Context, id string) error {
-	uc.log.WithContext(ctx).Infof("DeleteDepartment: id=%s", id)
-
 	_, err := uc.repo.FindByID(ctx, id)
 	if err != nil {
 		return err

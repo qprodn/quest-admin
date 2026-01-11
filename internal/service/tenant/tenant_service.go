@@ -22,7 +22,7 @@ func NewTenantService(tc *biz.TenantUsecase, tpc *biz.TenantPackageUsecase, logg
 	return &TenantService{
 		tc:  tc,
 		tpc: tpc,
-		log: log.NewHelper(logger),
+		log: log.NewHelper(log.With(logger, "module", "tenant/service")),
 	}
 }
 

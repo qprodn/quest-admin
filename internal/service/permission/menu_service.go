@@ -20,7 +20,7 @@ type MenuService struct {
 func NewMenuService(mc *biz.MenuUsecase, logger log.Logger) *MenuService {
 	return &MenuService{
 		mc:  mc,
-		log: log.NewHelper(logger),
+		log: log.NewHelper(log.With(logger, "module", "permission/service")),
 	}
 }
 

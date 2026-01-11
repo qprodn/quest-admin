@@ -2,14 +2,8 @@ package user
 
 import (
 	"context"
-	v1 "quest-admin/api/gen/user/v1"
 
-	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
-)
-
-var (
-	ErrUserRoleNotFound = errors.NotFound(v1.ErrorReason_USER_NOT_FOUND.String(), "user not found")
 )
 
 type UserRoleRepo interface {
@@ -25,7 +19,7 @@ type UserRoleUsecase struct {
 func NewUserRoleUsecase(repo UserRoleRepo, logger log.Logger) *UserRoleUsecase {
 	return &UserRoleUsecase{
 		repo: repo,
-		log:  log.NewHelper(logger),
+		log:  log.NewHelper(log.With(logger, "module", "user/biz/user-role")),
 	}
 }
 

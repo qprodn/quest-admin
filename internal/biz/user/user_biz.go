@@ -2,34 +2,25 @@ package user
 
 import (
 	"context"
-	"crypto/rand"
-	"math/big"
-	v1 "quest-admin/api/gen/user/v1"
+	"quest-admin/pkg/util/pagination"
 	"quest-admin/pkg/util/pswd"
+	"time"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 )
 
-var (
-	ErrUserNotFound            = errors.NotFound(v1.ErrorReason_USER_NOT_FOUND.String(), "user not found")
-	ErrUserExists              = errors.Conflict(v1.ErrorReason_USERNAME_ALREADY_EXISTS.String(), "user already exists")
-	ErrInvalidPassword         = errors.BadRequest(v1.ErrorReason_INVALID_PASSWORD.String(), "invalid password")
-	ErrPasswordConfirmMismatch = errors.BadRequest(v1.ErrorReason_PASSWORD_CONFIRM_MISMATCH.String(), "password confirm mismatch")
-)
-
 type UserRepo interface {
-	Create(ctx context.Context, user *User) (*User, error)
+	Create(ctx context.Context, user *User) error
 	FindByID(ctx context.Context, id string) (*User, error)
 	FindByUsername(ctx context.Context, username string) (*User, error)
-	List(ctx context.Context, query *ListUsersQuery) (*ListUsersResult, error)
-	Update(ctx context.Context, user *User) (*User, error)
+	List(ctx context.Context, query *WhereUserOpt) ([]*User, error)
+	Count(ctx context.Context, query *WhereUserOpt) (int64, error)
+	Update(ctx context.Context, user *User) error
 	UpdatePassword(ctx context.Context, bo *UpdatePasswordBO) error
 	UpdateStatus(ctx context.Context, bo *UpdateStatusBO) error
 	UpdateLoginInfo(ctx context.Context, bo *UpdateLoginInfoBO) error
-	GetUserPosts(ctx context.Context, id string) ([]string, error)
-	ManageUserPosts(ctx context.Context, bo *AssignUserPostsBO) error
-	Delete(ctx context.Context, id string) error
+	Delete(ctx context.Context, bo *DeleteUserBO) error
 }
 
 type UserUsecase struct {
@@ -40,130 +31,120 @@ type UserUsecase struct {
 func NewUserUsecase(repo UserRepo, logger log.Logger) *UserUsecase {
 	return &UserUsecase{
 		repo: repo,
-		log:  log.NewHelper(logger),
+		log:  log.NewHelper(log.With(logger, "module", "user/biz/user")),
 	}
 }
 
-func (uc *UserUsecase) CreateUser(ctx context.Context, user *User) (*User, error) {
-	uc.log.WithContext(ctx).Infof("CreateUser: username=%s", user.Username)
-
+func (uc *UserUsecase) CreateUser(ctx context.Context, user *User) error {
 	existing, err := uc.repo.FindByUsername(ctx, user.Username)
 	if err != nil && !errors.Is(err, ErrUserNotFound) {
-		return nil, err
+		return err
 	}
 	if existing != nil {
-		return nil, ErrUserExists
+		uc.log.WithContext(ctx).Error("已存在相同用户名")
+		return ErrUserExists
 	}
+	if user.Password == "" {
+		user.Password = "123456"
+	}
+	password, err := pswd.HashPassword(user.Password)
+	if err != nil {
+		uc.log.WithContext(ctx).Errorf("密码加密出现错误,password:%s,error:%v", user.Password, err)
+		return ErrInternalServer
+	}
+	user.Password = password
 
 	return uc.repo.Create(ctx, user)
 }
 
 func (uc *UserUsecase) GetUser(ctx context.Context, id string) (*User, error) {
-	uc.log.WithContext(ctx).Infof("GetUser: id=%s", id)
 	return uc.repo.FindByID(ctx, id)
 }
 
 func (uc *UserUsecase) ListUsers(ctx context.Context, query *ListUsersQuery) (*ListUsersResult, error) {
-	uc.log.WithContext(ctx).Infof("ListUsers: page=%d, pageSize=%d, keyword=%s", query.Page, query.PageSize, query.Keyword)
-	return uc.repo.List(ctx, query)
+	opt := &WhereUserOpt{
+		Limit:     query.PageSize,
+		Offset:    pagination.GetOffset(query.Page, query.PageSize),
+		Username:  query.Username,
+		Nickname:  query.Nickname,
+		Mobile:    query.Mobile,
+		Status:    query.Status,
+		Sex:       query.Sex,
+		SortField: query.SortField,
+		SortOrder: query.SortOrder,
+	}
+	list, err := uc.repo.List(ctx, opt)
+	if err != nil {
+		uc.log.WithContext(ctx).Error("查询用户列表失败", err)
+		return nil, err
+	}
+	total, err := uc.repo.Count(ctx, opt)
+	if err != nil {
+		uc.log.WithContext(ctx).Error("查询用户列表总数失败", err)
+		return nil, err
+	}
+	return &ListUsersResult{
+		Users:      list,
+		Total:      total,
+		Page:       query.Page,
+		PageSize:   query.PageSize,
+		TotalPages: pagination.GetTotalPages(total, int64(query.PageSize)),
+	}, nil
 }
 
-func (uc *UserUsecase) UpdateUser(ctx context.Context, user *User) (*User, error) {
-	uc.log.WithContext(ctx).Infof("UpdateUser: id=%s", user.ID)
+func (uc *UserUsecase) UpdateUser(ctx context.Context, user *User) error {
 	return uc.repo.Update(ctx, user)
 }
 
 func (uc *UserUsecase) ChangePassword(ctx context.Context, bo *UpdatePasswordBO) error {
-	uc.log.WithContext(ctx).Infof("ChangePassword: id=%s", bo.UserID)
-
-	_, err := uc.repo.FindByID(ctx, bo.UserID)
+	user, err := uc.repo.FindByID(ctx, bo.UserID)
 	if err != nil {
+		uc.log.Error("查询用户失败,userID:%s,error:%v", bo.UserID, err)
 		return err
 	}
+	ok, err := pswd.VerifyPassword(bo.OldPassword, user.Password)
+	if err != nil {
+		uc.log.WithContext(ctx).Error("密码验证出现错误,req:%v,error:%v", bo.OldPassword, err)
+		return err
+	}
+	if !ok {
+		uc.log.WithContext(ctx).Error("旧密码错误为匹配")
+		return ErrPasswordNotMatch
+	}
+	password, err := pswd.HashPassword(bo.NewPassword)
+	if err != nil {
+		uc.log.WithContext(ctx).Error("密码加密出现错误,password:%s,error:%v", bo.NewPassword, err)
+		return ErrInternalServer
+	}
+	bo.NewPassword = password
 
 	return uc.repo.UpdatePassword(ctx, bo)
 }
 
-func (uc *UserUsecase) ResetPassword(ctx context.Context, id string) (string, error) {
-	uc.log.WithContext(ctx).Infof("ResetPassword: id=%s", id)
-
-	_, err := uc.repo.FindByID(ctx, id)
-	if err != nil {
-		return "", err
-	}
-
-	tempPassword := generateTempPassword()
-	hashedPassword, err := hashPassword(tempPassword)
-	if err != nil {
-		return "", err
-	}
-
-	err = uc.repo.UpdatePassword(ctx, &UpdatePasswordBO{
-		UserID:      id,
-		NewPassword: hashedPassword,
-	})
-	if err != nil {
-		return "", err
-	}
-
-	return tempPassword, nil
-}
-
 func (uc *UserUsecase) ChangeUserStatus(ctx context.Context, bo *UpdateStatusBO) error {
-	uc.log.WithContext(ctx).Infof("ChangeUserStatus: id=%s, status=%d", bo.UserID, bo.Status)
-
 	_, err := uc.repo.FindByID(ctx, bo.UserID)
 	if err != nil {
+		uc.log.WithContext(ctx).WithContext(ctx).Error("查询用户失败,userID:%s,error:%v", bo.UserID, err)
 		return err
 	}
 
 	return uc.repo.UpdateStatus(ctx, bo)
 }
 
-func (uc *UserUsecase) ManageUserPosts(ctx context.Context, bo *AssignUserPostsBO) error {
-	uc.log.WithContext(ctx).Infof("ManageUserPosts: id=%s, operation=%s, postCount=%d", bo.UserID, bo.Operation, len(bo.PostIDs))
-
-	_, err := uc.repo.FindByID(ctx, bo.UserID)
-	if err != nil {
-		return err
-	}
-
-	return uc.repo.ManageUserPosts(ctx, bo)
-}
-
 func (uc *UserUsecase) DeleteUser(ctx context.Context, id string) error {
-	uc.log.WithContext(ctx).Infof("DeleteUser: id=%s", id)
-
 	_, err := uc.repo.FindByID(ctx, id)
 	if err != nil {
+		uc.log.WithContext(ctx).Error("用户不存在,userID:%s,error:%v", id, err)
 		return err
 	}
 
-	return uc.repo.Delete(ctx, id)
+	return uc.repo.Delete(ctx, &DeleteUserBO{
+		UserID:     id,
+		UpdateBy:   "",
+		UpdateTime: time.Now(),
+	})
 }
 
 func (uc *UserUsecase) UpdateLoginInfo(ctx context.Context, bo *UpdateLoginInfoBO) error {
-	uc.log.WithContext(ctx).Infof("UpdateLoginInfo: id=%s, loginIP=%s", bo.UserID, bo.LoginIP)
 	return uc.repo.UpdateLoginInfo(ctx, bo)
-}
-
-func (uc *UserUsecase) GetUserPosts(ctx context.Context, id string) ([]string, error) {
-	uc.log.WithContext(ctx).Infof("GetUserPosts: id=%s", id)
-	return uc.repo.GetUserPosts(ctx, id)
-}
-
-func hashPassword(password string) (string, error) {
-	return pswd.HashPassword(password)
-}
-
-func generateTempPassword() string {
-	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*"
-	const length = 12
-
-	result := make([]byte, length)
-	for i := range result {
-		num, _ := rand.Int(rand.Reader, big.NewInt(int64(len(charset))))
-		result[i] = charset[num.Int64()]
-	}
-	return string(result)
 }

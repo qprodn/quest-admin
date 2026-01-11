@@ -9,7 +9,6 @@ import (
 	biz "quest-admin/internal/biz/user"
 	"quest-admin/internal/data/data"
 	"quest-admin/pkg/util/idgen"
-	"quest-admin/pkg/util/pswd"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
@@ -39,20 +38,6 @@ type User struct {
 	DeleteAt  *time.Time `bun:"delete_at,soft_delete,nullzero"`
 }
 
-type UserPost struct {
-	bun.BaseModel `bun:"table:qa_user_map_post,alias:up"`
-
-	ID       string     `bun:"id,pk"`
-	UserID   string     `bun:"user_id,notnull"`
-	PostID   string     `bun:"post_id,notnull"`
-	CreateBy string     `bun:"create_by"`
-	CreateAt time.Time  `bun:"create_at,notnull,default:current_timestamp()"`
-	UpdateBy string     `bun:"update_by"`
-	UpdateAt time.Time  `bun:"update_at,notnull,default:current_timestamp()"`
-	TenantID string     `bun:"tenant_id"`
-	DeleteAt *time.Time `bun:"delete_at,soft_delete,nullzero"`
-}
-
 type userRepo struct {
 	data *data.Data
 	log  *log.Helper
@@ -65,7 +50,7 @@ func NewUserRepo(data *data.Data, logger log.Logger) biz.UserRepo {
 	}
 }
 
-func (r *userRepo) Create(ctx context.Context, user *biz.User) (*biz.User, error) {
+func (r *userRepo) Create(ctx context.Context, user *biz.User) error {
 	now := time.Now()
 	dbUser := &User{
 		ID:        idgen.GenerateID(),
@@ -87,20 +72,12 @@ func (r *userRepo) Create(ctx context.Context, user *biz.User) (*biz.User, error
 		TenantID:  user.TenantID,
 	}
 
-	if dbUser.Password != "" {
-		hashedPassword, err := pswd.HashPassword(dbUser.Password)
-		if err != nil {
-			return nil, err
-		}
-		dbUser.Password = hashedPassword
-	}
-
 	_, err := r.data.DB(ctx).NewInsert().Model(dbUser).Exec(ctx)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return r.toBizUser(dbUser), nil
+	return nil
 }
 
 func (r *userRepo) FindByID(ctx context.Context, id string) (*biz.User, error) {
@@ -127,76 +104,73 @@ func (r *userRepo) FindByUsername(ctx context.Context, username string) (*biz.Us
 	return r.toBizUser(dbUser), nil
 }
 
-func (r *userRepo) List(ctx context.Context, query *biz.ListUsersQuery) (*biz.ListUsersResult, error) {
+func (r *userRepo) List(ctx context.Context, opt *biz.WhereUserOpt) ([]*biz.User, error) {
 	var dbUsers []*User
 	q := r.data.DB(ctx).NewSelect().Model(&dbUsers)
-
-	if query.Keyword != "" {
-		q = q.WhereGroup(" AND ", func(q *bun.SelectQuery) *bun.SelectQuery {
-			return q.WhereOr("username LIKE ?", "%"+query.Keyword+"%").
-				WhereOr("nickname LIKE ?", "%"+query.Keyword+"%").
-				WhereOr("email LIKE ?", "%"+query.Keyword+"%").
-				WhereOr("mobile LIKE ?", "%"+query.Keyword+"%")
-		})
+	if opt.Username != "" {
+		q.Where("username LIKE ?", "%"+opt.Username+"%")
 	}
-
-	if query.Status != nil {
-		q = q.Where("status = ?", *query.Status)
+	if opt.Mobile != "" {
+		q.Where("mobile LIKE ?", "%"+opt.Mobile+"%")
 	}
-
-	if query.Sex != nil {
-		q = q.Where("sex = ?", *query.Sex)
+	if opt.Nickname != "" {
+		q = q.Where("nickname LIKE ?", "%"+opt.Nickname+"%")
 	}
-
-	total, err := q.ScanAndCount(ctx, &dbUsers, nil)
-	if err != nil {
-		return nil, err
+	if opt.Status != nil {
+		q = q.Where("status = ?", *opt.Status)
 	}
-
-	page := query.Page
-	pageSize := query.PageSize
-	if page < 1 {
-		page = 1
+	if opt.Sex != nil {
+		q = q.Where("sex = ?", *opt.Sex)
 	}
-	if pageSize < 1 {
-		pageSize = 10
+	if opt.Offset != 0 {
+		q.Offset(int(opt.Offset))
 	}
-
-	offset := (page - 1) * pageSize
-	q = q.Offset(int(offset)).Limit(int(pageSize))
-
-	if query.SortField != "" {
-		order := query.SortOrder
-		if order != "asc" && order != "desc" {
-			order = "desc"
-		}
-		q = q.Order(fmt.Sprintf("%s %s", query.SortField, order))
+	if opt.Limit != 0 {
+		q.Limit(int(opt.Limit))
+	}
+	if opt.SortField != "" && opt.SortOrder != "" {
+		q = q.Order(fmt.Sprintf("%s %s", opt.SortField, opt.SortOrder))
 	} else {
-		q = q.Order("create_at DESC")
+		q = q.Order("id DESC")
 	}
-
-	err = q.Scan(ctx)
+	err := q.Scan(ctx)
 	if err != nil {
 		return nil, err
 	}
-
-	totalPages := int32((int64(total) + int64(pageSize) - 1) / int64(pageSize))
 
 	users := make([]*biz.User, 0, len(dbUsers))
 	for _, dbUser := range dbUsers {
 		users = append(users, r.toBizUser(dbUser))
 	}
 
-	return &biz.ListUsersResult{
-		Users:      users,
-		Total:      int64(total),
-		Page:       page,
-		PageSize:   pageSize,
-		TotalPages: totalPages,
-	}, nil
+	return users, nil
+}
+func (r *userRepo) Count(ctx context.Context, opt *biz.WhereUserOpt) (int64, error) {
+	var dbUsers []*User
+	q := r.data.DB(ctx).NewSelect().Model(&dbUsers)
+	if opt.Username != "" {
+		q.Where("username LIKE ?", "%"+opt.Username+"%")
+	}
+	if opt.Mobile != "" {
+		q.Where("mobile LIKE ?", "%"+opt.Mobile+"%")
+	}
+	if opt.Nickname != "" {
+		q = q.Where("nickname LIKE ?", "%"+opt.Nickname+"%")
+	}
+	if opt.Status != nil {
+		q = q.Where("status = ?", *opt.Status)
+	}
+	if opt.Sex != nil {
+		q = q.Where("sex = ?", *opt.Sex)
+	}
+	total, err := q.Count(ctx)
+	if err != nil {
+		return 0, err
+	}
+	return int64(total), nil
 }
 
-func (r *userRepo) Update(ctx context.Context, user *biz.User) (*biz.User, error) {
+func (r *userRepo) Update(ctx context.Context, user *biz.User) error {
 	dbUser := &User{
 		ID:       user.ID,
 		Nickname: user.Nickname,
@@ -210,10 +184,10 @@ func (r *userRepo) Update(ctx context.Context, user *biz.User) (*biz.User, error
 
 	_, err := r.data.DB(ctx).NewUpdate().Model(dbUser).WherePK().OmitZero().Exec(ctx)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return r.FindByID(ctx, user.ID)
+	return nil
 }
 
 func (r *userRepo) UpdatePassword(ctx context.Context, bo *biz.UpdatePasswordBO) error {
@@ -247,96 +221,13 @@ func (r *userRepo) UpdateLoginInfo(ctx context.Context, bo *biz.UpdateLoginInfoB
 	return err
 }
 
-func (r *userRepo) GetUserPosts(ctx context.Context, id string) ([]string, error) {
-	var userPosts []*UserPost
-	err := r.data.DB(ctx).NewSelect().
-		Model(&userPosts).
-		Where("user_id = ?", id).
-		Scan(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	postIDs := make([]string, 0, len(userPosts))
-	for _, up := range userPosts {
-		postIDs = append(postIDs, up.PostID)
-	}
-	return postIDs, nil
-}
-
-func (r *userRepo) ManageUserPosts(ctx context.Context, bo *biz.AssignUserPostsBO) error {
-	switch bo.Operation {
-	case "add":
-		return r.addUserPosts(ctx, bo.UserID, bo.PostIDs)
-	case "remove":
-		return r.removeUserPosts(ctx, bo.UserID, bo.PostIDs)
-	case "replace":
-		return r.replaceUserPosts(ctx, bo.UserID, bo.PostIDs)
-	default:
-		return fmt.Errorf("invalid operation: %s", bo.Operation)
-	}
-}
-
-func (r *userRepo) addUserPosts(ctx context.Context, userID string, postIDs []string) error {
-	now := time.Now()
-	userPosts := make([]*UserPost, 0, len(postIDs))
-	for _, postID := range postIDs {
-		userPosts = append(userPosts, &UserPost{
-			ID:       idgen.GenerateID(),
-			UserID:   userID,
-			PostID:   postID,
-			CreateAt: now,
-		})
-	}
-
-	_, err := r.data.DB(ctx).NewInsert().Model(&userPosts).Exec(ctx)
-	return err
-}
-
-func (r *userRepo) removeUserPosts(ctx context.Context, userID string, postIDs []string) error {
-	_, err := r.data.DB(ctx).NewDelete().
-		Model((*UserPost)(nil)).
-		Where("user_id = ?", userID).
-		Where("post_id IN (?)", bun.In(postIDs)).
-		Exec(ctx)
-	return err
-}
-
-func (r *userRepo) replaceUserPosts(ctx context.Context, userID string, postIDs []string) error {
-	return r.data.DB(ctx).RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
-		_, err := tx.NewDelete().
-			Model((*UserPost)(nil)).
-			Where("user_id = ?", userID).
-			Exec(ctx)
-		if err != nil {
-			return err
-		}
-
-		if len(postIDs) > 0 {
-			now := time.Now()
-			userPosts := make([]*UserPost, 0, len(postIDs))
-			for _, postID := range postIDs {
-				userPosts = append(userPosts, &UserPost{
-					ID:       idgen.GenerateID(),
-					UserID:   userID,
-					PostID:   postID,
-					CreateAt: now,
-				})
-			}
-			_, err = tx.NewInsert().Model(&userPosts).Exec(ctx)
-			if err != nil {
-				return err
-			}
-		}
-
-		return nil
-	})
-}
-
-func (r *userRepo) Delete(ctx context.Context, id string) error {
-	_, err := r.data.DB(ctx).NewDelete().
+func (r *userRepo) Delete(ctx context.Context, bo *biz.DeleteUserBO) error {
+	_, err := r.data.DB(ctx).NewUpdate().
 		Model((*User)(nil)).
-		Where("id = ?", id).
+		Set("update_by = ?", bo.UpdateBy).
+		Set("update_at = ?", bo.UpdateTime).
+		Set("deleted_at = ?", time.Now()).
+		Where("id = ?", bo.UserID).
 		Exec(ctx)
 	return err
 }

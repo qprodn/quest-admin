@@ -78,17 +78,19 @@ service UserService {
     };
   }
 
-  // 重置用户密码
-  rpc ResetPassword (ResetPasswordRequest) returns (google.protobuf.Empty) {
+  // 设置用户头像
+  rpc SetAvatar (SetAvatarRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      put: "/qs/v1/user/reset-password"
+      put: "/qs/v1/user/set-avatar"
       body: "*"
     };
     option (openapi.v3.operation) = {
-      summary: "重置用户密码";
-      description: "管理员重置用户密码，生成临时密码";
+      summary: "设置用户头像";
+      description: "设置用户的头像图片URL地址";
     };
   }
+
+
 
   // 变更用户状态
   rpc ChangeUserStatus (ChangeUserStatusRequest) returns (google.protobuf.Empty) {
@@ -111,6 +113,18 @@ service UserService {
     option (openapi.v3.operation) = {
       summary: "管理用户岗位";
       description: "为用户分配或移除岗位，管理用户的职位信息";
+    };
+  }
+
+  // 管理用户部门
+  rpc AssignUserDept (AssignUserDeptRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/qs/v1/user/assign-dept"
+      body: "*"
+    };
+    option (openapi.v3.operation) = {
+      summary: "管理用户部门";
+      description: "为用户分配或移除部门，管理用户的部门信息";
     };
   }
 
@@ -194,9 +208,11 @@ message ListUsersRequest {
   };
   optional int32 page = 1 [(openapi.v3.property) = {description: "页码，从1开始"; example: {yaml: "1"};}];
   optional int32 page_size = 2 [(openapi.v3.property) = {description: "每页数量，默认10"; example: {yaml: "10"};}];
-  optional string keyword = 3 [(openapi.v3.property) = {description: "搜索关键字，支持用户名、昵称搜索"; example: {yaml: "admin"};}];
-  optional int32 status = 4 [(openapi.v3.property) = {description: "用户状态筛选: 0-禁用, 1-正常"; example: {yaml: "1"};}];
-  optional int32 sex = 6 [(openapi.v3.property) = {description: "性别筛选: 0-未知, 1-男, 2-女"; example: {yaml: "1"};}];
+  optional string username = 3 [(openapi.v3.property) = {description: "模糊查询 用户名"; example: {yaml: "admin"};}];
+  optional string mobile = 4 [(openapi.v3.property) = {description: "模糊查询 手机号"; example: {yaml: "19911110000"};}];
+  optional string nike_name = 5 [(openapi.v3.property) = {description: "模糊查询 昵称"; example: {yaml: "admin"};}];
+  optional int32 status = 6 [(openapi.v3.property) = {description: "用户状态筛选: 0-禁用, 1-正常"; example: {yaml: "1"};}];
+  optional int32 sex = 7 [(openapi.v3.property) = {description: "性别筛选: 0-未知, 1-男, 2-女"; example: {yaml: "1"};}];
   optional string sort_field = 8 [(openapi.v3.property) = {description: "排序字段"; example: {yaml: "create_at"};}];
   optional string sort_order = 9 [(openapi.v3.property) = {description: "排序方式: asc, desc"; example: {yaml: "desc"};}];
 }
@@ -217,11 +233,13 @@ message UpdateUserRequest {
     description: "更新用户信息请求体";
   };
   optional string id = 1 [(openapi.v3.property) = {description: "用户ID"; example: {yaml: "123456789"};}];
-  optional string nickname = 2 [(openapi.v3.property) = {description: "用户昵称"; example: {yaml: "新昵称"};}];
-  optional string email = 3 [(openapi.v3.property) = {description: "邮箱地址"; example: {yaml: "newemail@example.com"};}];
-  optional string mobile = 4 [(openapi.v3.property) = {description: "手机号码"; example: {yaml: "13900139000"};}];
-  optional int32 sex = 5 [(openapi.v3.property) = {description: "性别: 0-未知, 1-男, 2-女"; example: {yaml: "1"};}];
-  optional string avatar = 6 [(openapi.v3.property) = {description: "用户头像URL"; example: {yaml: "https://example.com/newavatar.jpg"};}];
+  optional string username = 2 [(openapi.v3.property) = {description: "用户名"; example: {yaml: "newusername"}}];
+  optional string nickname = 3 [(openapi.v3.property) = {description: "用户昵称"; example: {yaml: "新昵称"}}];
+  optional string mobile = 4 [(openapi.v3.property) = {description: "手机号码"; example: {yaml: "13900139000"}}];
+  optional string email = 5 [(openapi.v3.property) = {description: "邮箱地址"; example: {yaml: "newemail@example.com"}}];
+  optional string avatar = 6 [(openapi.v3.property) = {description: "用户头像URL"; example: {yaml: "https://example.com/newavatar.jpg"}}];
+  optional int32 sex = 7 [(openapi.v3.property) = {description: "性别: 0-未知, 1-男, 2-女"; example: {yaml: "1"}}];
+  optional int32 status = 8 [(openapi.v3.property) = {description: "用户状态: 0-禁用, 1-正常"; example: {yaml: "1"}}];
   optional string remark = 9 [(openapi.v3.property) = {description: "备注信息";}];
 }
 
@@ -235,13 +253,18 @@ message ChangePasswordRequest {
   optional string confirm_password = 4 [(openapi.v3.property) = {description: "确认新密码"; example: {yaml: "newpassword123"};}];
 }
 
-message ResetPasswordRequest {
+message SetAvatarRequest {
   option (openapi.v3.schema) = {
-    description: "重置密码请求体";
+    description: "设置用户头像请求体";
+    example: {
+      yaml: "{\"id\": \"123456789\", \"avatar\": \"https://example.com/avatar.jpg\"}";
+    };
   };
   optional string id = 1 [(openapi.v3.property) = {description: "用户ID"; example: {yaml: "123456789"};}];
-  optional string reason = 2 [(openapi.v3.property) = {description: "重置原因"; example: {yaml: "用户忘记密码"};}];
+  optional string avatar = 2 [(openapi.v3.property) = {description: "用户头像URL地址"; example: {yaml: "https://example.com/avatar.jpg"};}];
 }
+
+
 
 message ChangeUserStatusRequest {
   option (openapi.v3.schema) = {
@@ -257,6 +280,15 @@ message AssignUserPostRequest {
   };
   optional string id = 1 [(openapi.v3.property) = {description: "用户ID"; example: {yaml: "123456789"};}];
   repeated string post_ids = 2 [(openapi.v3.property) = {description: "岗位ID列表";}];
+  optional string operation = 3 [(openapi.v3.property) = {description: "操作类型: add-添加, remove-移除, replace-替换"; example: {yaml: "add"};}];
+}
+
+message AssignUserDeptRequest {
+  option (openapi.v3.schema) = {
+    description: "管理用户部门请求体";
+  };
+  optional string id = 1 [(openapi.v3.property) = {description: "用户ID"; example: {yaml: "123456789"};}];
+  repeated string dept_ids = 2 [(openapi.v3.property) = {description: "部门ID列表";}];
   optional string operation = 3 [(openapi.v3.property) = {description: "操作类型: add-添加, remove-移除, replace-替换"; example: {yaml: "add"};}];
 }
 

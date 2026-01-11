@@ -2,21 +2,8 @@ package permission
 
 import (
 	"context"
-	v1 "quest-admin/api/gen/permission/v1"
 
-	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
-)
-
-var (
-	ErrMenuNotFound      = errors.NotFound(v1.ErrorReason_MENU_NOT_FOUND.String(), "menu not found")
-	ErrMenuNameExists    = errors.Conflict(v1.ErrorReason_MENU_NAME_EXISTS.String(), "menu name already exists")
-	ErrMenuHasChildren   = errors.BadRequest(v1.ErrorReason_MENU_HAS_CHILDREN.String(), "menu has children")
-	ErrInvalidParentMenu = errors.BadRequest(v1.ErrorReason_INVALID_PARENT_MENU.String(), "invalid parent menu")
-	ErrInvalidMenuStatus = errors.BadRequest(v1.ErrorReason_INVALID_MENU_STATUS.String(), "invalid menu status")
-	ErrInvalidMenuType   = errors.BadRequest(v1.ErrorReason_INVALID_MENU_TYPE.String(), "invalid menu type")
-	ErrMenuLevelExceeded = errors.BadRequest(v1.ErrorReason_MENU_LEVEL_EXCEEDED.String(), "menu level exceeded")
-	ErrInvalidMenuPath   = errors.BadRequest(v1.ErrorReason_INVALID_MENU_PATH.String(), "invalid menu path")
 )
 
 type MenuRepo interface {
@@ -37,7 +24,7 @@ type MenuUsecase struct {
 func NewMenuUsecase(repo MenuRepo, logger log.Logger) *MenuUsecase {
 	return &MenuUsecase{
 		repo: repo,
-		log:  log.NewHelper(logger),
+		log:  log.NewHelper(log.With(logger, "module", "permission/biz/menu")),
 	}
 }
 

@@ -2,18 +2,9 @@ package permission
 
 import (
 	"context"
-	v1 "quest-admin/api/gen/permission/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
-)
-
-var (
-	ErrRoleNotFound      = errors.NotFound(v1.ErrorReason_ROLE_NOT_FOUND.String(), "role not found")
-	ErrRoleNameExists    = errors.Conflict(v1.ErrorReason_ROLE_NAME_EXISTS.String(), "role name already exists")
-	ErrRoleCodeExists    = errors.Conflict(v1.ErrorReason_ROLE_CODE_EXISTS.String(), "role code already exists")
-	ErrRoleHasUsers      = errors.BadRequest(v1.ErrorReason_ROLE_HAS_USERS.String(), "role has users")
-	ErrInvalidRoleStatus = errors.BadRequest(v1.ErrorReason_INVALID_ROLE_STATUS.String(), "invalid role status")
 )
 
 type RoleRepo interface {
@@ -42,7 +33,7 @@ func NewRoleUsecase(repo RoleRepo, roleMenuRepo RoleMenuRepo, logger log.Logger)
 	return &RoleUsecase{
 		repo:         repo,
 		roleMenuRepo: roleMenuRepo,
-		log:          log.NewHelper(logger),
+		log:          log.NewHelper(log.With(logger, "module", "permission/biz/role")),
 	}
 }
 

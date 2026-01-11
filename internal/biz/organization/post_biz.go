@@ -2,16 +2,9 @@ package organization
 
 import (
 	"context"
-	v1 "quest-admin/api/gen/organization/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
-)
-
-var (
-	ErrPostNotFound   = errors.NotFound(v1.ErrorReason_POST_NOT_FOUND.String(), "post not found")
-	ErrPostNameExists = errors.Conflict(v1.ErrorReason_POST_NAME_EXISTS.String(), "post name already exists")
-	ErrPostHasUsers   = errors.BadRequest(v1.ErrorReason_POST_HAS_USERS.String(), "post has users")
 )
 
 type PostRepo interface {
@@ -33,7 +26,7 @@ type PostUsecase struct {
 func NewPostUsecase(repo PostRepo, logger log.Logger) *PostUsecase {
 	return &PostUsecase{
 		repo: repo,
-		log:  log.NewHelper(logger),
+		log:  log.NewHelper(log.With(logger, "module", "organization/biz/post")),
 	}
 }
 

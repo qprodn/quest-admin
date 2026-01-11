@@ -198,7 +198,7 @@ func (r *postRepo) HasUsers(ctx context.Context, id string) (bool, error) {
 	var count int
 	count, err := r.data.DB(ctx).NewSelect().
 		Model((*Post)(nil)).
-		TableExpr("qa_user_map_post AS up").
+		TableExpr("qa_user_post AS up").
 		Where("up.post_id = ?", id).
 		Count(ctx)
 	if err != nil {

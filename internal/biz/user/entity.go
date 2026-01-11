@@ -45,10 +45,30 @@ type AssignUserPostsBO struct {
 	Operation string
 }
 
+type AssignUserDeptsBO struct {
+	UserID    string
+	DeptIDs   []string
+	Operation string
+}
+
 type ListUsersQuery struct {
 	Page      int32
 	PageSize  int32
-	Keyword   string
+	Username  string
+	Nickname  string
+	Mobile    string
+	Status    *int32
+	Sex       *int32
+	SortField string
+	SortOrder string
+}
+
+type WhereUserOpt struct {
+	Limit     int32
+	Offset    int32
+	Username  string
+	Nickname  string
+	Mobile    string
 	Status    *int32
 	Sex       *int32
 	SortField string
@@ -67,4 +87,10 @@ type AssignUserRolesBO struct {
 	UserID    string
 	RoleIDs   []string
 	Operation string
+}
+
+type DeleteUserBO struct {
+	UserID     string
+	UpdateBy   string
+	UpdateTime time.Time
 }

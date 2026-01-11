@@ -20,7 +20,7 @@ type RoleService struct {
 func NewRoleService(rc *biz.RoleUsecase, logger log.Logger) *RoleService {
 	return &RoleService{
 		rc:  rc,
-		log: log.NewHelper(logger),
+		log: log.NewHelper(log.With(logger, "module", "permission/service")),
 	}
 }
 

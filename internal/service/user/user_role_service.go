@@ -19,7 +19,7 @@ type UserRoleService struct {
 func NewUserRoleService(uc *biz.UserRoleUsecase, logger log.Logger) *UserRoleService {
 	return &UserRoleService{
 		uc:  uc,
-		log: log.NewHelper(logger),
+		log: log.NewHelper(log.With(logger, "module", "user/service")),
 	}
 }
 

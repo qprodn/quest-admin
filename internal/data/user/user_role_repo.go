@@ -2,7 +2,6 @@ package user
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	biz "quest-admin/internal/biz/user"
@@ -14,7 +13,7 @@ import (
 )
 
 type UserRole struct {
-	bun.BaseModel `bun:"table:qa_user_map_role,alias:ur"`
+	bun.BaseModel `bun:"table:qa_user_role,alias:ur"`
 
 	ID       string     `bun:"id,pk"`
 	UserID   string     `bun:"user_id,notnull"`
@@ -65,7 +64,7 @@ func (r *userRoleRepo) ManageUserRoles(ctx context.Context, bo *biz.AssignUserRo
 	case "replace":
 		return r.replaceUserRoles(ctx, bo.UserID, bo.RoleIDs)
 	default:
-		return fmt.Errorf("invalid operation: %s", bo.Operation)
+		return biz.ErrInvalidOperationType
 	}
 }
 

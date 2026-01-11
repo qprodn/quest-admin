@@ -2,6 +2,7 @@ package permission
 
 import (
 	"context"
+	"quest-admin/internal/biz/permission"
 	"time"
 
 	"quest-admin/internal/data/data"
@@ -12,7 +13,7 @@ import (
 )
 
 type RoleMapMenu struct {
-	bun.BaseModel `bun:"table:qa_role_map_menu,alias:rm"`
+	bun.BaseModel `bun:"table:qa_role_menu,alias:rm"`
 
 	ID       string     `bun:"id,pk"`
 	RoleID   string     `bun:"role_id,notnull"`
@@ -30,7 +31,7 @@ type roleMapMenuRepo struct {
 	log  *log.Helper
 }
 
-func NewRoleMapMenuRepo(data *data.Data, logger log.Logger) *roleMapMenuRepo {
+func NewRoleMenuRepo(data *data.Data, logger log.Logger) permission.RoleMenuRepo {
 	return &roleMapMenuRepo{
 		data: data,
 		log:  log.NewHelper(logger),

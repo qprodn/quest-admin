@@ -25,9 +25,9 @@ const (
 	UserService_ListUsers_FullMethodName        = "/system.user.v1.UserService/ListUsers"
 	UserService_UpdateUser_FullMethodName       = "/system.user.v1.UserService/UpdateUser"
 	UserService_ChangePassword_FullMethodName   = "/system.user.v1.UserService/ChangePassword"
-	UserService_ResetPassword_FullMethodName    = "/system.user.v1.UserService/ResetPassword"
 	UserService_ChangeUserStatus_FullMethodName = "/system.user.v1.UserService/ChangeUserStatus"
 	UserService_AssignUserPost_FullMethodName   = "/system.user.v1.UserService/AssignUserPost"
+	UserService_AssignUserDept_FullMethodName   = "/system.user.v1.UserService/AssignUserDept"
 	UserService_DeleteUser_FullMethodName       = "/system.user.v1.UserService/DeleteUser"
 )
 
@@ -45,12 +45,12 @@ type UserServiceClient interface {
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 修改用户密码
 	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// 重置用户密码
-	ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 变更用户状态
 	ChangeUserStatus(ctx context.Context, in *ChangeUserStatusRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 管理用户岗位
 	AssignUserPost(ctx context.Context, in *AssignUserPostRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// 管理用户部门
+	AssignUserDept(ctx context.Context, in *AssignUserDeptRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 删除用户
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
@@ -113,16 +113,6 @@ func (c *userServiceClient) ChangePassword(ctx context.Context, in *ChangePasswo
 	return out, nil
 }
 
-func (c *userServiceClient) ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, UserService_ResetPassword_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *userServiceClient) ChangeUserStatus(ctx context.Context, in *ChangeUserStatusRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
@@ -137,6 +127,16 @@ func (c *userServiceClient) AssignUserPost(ctx context.Context, in *AssignUserPo
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, UserService_AssignUserPost_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) AssignUserDept(ctx context.Context, in *AssignUserDeptRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, UserService_AssignUserDept_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -167,12 +167,12 @@ type UserServiceServer interface {
 	UpdateUser(context.Context, *UpdateUserRequest) (*emptypb.Empty, error)
 	// 修改用户密码
 	ChangePassword(context.Context, *ChangePasswordRequest) (*emptypb.Empty, error)
-	// 重置用户密码
-	ResetPassword(context.Context, *ResetPasswordRequest) (*emptypb.Empty, error)
 	// 变更用户状态
 	ChangeUserStatus(context.Context, *ChangeUserStatusRequest) (*emptypb.Empty, error)
 	// 管理用户岗位
 	AssignUserPost(context.Context, *AssignUserPostRequest) (*emptypb.Empty, error)
+	// 管理用户部门
+	AssignUserDept(context.Context, *AssignUserDeptRequest) (*emptypb.Empty, error)
 	// 删除用户
 	DeleteUser(context.Context, *DeleteUserRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedUserServiceServer()
@@ -200,14 +200,14 @@ func (UnimplementedUserServiceServer) UpdateUser(context.Context, *UpdateUserReq
 func (UnimplementedUserServiceServer) ChangePassword(context.Context, *ChangePasswordRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method ChangePassword not implemented")
 }
-func (UnimplementedUserServiceServer) ResetPassword(context.Context, *ResetPasswordRequest) (*emptypb.Empty, error) {
-	return nil, status.Error(codes.Unimplemented, "method ResetPassword not implemented")
-}
 func (UnimplementedUserServiceServer) ChangeUserStatus(context.Context, *ChangeUserStatusRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method ChangeUserStatus not implemented")
 }
 func (UnimplementedUserServiceServer) AssignUserPost(context.Context, *AssignUserPostRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method AssignUserPost not implemented")
+}
+func (UnimplementedUserServiceServer) AssignUserDept(context.Context, *AssignUserDeptRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method AssignUserDept not implemented")
 }
 func (UnimplementedUserServiceServer) DeleteUser(context.Context, *DeleteUserRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteUser not implemented")
@@ -323,24 +323,6 @@ func _UserService_ChangePassword_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_ResetPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ResetPasswordRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServiceServer).ResetPassword(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: UserService_ResetPassword_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).ResetPassword(ctx, req.(*ResetPasswordRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _UserService_ChangeUserStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ChangeUserStatusRequest)
 	if err := dec(in); err != nil {
@@ -373,6 +355,24 @@ func _UserService_AssignUserPost_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).AssignUserPost(ctx, req.(*AssignUserPostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_AssignUserDept_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AssignUserDeptRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).AssignUserDept(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_AssignUserDept_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).AssignUserDept(ctx, req.(*AssignUserDeptRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -423,16 +423,16 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserService_ChangePassword_Handler,
 		},
 		{
-			MethodName: "ResetPassword",
-			Handler:    _UserService_ResetPassword_Handler,
-		},
-		{
 			MethodName: "ChangeUserStatus",
 			Handler:    _UserService_ChangeUserStatus_Handler,
 		},
 		{
 			MethodName: "AssignUserPost",
 			Handler:    _UserService_AssignUserPost_Handler,
+		},
+		{
+			MethodName: "AssignUserDept",
+			Handler:    _UserService_AssignUserDept_Handler,
 		},
 		{
 			MethodName: "DeleteUser",
