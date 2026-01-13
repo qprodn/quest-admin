@@ -10,7 +10,8 @@ server:
 data:
   database:
     driver: postgres
-    source: postgres://root:123456@localhost:5432/quest_admin?sslmode=disable
+#    source: postgres://user_82iQtR:password_jNPytm@49.235.138.110:12512/quest-admin?sslmode=disable
+    source: postgres://quest-admin:abmMpWizWcKBZ5wn@49.235.138.110:12512/quest-admin?sslmode=disable
     max_idle_conns: 20
     max_open_conns: 100
     conn_max_lifetime: 5

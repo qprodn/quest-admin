@@ -25,6 +25,7 @@ const (
 	UserService_ListUsers_FullMethodName        = "/system.user.v1.UserService/ListUsers"
 	UserService_UpdateUser_FullMethodName       = "/system.user.v1.UserService/UpdateUser"
 	UserService_ChangePassword_FullMethodName   = "/system.user.v1.UserService/ChangePassword"
+	UserService_SetAvatar_FullMethodName        = "/system.user.v1.UserService/SetAvatar"
 	UserService_ChangeUserStatus_FullMethodName = "/system.user.v1.UserService/ChangeUserStatus"
 	UserService_AssignUserPost_FullMethodName   = "/system.user.v1.UserService/AssignUserPost"
 	UserService_AssignUserDept_FullMethodName   = "/system.user.v1.UserService/AssignUserDept"
@@ -45,6 +46,8 @@ type UserServiceClient interface {
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 修改用户密码
 	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// 设置用户头像
+	SetAvatar(ctx context.Context, in *SetAvatarRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 变更用户状态
 	ChangeUserStatus(ctx context.Context, in *ChangeUserStatusRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 管理用户岗位
@@ -113,6 +116,16 @@ func (c *userServiceClient) ChangePassword(ctx context.Context, in *ChangePasswo
 	return out, nil
 }
 
+func (c *userServiceClient) SetAvatar(ctx context.Context, in *SetAvatarRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, UserService_SetAvatar_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userServiceClient) ChangeUserStatus(ctx context.Context, in *ChangeUserStatusRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
@@ -167,6 +180,8 @@ type UserServiceServer interface {
 	UpdateUser(context.Context, *UpdateUserRequest) (*emptypb.Empty, error)
 	// 修改用户密码
 	ChangePassword(context.Context, *ChangePasswordRequest) (*emptypb.Empty, error)
+	// 设置用户头像
+	SetAvatar(context.Context, *SetAvatarRequest) (*emptypb.Empty, error)
 	// 变更用户状态
 	ChangeUserStatus(context.Context, *ChangeUserStatusRequest) (*emptypb.Empty, error)
 	// 管理用户岗位
@@ -199,6 +214,9 @@ func (UnimplementedUserServiceServer) UpdateUser(context.Context, *UpdateUserReq
 }
 func (UnimplementedUserServiceServer) ChangePassword(context.Context, *ChangePasswordRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method ChangePassword not implemented")
+}
+func (UnimplementedUserServiceServer) SetAvatar(context.Context, *SetAvatarRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method SetAvatar not implemented")
 }
 func (UnimplementedUserServiceServer) ChangeUserStatus(context.Context, *ChangeUserStatusRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method ChangeUserStatus not implemented")
@@ -323,6 +341,24 @@ func _UserService_ChangePassword_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_SetAvatar_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetAvatarRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).SetAvatar(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_SetAvatar_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).SetAvatar(ctx, req.(*SetAvatarRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UserService_ChangeUserStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ChangeUserStatusRequest)
 	if err := dec(in); err != nil {
@@ -421,6 +457,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ChangePassword",
 			Handler:    _UserService_ChangePassword_Handler,
+		},
+		{
+			MethodName: "SetAvatar",
+			Handler:    _UserService_SetAvatar_Handler,
 		},
 		{
 			MethodName: "ChangeUserStatus",

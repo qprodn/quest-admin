@@ -25,7 +25,7 @@ func NewGRPCServer(c *conf.Bootstrap, logger log.Logger, userService *user.UserS
 		opts = append(opts, grpc.Address(c.Server.Grpc.Addr))
 	}
 	if c.Server.Grpc.Timeout != 0 {
-		opts = append(opts, grpc.Timeout(time.Duration(c.Server.Grpc.Timeout)))
+		opts = append(opts, grpc.Timeout(time.Duration(c.Server.Grpc.Timeout)*time.Second))
 	}
 	srv := grpc.NewServer(opts...)
 	userv1.RegisterUserServiceServer(srv, userService)

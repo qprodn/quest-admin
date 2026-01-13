@@ -17,25 +17,24 @@ import (
 
 type User struct {
 	bun.BaseModel `bun:"table:qa_user,alias:u"`
-
-	ID        string     `bun:"id,pk"`
-	Username  string     `bun:"username,notnull"`
-	Password  string     `bun:"password,notnull"`
-	Nickname  string     `bun:"nickname"`
-	Email     string     `bun:"email"`
-	Mobile    string     `bun:"mobile"`
-	Sex       int32      `bun:"sex,default:0"`
-	Avatar    string     `bun:"avatar"`
-	Status    int32      `bun:"status,default:1"`
-	Remark    string     `bun:"remark"`
-	LoginIP   string     `bun:"login_ip"`
-	LoginDate time.Time  `bun:"login_date"`
-	CreateBy  string     `bun:"create_by"`
-	CreateAt  time.Time  `bun:"create_at,notnull,default:current_timestamp()"`
-	UpdateBy  string     `bun:"update_by"`
-	UpdateAt  time.Time  `bun:"update_at,notnull,default:current_timestamp()"`
-	TenantID  string     `bun:"tenant_id"`
-	DeleteAt  *time.Time `bun:"delete_at,soft_delete,nullzero"`
+	ID            string     `bun:"id,pk"`
+	Username      string     `bun:"username,notnull"`
+	Password      string     `bun:"password,notnull"`
+	Nickname      string     `bun:"nickname"`
+	Email         string     `bun:"email"`
+	Mobile        string     `bun:"mobile"`
+	Sex           int32      `bun:"sex,default:0"`
+	Avatar        string     `bun:"avatar"`
+	Status        int32      `bun:"status,default:1"`
+	Remark        string     `bun:"remark"`
+	LoginIP       string     `bun:"login_ip"`
+	LoginDate     time.Time  `bun:"login_date"`
+	CreateBy      string     `bun:"create_by"`
+	CreateAt      time.Time  `bun:"create_at,notnull,default:current_timestamp()"`
+	UpdateBy      string     `bun:"update_by"`
+	UpdateAt      time.Time  `bun:"update_at,notnull,default:current_timestamp()"`
+	TenantID      string     `bun:"tenant_id"`
+	DeleteAt      *time.Time `bun:"delete_at,soft_delete,nullzero"`
 }
 
 type userRepo struct {
@@ -82,7 +81,10 @@ func (r *userRepo) Create(ctx context.Context, user *biz.User) error {
 
 func (r *userRepo) FindByID(ctx context.Context, id string) (*biz.User, error) {
 	dbUser := &User{ID: id}
-	err := r.data.DB(ctx).NewSelect().Model(dbUser).WherePK().Scan(ctx)
+	err := r.data.DB(ctx).NewSelect().
+		Model(dbUser).
+		Where("id = ?", id).
+		Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, biz.ErrUserNotFound

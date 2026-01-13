@@ -28,6 +28,7 @@ const OperationUserServiceCreateUser = "/system.user.v1.UserService/CreateUser"
 const OperationUserServiceDeleteUser = "/system.user.v1.UserService/DeleteUser"
 const OperationUserServiceGetUser = "/system.user.v1.UserService/GetUser"
 const OperationUserServiceListUsers = "/system.user.v1.UserService/ListUsers"
+const OperationUserServiceSetAvatar = "/system.user.v1.UserService/SetAvatar"
 const OperationUserServiceUpdateUser = "/system.user.v1.UserService/UpdateUser"
 
 type UserServiceHTTPServer interface {
@@ -47,6 +48,8 @@ type UserServiceHTTPServer interface {
 	GetUser(context.Context, *GetUserRequest) (*GetUserReply, error)
 	// ListUsers 用户列表查询
 	ListUsers(context.Context, *ListUsersRequest) (*ListUsersReply, error)
+	// SetAvatar 设置用户头像
+	SetAvatar(context.Context, *SetAvatarRequest) (*emptypb.Empty, error)
 	// UpdateUser 更新用户信息
 	UpdateUser(context.Context, *UpdateUserRequest) (*emptypb.Empty, error)
 }
@@ -58,6 +61,7 @@ func RegisterUserServiceHTTPServer(s *http.Server, srv UserServiceHTTPServer) {
 	r.GET("/qs/v1/user/list", _UserService_ListUsers0_HTTP_Handler(srv))
 	r.PUT("/qs/v1/user/update", _UserService_UpdateUser0_HTTP_Handler(srv))
 	r.PUT("/qs/v1/user/change-password", _UserService_ChangePassword0_HTTP_Handler(srv))
+	r.PUT("/qs/v1/user/set-avatar", _UserService_SetAvatar0_HTTP_Handler(srv))
 	r.PUT("/qs/v1/user/update-status", _UserService_ChangeUserStatus0_HTTP_Handler(srv))
 	r.PUT("/qs/v1/user/assign-post", _UserService_AssignUserPost0_HTTP_Handler(srv))
 	r.PUT("/qs/v1/user/assign-dept", _UserService_AssignUserDept0_HTTP_Handler(srv))
@@ -158,6 +162,28 @@ func _UserService_ChangePassword0_HTTP_Handler(srv UserServiceHTTPServer) func(c
 		http.SetOperation(ctx, OperationUserServiceChangePassword)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.ChangePassword(ctx, req.(*ChangePasswordRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*emptypb.Empty)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _UserService_SetAvatar0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in SetAvatarRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserServiceSetAvatar)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.SetAvatar(ctx, req.(*SetAvatarRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
@@ -270,6 +296,8 @@ type UserServiceHTTPClient interface {
 	GetUser(ctx context.Context, req *GetUserRequest, opts ...http.CallOption) (rsp *GetUserReply, err error)
 	// ListUsers 用户列表查询
 	ListUsers(ctx context.Context, req *ListUsersRequest, opts ...http.CallOption) (rsp *ListUsersReply, err error)
+	// SetAvatar 设置用户头像
+	SetAvatar(ctx context.Context, req *SetAvatarRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// UpdateUser 更新用户信息
 	UpdateUser(ctx context.Context, req *UpdateUserRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 }
@@ -388,6 +416,20 @@ func (c *UserServiceHTTPClientImpl) ListUsers(ctx context.Context, in *ListUsers
 	opts = append(opts, http.Operation(OperationUserServiceListUsers))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// SetAvatar 设置用户头像
+func (c *UserServiceHTTPClientImpl) SetAvatar(ctx context.Context, in *SetAvatarRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "/qs/v1/user/set-avatar"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserServiceSetAvatar))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

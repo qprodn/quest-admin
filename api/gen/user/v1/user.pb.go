@@ -593,11 +593,13 @@ func (x *ListUsersReply) GetTotalPages() int32 {
 type UpdateUserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            *string                `protobuf:"bytes,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
-	Nickname      *string                `protobuf:"bytes,2,opt,name=nickname,proto3,oneof" json:"nickname,omitempty"`
-	Email         *string                `protobuf:"bytes,3,opt,name=email,proto3,oneof" json:"email,omitempty"`
+	Username      *string                `protobuf:"bytes,2,opt,name=username,proto3,oneof" json:"username,omitempty"`
+	Nickname      *string                `protobuf:"bytes,3,opt,name=nickname,proto3,oneof" json:"nickname,omitempty"`
 	Mobile        *string                `protobuf:"bytes,4,opt,name=mobile,proto3,oneof" json:"mobile,omitempty"`
-	Sex           *int32                 `protobuf:"varint,5,opt,name=sex,proto3,oneof" json:"sex,omitempty"`
+	Email         *string                `protobuf:"bytes,5,opt,name=email,proto3,oneof" json:"email,omitempty"`
 	Avatar        *string                `protobuf:"bytes,6,opt,name=avatar,proto3,oneof" json:"avatar,omitempty"`
+	Sex           *int32                 `protobuf:"varint,7,opt,name=sex,proto3,oneof" json:"sex,omitempty"`
+	Status        *int32                 `protobuf:"varint,8,opt,name=status,proto3,oneof" json:"status,omitempty"`
 	Remark        *string                `protobuf:"bytes,9,opt,name=remark,proto3,oneof" json:"remark,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -640,16 +642,16 @@ func (x *UpdateUserRequest) GetId() string {
 	return ""
 }
 
-func (x *UpdateUserRequest) GetNickname() string {
-	if x != nil && x.Nickname != nil {
-		return *x.Nickname
+func (x *UpdateUserRequest) GetUsername() string {
+	if x != nil && x.Username != nil {
+		return *x.Username
 	}
 	return ""
 }
 
-func (x *UpdateUserRequest) GetEmail() string {
-	if x != nil && x.Email != nil {
-		return *x.Email
+func (x *UpdateUserRequest) GetNickname() string {
+	if x != nil && x.Nickname != nil {
+		return *x.Nickname
 	}
 	return ""
 }
@@ -661,11 +663,11 @@ func (x *UpdateUserRequest) GetMobile() string {
 	return ""
 }
 
-func (x *UpdateUserRequest) GetSex() int32 {
-	if x != nil && x.Sex != nil {
-		return *x.Sex
+func (x *UpdateUserRequest) GetEmail() string {
+	if x != nil && x.Email != nil {
+		return *x.Email
 	}
-	return 0
+	return ""
 }
 
 func (x *UpdateUserRequest) GetAvatar() string {
@@ -673,6 +675,20 @@ func (x *UpdateUserRequest) GetAvatar() string {
 		return *x.Avatar
 	}
 	return ""
+}
+
+func (x *UpdateUserRequest) GetSex() int32 {
+	if x != nil && x.Sex != nil {
+		return *x.Sex
+	}
+	return 0
+}
+
+func (x *UpdateUserRequest) GetStatus() int32 {
+	if x != nil && x.Status != nil {
+		return *x.Status
+	}
+	return 0
 }
 
 func (x *UpdateUserRequest) GetRemark() string {
@@ -750,6 +766,58 @@ func (x *ChangePasswordRequest) GetConfirmPassword() string {
 	return ""
 }
 
+type SetAvatarRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            *string                `protobuf:"bytes,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
+	Avatar        *string                `protobuf:"bytes,2,opt,name=avatar,proto3,oneof" json:"avatar,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SetAvatarRequest) Reset() {
+	*x = SetAvatarRequest{}
+	mi := &file_user_v1_user_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SetAvatarRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SetAvatarRequest) ProtoMessage() {}
+
+func (x *SetAvatarRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_user_v1_user_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SetAvatarRequest.ProtoReflect.Descriptor instead.
+func (*SetAvatarRequest) Descriptor() ([]byte, []int) {
+	return file_user_v1_user_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *SetAvatarRequest) GetId() string {
+	if x != nil && x.Id != nil {
+		return *x.Id
+	}
+	return ""
+}
+
+func (x *SetAvatarRequest) GetAvatar() string {
+	if x != nil && x.Avatar != nil {
+		return *x.Avatar
+	}
+	return ""
+}
+
 type ChangeUserStatusRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            *string                `protobuf:"bytes,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
@@ -760,7 +828,7 @@ type ChangeUserStatusRequest struct {
 
 func (x *ChangeUserStatusRequest) Reset() {
 	*x = ChangeUserStatusRequest{}
-	mi := &file_user_v1_user_proto_msgTypes[9]
+	mi := &file_user_v1_user_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -772,7 +840,7 @@ func (x *ChangeUserStatusRequest) String() string {
 func (*ChangeUserStatusRequest) ProtoMessage() {}
 
 func (x *ChangeUserStatusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_user_v1_user_proto_msgTypes[9]
+	mi := &file_user_v1_user_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -785,7 +853,7 @@ func (x *ChangeUserStatusRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChangeUserStatusRequest.ProtoReflect.Descriptor instead.
 func (*ChangeUserStatusRequest) Descriptor() ([]byte, []int) {
-	return file_user_v1_user_proto_rawDescGZIP(), []int{9}
+	return file_user_v1_user_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *ChangeUserStatusRequest) GetId() string {
@@ -813,7 +881,7 @@ type AssignUserPostRequest struct {
 
 func (x *AssignUserPostRequest) Reset() {
 	*x = AssignUserPostRequest{}
-	mi := &file_user_v1_user_proto_msgTypes[10]
+	mi := &file_user_v1_user_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -825,7 +893,7 @@ func (x *AssignUserPostRequest) String() string {
 func (*AssignUserPostRequest) ProtoMessage() {}
 
 func (x *AssignUserPostRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_user_v1_user_proto_msgTypes[10]
+	mi := &file_user_v1_user_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -838,7 +906,7 @@ func (x *AssignUserPostRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AssignUserPostRequest.ProtoReflect.Descriptor instead.
 func (*AssignUserPostRequest) Descriptor() ([]byte, []int) {
-	return file_user_v1_user_proto_rawDescGZIP(), []int{10}
+	return file_user_v1_user_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *AssignUserPostRequest) GetId() string {
@@ -873,7 +941,7 @@ type AssignUserDeptRequest struct {
 
 func (x *AssignUserDeptRequest) Reset() {
 	*x = AssignUserDeptRequest{}
-	mi := &file_user_v1_user_proto_msgTypes[11]
+	mi := &file_user_v1_user_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -885,7 +953,7 @@ func (x *AssignUserDeptRequest) String() string {
 func (*AssignUserDeptRequest) ProtoMessage() {}
 
 func (x *AssignUserDeptRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_user_v1_user_proto_msgTypes[11]
+	mi := &file_user_v1_user_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -898,7 +966,7 @@ func (x *AssignUserDeptRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AssignUserDeptRequest.ProtoReflect.Descriptor instead.
 func (*AssignUserDeptRequest) Descriptor() ([]byte, []int) {
-	return file_user_v1_user_proto_rawDescGZIP(), []int{11}
+	return file_user_v1_user_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *AssignUserDeptRequest) GetId() string {
@@ -931,7 +999,7 @@ type DeleteUserRequest struct {
 
 func (x *DeleteUserRequest) Reset() {
 	*x = DeleteUserRequest{}
-	mi := &file_user_v1_user_proto_msgTypes[12]
+	mi := &file_user_v1_user_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -943,7 +1011,7 @@ func (x *DeleteUserRequest) String() string {
 func (*DeleteUserRequest) ProtoMessage() {}
 
 func (x *DeleteUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_user_v1_user_proto_msgTypes[12]
+	mi := &file_user_v1_user_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -956,7 +1024,7 @@ func (x *DeleteUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteUserRequest.ProtoReflect.Descriptor instead.
 func (*DeleteUserRequest) Descriptor() ([]byte, []int) {
-	return file_user_v1_user_proto_rawDescGZIP(), []int{12}
+	return file_user_v1_user_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *DeleteUserRequest) GetId() string {
@@ -1041,21 +1109,25 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"\x04page\x18\x03 \x01(\x05B\x17\xbaG\x14:\x03\x12\x011\x92\x02\f当前页码R\x04page\x125\n" +
 	"\tpage_size\x18\x04 \x01(\x05B\x18\xbaG\x15:\x04\x12\x0210\x92\x02\f每页数量R\bpageSize\x126\n" +
 	"\vtotal_pages\x18\x05 \x01(\x05B\x15\xbaG\x12:\x04\x12\x0210\x92\x02\t总页数R\n" +
-	"totalPages:!\xbaG\x1e\x92\x02\x1b查询用户列表响应体\"\xc4\x04\n" +
+	"totalPages:!\xbaG\x1e\x92\x02\x1b查询用户列表响应体\"\xe7\x05\n" +
 	"\x11UpdateUserRequest\x120\n" +
-	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b用户IDH\x00R\x02id\x88\x01\x01\x12@\n" +
-	"\bnickname\x18\x02 \x01(\tB\x1f\xbaG\x1c:\v\x12\t新昵称\x92\x02\f用户昵称H\x01R\bnickname\x88\x01\x01\x12E\n" +
-	"\x05email\x18\x03 \x01(\tB*\xbaG':\x16\x12\x14newemail@example.com\x92\x02\f邮箱地址H\x02R\x05email\x88\x01\x01\x12>\n" +
-	"\x06mobile\x18\x04 \x01(\tB!\xbaG\x1e:\r\x12\v13900139000\x92\x02\f手机号码H\x03R\x06mobile\x88\x01\x01\x12@\n" +
-	"\x03sex\x18\x05 \x01(\x05B)\xbaG&:\x03\x12\x011\x92\x02\x1e性别: 0-未知, 1-男, 2-女H\x04R\x03sex\x88\x01\x01\x12W\n" +
-	"\x06avatar\x18\x06 \x01(\tB:\xbaG7:#\x12!https://example.com/newavatar.jpg\x92\x02\x0f用户头像URLH\x05R\x06avatar\x88\x01\x01\x12/\n" +
-	"\x06remark\x18\t \x01(\tB\x12\xbaG\x0f\x92\x02\f备注信息H\x06R\x06remark\x88\x01\x01:!\xbaG\x1e\x92\x02\x1b更新用户信息请求体B\x05\n" +
+	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b用户IDH\x00R\x02id\x88\x01\x01\x12?\n" +
+	"\busername\x18\x02 \x01(\tB\x1e\xbaG\x1b:\r\x12\vnewusername\x92\x02\t用户名H\x01R\busername\x88\x01\x01\x12@\n" +
+	"\bnickname\x18\x03 \x01(\tB\x1f\xbaG\x1c:\v\x12\t新昵称\x92\x02\f用户昵称H\x02R\bnickname\x88\x01\x01\x12>\n" +
+	"\x06mobile\x18\x04 \x01(\tB!\xbaG\x1e:\r\x12\v13900139000\x92\x02\f手机号码H\x03R\x06mobile\x88\x01\x01\x12E\n" +
+	"\x05email\x18\x05 \x01(\tB*\xbaG':\x16\x12\x14newemail@example.com\x92\x02\f邮箱地址H\x04R\x05email\x88\x01\x01\x12W\n" +
+	"\x06avatar\x18\x06 \x01(\tB:\xbaG7:#\x12!https://example.com/newavatar.jpg\x92\x02\x0f用户头像URLH\x05R\x06avatar\x88\x01\x01\x12@\n" +
+	"\x03sex\x18\a \x01(\x05B)\xbaG&:\x03\x12\x011\x92\x02\x1e性别: 0-未知, 1-男, 2-女H\x06R\x03sex\x88\x01\x01\x12H\n" +
+	"\x06status\x18\b \x01(\x05B+\xbaG(:\x03\x12\x011\x92\x02 用户状态: 0-禁用, 1-正常H\aR\x06status\x88\x01\x01\x12/\n" +
+	"\x06remark\x18\t \x01(\tB\x12\xbaG\x0f\x92\x02\f备注信息H\bR\x06remark\x88\x01\x01:!\xbaG\x1e\x92\x02\x1b更新用户信息请求体B\x05\n" +
 	"\x03_idB\v\n" +
-	"\t_nicknameB\b\n" +
+	"\t_usernameB\v\n" +
+	"\t_nicknameB\t\n" +
+	"\a_mobileB\b\n" +
 	"\x06_emailB\t\n" +
-	"\a_mobileB\x06\n" +
+	"\a_avatarB\x06\n" +
 	"\x04_sexB\t\n" +
-	"\a_avatarB\t\n" +
+	"\a_statusB\t\n" +
 	"\a_remark\"\x93\x03\n" +
 	"\x15ChangePasswordRequest\x120\n" +
 	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b用户IDH\x00R\x02id\x88\x01\x01\x12I\n" +
@@ -1065,7 +1137,12 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"\x03_idB\x0f\n" +
 	"\r_old_passwordB\x0f\n" +
 	"\r_new_passwordB\x13\n" +
-	"\x11_confirm_password\"\xca\x01\n" +
+	"\x11_confirm_password\"\x98\x02\n" +
+	"\x10SetAvatarRequest\x120\n" +
+	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b用户IDH\x00R\x02id\x88\x01\x01\x12Z\n" +
+	"\x06avatar\x18\x02 \x01(\tB=\xbaG:: \x12\x1ehttps://example.com/avatar.jpg\x92\x02\x15用户头像URL地址H\x01R\x06avatar\x88\x01\x01:d\xbaGa:A\x12?{\"id\": \"123456789\", \"avatar\": \"https://example.com/avatar.jpg\"}\x92\x02\x1b设置用户头像请求体B\x05\n" +
+	"\x03_idB\t\n" +
+	"\a_avatar\"\xca\x01\n" +
 	"\x17ChangeUserStatusRequest\x120\n" +
 	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b用户IDH\x00R\x02id\x88\x01\x01\x12H\n" +
 	"\x06status\x18\x02 \x01(\x05B+\xbaG(:\x03\x12\x011\x92\x02 目标状态: 0-禁用, 1-正常H\x01R\x06status\x88\x01\x01:!\xbaG\x1e\x92\x02\x1b变更用户状态请求体B\x05\n" +
@@ -1087,7 +1164,7 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"_operation\"i\n" +
 	"\x11DeleteUserRequest\x120\n" +
 	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b用户IDH\x00R\x02id\x88\x01\x01:\x1b\xbaG\x18\x92\x02\x15删除用户请求体B\x05\n" +
-	"\x03_id2\xcf\r\n" +
+	"\x03_id2\xf7\x0e\n" +
 	"\vUserService\x12\xc4\x01\n" +
 	"\n" +
 	"CreateUser\x12!.system.user.v1.CreateUserRequest\x1a\x16.google.protobuf.Empty\"{\xbaG[\x12\x0f创建新用户\x1aH创建一个新的用户，需要提供用户名、密码等基本信息\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/qs/v1/user/create\x12\xa8\x01\n" +
@@ -1095,7 +1172,8 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"\tListUsers\x12 .system.user.v1.ListUsersRequest\x1a\x1e.system.user.v1.ListUsersReply\"s\xbaGX\x12\x12获取用户列表\x1aB分页查询用户列表，支持关键字搜索、状态筛选等\x82\xd3\xe4\x93\x02\x12\x12\x10/qs/v1/user/list\x12\xbe\x01\n" +
 	"\n" +
 	"UpdateUser\x12!.system.user.v1.UpdateUserRequest\x1a\x16.google.protobuf.Empty\"u\xbaGU\x12\x12更新用户信息\x1a?更新用户的基本信息，如昵称、邮箱、手机号等\x82\xd3\xe4\x93\x02\x17:\x01*\x1a\x12/qs/v1/user/update\x12\xcf\x01\n" +
-	"\x0eChangePassword\x12%.system.user.v1.ChangePasswordRequest\x1a\x16.google.protobuf.Empty\"~\xbaGU\x12\x12修改用户密码\x1a?用户主动修改自己的登录密码，需要验证原密码\x82\xd3\xe4\x93\x02 :\x01*\x1a\x1b/qs/v1/user/change-password\x12\xc5\x01\n" +
+	"\x0eChangePassword\x12%.system.user.v1.ChangePasswordRequest\x1a\x16.google.protobuf.Empty\"~\xbaGU\x12\x12修改用户密码\x1a?用户主动修改自己的登录密码，需要验证原密码\x82\xd3\xe4\x93\x02 :\x01*\x1a\x1b/qs/v1/user/change-password\x12\xa5\x01\n" +
+	"\tSetAvatar\x12 .system.user.v1.SetAvatarRequest\x1a\x16.google.protobuf.Empty\"^\xbaG:\x12\x12设置用户头像\x1a$设置用户的头像图片URL地址\x82\xd3\xe4\x93\x02\x1b:\x01*\x1a\x16/qs/v1/user/set-avatar\x12\xc5\x01\n" +
 	"\x10ChangeUserStatus\x12'.system.user.v1.ChangeUserStatusRequest\x1a\x16.google.protobuf.Empty\"p\xbaGI\x12\x12变更用户状态\x1a3启用或禁用用户，管理用户的使用权限\x82\xd3\xe4\x93\x02\x1e:\x01*\x1a\x19/qs/v1/user/update-status\x12\xc8\x01\n" +
 	"\x0eAssignUserPost\x12%.system.user.v1.AssignUserPostRequest\x1a\x16.google.protobuf.Empty\"w\xbaGR\x12\x12管理用户岗位\x1a<为用户分配或移除岗位，管理用户的职位信息\x82\xd3\xe4\x93\x02\x1c:\x01*\x1a\x17/qs/v1/user/assign-post\x12\xc8\x01\n" +
 	"\x0eAssignUserDept\x12%.system.user.v1.AssignUserDeptRequest\x1a\x16.google.protobuf.Empty\"w\xbaGR\x12\x12管理用户部门\x1a<为用户分配或移除部门，管理用户的部门信息\x82\xd3\xe4\x93\x02\x1c:\x01*\x1a\x17/qs/v1/user/assign-dept\x12\x97\x01\n" +
@@ -1115,7 +1193,7 @@ func file_user_v1_user_proto_rawDescGZIP() []byte {
 	return file_user_v1_user_proto_rawDescData
 }
 
-var file_user_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_user_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_user_v1_user_proto_goTypes = []any{
 	(*UserInfo)(nil),                // 0: system.user.v1.UserInfo
 	(*CreateUserRequest)(nil),       // 1: system.user.v1.CreateUserRequest
@@ -1126,17 +1204,18 @@ var file_user_v1_user_proto_goTypes = []any{
 	(*ListUsersReply)(nil),          // 6: system.user.v1.ListUsersReply
 	(*UpdateUserRequest)(nil),       // 7: system.user.v1.UpdateUserRequest
 	(*ChangePasswordRequest)(nil),   // 8: system.user.v1.ChangePasswordRequest
-	(*ChangeUserStatusRequest)(nil), // 9: system.user.v1.ChangeUserStatusRequest
-	(*AssignUserPostRequest)(nil),   // 10: system.user.v1.AssignUserPostRequest
-	(*AssignUserDeptRequest)(nil),   // 11: system.user.v1.AssignUserDeptRequest
-	(*DeleteUserRequest)(nil),       // 12: system.user.v1.DeleteUserRequest
-	(*timestamppb.Timestamp)(nil),   // 13: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),           // 14: google.protobuf.Empty
+	(*SetAvatarRequest)(nil),        // 9: system.user.v1.SetAvatarRequest
+	(*ChangeUserStatusRequest)(nil), // 10: system.user.v1.ChangeUserStatusRequest
+	(*AssignUserPostRequest)(nil),   // 11: system.user.v1.AssignUserPostRequest
+	(*AssignUserDeptRequest)(nil),   // 12: system.user.v1.AssignUserDeptRequest
+	(*DeleteUserRequest)(nil),       // 13: system.user.v1.DeleteUserRequest
+	(*timestamppb.Timestamp)(nil),   // 14: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),           // 15: google.protobuf.Empty
 }
 var file_user_v1_user_proto_depIdxs = []int32{
-	13, // 0: system.user.v1.UserInfo.login_date:type_name -> google.protobuf.Timestamp
-	13, // 1: system.user.v1.UserInfo.create_at:type_name -> google.protobuf.Timestamp
-	13, // 2: system.user.v1.UserInfo.update_at:type_name -> google.protobuf.Timestamp
+	14, // 0: system.user.v1.UserInfo.login_date:type_name -> google.protobuf.Timestamp
+	14, // 1: system.user.v1.UserInfo.create_at:type_name -> google.protobuf.Timestamp
+	14, // 2: system.user.v1.UserInfo.update_at:type_name -> google.protobuf.Timestamp
 	0,  // 3: system.user.v1.GetUserReply.user:type_name -> system.user.v1.UserInfo
 	0,  // 4: system.user.v1.ListUsersReply.users:type_name -> system.user.v1.UserInfo
 	1,  // 5: system.user.v1.UserService.CreateUser:input_type -> system.user.v1.CreateUserRequest
@@ -1144,21 +1223,23 @@ var file_user_v1_user_proto_depIdxs = []int32{
 	5,  // 7: system.user.v1.UserService.ListUsers:input_type -> system.user.v1.ListUsersRequest
 	7,  // 8: system.user.v1.UserService.UpdateUser:input_type -> system.user.v1.UpdateUserRequest
 	8,  // 9: system.user.v1.UserService.ChangePassword:input_type -> system.user.v1.ChangePasswordRequest
-	9,  // 10: system.user.v1.UserService.ChangeUserStatus:input_type -> system.user.v1.ChangeUserStatusRequest
-	10, // 11: system.user.v1.UserService.AssignUserPost:input_type -> system.user.v1.AssignUserPostRequest
-	11, // 12: system.user.v1.UserService.AssignUserDept:input_type -> system.user.v1.AssignUserDeptRequest
-	12, // 13: system.user.v1.UserService.DeleteUser:input_type -> system.user.v1.DeleteUserRequest
-	14, // 14: system.user.v1.UserService.CreateUser:output_type -> google.protobuf.Empty
-	4,  // 15: system.user.v1.UserService.GetUser:output_type -> system.user.v1.GetUserReply
-	6,  // 16: system.user.v1.UserService.ListUsers:output_type -> system.user.v1.ListUsersReply
-	14, // 17: system.user.v1.UserService.UpdateUser:output_type -> google.protobuf.Empty
-	14, // 18: system.user.v1.UserService.ChangePassword:output_type -> google.protobuf.Empty
-	14, // 19: system.user.v1.UserService.ChangeUserStatus:output_type -> google.protobuf.Empty
-	14, // 20: system.user.v1.UserService.AssignUserPost:output_type -> google.protobuf.Empty
-	14, // 21: system.user.v1.UserService.AssignUserDept:output_type -> google.protobuf.Empty
-	14, // 22: system.user.v1.UserService.DeleteUser:output_type -> google.protobuf.Empty
-	14, // [14:23] is the sub-list for method output_type
-	5,  // [5:14] is the sub-list for method input_type
+	9,  // 10: system.user.v1.UserService.SetAvatar:input_type -> system.user.v1.SetAvatarRequest
+	10, // 11: system.user.v1.UserService.ChangeUserStatus:input_type -> system.user.v1.ChangeUserStatusRequest
+	11, // 12: system.user.v1.UserService.AssignUserPost:input_type -> system.user.v1.AssignUserPostRequest
+	12, // 13: system.user.v1.UserService.AssignUserDept:input_type -> system.user.v1.AssignUserDeptRequest
+	13, // 14: system.user.v1.UserService.DeleteUser:input_type -> system.user.v1.DeleteUserRequest
+	15, // 15: system.user.v1.UserService.CreateUser:output_type -> google.protobuf.Empty
+	4,  // 16: system.user.v1.UserService.GetUser:output_type -> system.user.v1.GetUserReply
+	6,  // 17: system.user.v1.UserService.ListUsers:output_type -> system.user.v1.ListUsersReply
+	15, // 18: system.user.v1.UserService.UpdateUser:output_type -> google.protobuf.Empty
+	15, // 19: system.user.v1.UserService.ChangePassword:output_type -> google.protobuf.Empty
+	15, // 20: system.user.v1.UserService.SetAvatar:output_type -> google.protobuf.Empty
+	15, // 21: system.user.v1.UserService.ChangeUserStatus:output_type -> google.protobuf.Empty
+	15, // 22: system.user.v1.UserService.AssignUserPost:output_type -> google.protobuf.Empty
+	15, // 23: system.user.v1.UserService.AssignUserDept:output_type -> google.protobuf.Empty
+	15, // 24: system.user.v1.UserService.DeleteUser:output_type -> google.protobuf.Empty
+	15, // [15:25] is the sub-list for method output_type
+	5,  // [5:15] is the sub-list for method input_type
 	5,  // [5:5] is the sub-list for extension type_name
 	5,  // [5:5] is the sub-list for extension extendee
 	0,  // [0:5] is the sub-list for field type_name
@@ -1178,13 +1259,14 @@ func file_user_v1_user_proto_init() {
 	file_user_v1_user_proto_msgTypes[10].OneofWrappers = []any{}
 	file_user_v1_user_proto_msgTypes[11].OneofWrappers = []any{}
 	file_user_v1_user_proto_msgTypes[12].OneofWrappers = []any{}
+	file_user_v1_user_proto_msgTypes[13].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_user_v1_user_proto_rawDesc), len(file_user_v1_user_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

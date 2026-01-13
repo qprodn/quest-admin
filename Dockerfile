@@ -1,4 +1,4 @@
-FROM golang:1.19 AS builder
+FROM golang:1.25.5 AS builder
 
 COPY . /src
 WORKDIR /src
@@ -14,11 +14,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         && apt-get autoremove -y && apt-get autoclean -y
 
 COPY --from=builder /src/bin /app
+#COPY --from=builder /src/configs /app/configs
 
 WORKDIR /app
 
 EXPOSE 8000
 EXPOSE 9000
-VOLUME /data/conf
+#VOLUME /data/conf
 
-CMD ["./server", "-conf", "/data/conf"]
+
+CMD ["./quest-admin", "-conf", "/app/configs/"]

@@ -15,8 +15,8 @@ func NewRedis(c *conf.Bootstrap) *redis.Client {
 		DB:       int(c.Data.Redis.Db),
 
 		// 超时设置
-		ReadTimeout:  time.Duration(c.Data.Redis.ReadTimeout),
-		WriteTimeout: time.Duration(c.Data.Redis.ReadTimeout),
+		ReadTimeout:  time.Duration(c.Data.Redis.ReadTimeout) * time.Second,
+		WriteTimeout: time.Duration(c.Data.Redis.ReadTimeout) * time.Second,
 
 		// 从配置文件中获取连接池配置
 		PoolSize:     int(c.Data.Redis.PoolSize),     // 连接池大小

@@ -42,7 +42,7 @@ func NewHTTPServer(c *conf.Bootstrap, logger log.Logger,
 		opts = append(opts, http.Address(c.Server.Http.Addr))
 	}
 	if c.Server.Http.Timeout != 0 {
-		opts = append(opts, http.Timeout(time.Duration(c.Server.Http.Timeout)))
+		opts = append(opts, http.Timeout(time.Duration(c.Server.Http.Timeout)*time.Second))
 	}
 	srv := http.NewServer(opts...)
 	greeterv1.RegisterGreeterHTTPServer(srv, greeter)

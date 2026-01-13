@@ -741,6 +741,23 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/system.user.v1.ListUsersReply'
+    /qs/v1/user/set-avatar:
+        put:
+            tags:
+                - UserService
+            summary: 设置用户头像
+            description: 设置用户的头像图片URL地址
+            operationId: UserService_SetAvatar
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.user.v1.SetAvatarRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
     /qs/v1/user/update:
         put:
             tags:
@@ -2045,6 +2062,19 @@ components:
                     description: 总页数
                     format: int32
             description: 查询用户列表响应体
+        system.user.v1.SetAvatarRequest:
+            example: {"id": "123456789", "avatar": "https://example.com/avatar.jpg"}
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 用户ID
+                avatar:
+                    example: https://example.com/avatar.jpg
+                    type: string
+                    description: 用户头像URL地址
+            description: 设置用户头像请求体
         system.user.v1.UpdateUserRequest:
             type: object
             properties:
@@ -2052,27 +2082,36 @@ components:
                     example: 123456789
                     type: string
                     description: 用户ID
+                username:
+                    example: newusername
+                    type: string
+                    description: 用户名
                 nickname:
                     example: 新昵称
                     type: string
                     description: 用户昵称
-                email:
-                    example: newemail@example.com
-                    type: string
-                    description: 邮箱地址
                 mobile:
                     example: 13900139000
                     type: string
                     description: 手机号码
+                email:
+                    example: newemail@example.com
+                    type: string
+                    description: 邮箱地址
+                avatar:
+                    example: https://example.com/newavatar.jpg
+                    type: string
+                    description: 用户头像URL
                 sex:
                     example: 1
                     type: integer
                     description: '性别: 0-未知, 1-男, 2-女'
                     format: int32
-                avatar:
-                    example: https://example.com/newavatar.jpg
-                    type: string
-                    description: 用户头像URL
+                status:
+                    example: 1
+                    type: integer
+                    description: '用户状态: 0-禁用, 1-正常'
+                    format: int32
                 remark:
                     type: string
                     description: 备注信息
