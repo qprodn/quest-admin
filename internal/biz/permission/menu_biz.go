@@ -36,7 +36,10 @@ func (uc *MenuUsecase) CreateMenu(ctx context.Context, menu *Menu) error {
 			return ErrInvalidParentMenu
 		}
 	}
-	uc.repo.Create(ctx, menu)
+	err := uc.repo.Create(ctx, menu)
+	if err != nil {
+		return ErrInternalServer
+	}
 	return nil
 }
 
@@ -84,7 +87,10 @@ func (uc *MenuUsecase) UpdateMenu(ctx context.Context, menu *Menu) error {
 		uc.log.WithContext(ctx).Errorf("parent menu not valid,id:%v", menu.ID)
 		return ErrInvalidParentMenu
 	}
-	uc.repo.Update(ctx, menu)
+	err = uc.repo.Update(ctx, menu)
+	if err != nil {
+		return ErrInternalServer
+	}
 	return nil
 }
 
@@ -104,6 +110,9 @@ func (uc *MenuUsecase) DeleteMenu(ctx context.Context, id string) error {
 		uc.log.WithContext(ctx).Errorf("menu has child menus,menuId:%v", id)
 		return ErrMenuHasChildren
 	}
-
-	return uc.repo.Delete(ctx, id)
+	err = uc.repo.Delete(ctx, id)
+	if err != nil {
+		return ErrInternalServer
+	}
+	return nil
 }

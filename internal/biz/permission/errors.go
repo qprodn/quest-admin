@@ -24,3 +24,7 @@ var (
 	ErrMenuLevelExceeded = errors.BadRequest(v1.ErrorReason_MENU_LEVEL_EXCEEDED.String(), "menu level exceeded")
 	ErrInvalidMenuPath   = errors.BadRequest(v1.ErrorReason_INVALID_MENU_PATH.String(), "invalid menu path")
 )
+
+var (
+	ErrInternalServer = errors.InternalServer("UNKNOWN_SYSTEM_ERROR", "UNKNOWN_SYSTEM_ERROR")
+)
