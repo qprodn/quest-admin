@@ -68,7 +68,15 @@ func (s *MenuService) GetMenuTree(ctx context.Context, in *emptypb.Empty) (*v1.G
 
 	protoMenus := make([]*v1.MenuInfo, 0, len(menus))
 	for _, menu := range menus {
-		protoMenus = append(protoMenus, s.toProtoMenu(menu))
+		protoMenu := s.toProtoMenu(menu)
+		protoMenus = append(protoMenus, protoMenu)
+		if len(menu.Children) != 0 {
+			chileMenus := make([]*v1.MenuInfo, 0, len(menu.Children))
+			for _, val := range menu.Children {
+				chileMenus = append(chileMenus, s.toProtoMenu(val))
+			}
+			protoMenu.Children = chileMenus
+		}
 	}
 
 	return &v1.GetMenuTreeReply{
@@ -94,7 +102,7 @@ func (s *MenuService) UpdateMenu(ctx context.Context, in *v1.UpdateMenuRequest) 
 		AlwaysShow:    in.GetAlwaysShow(),
 	}
 
-	_, err := s.mc.UpdateMenu(ctx, menu)
+	err := s.mc.UpdateMenu(ctx, menu)
 	if err != nil {
 		return nil, err
 	}

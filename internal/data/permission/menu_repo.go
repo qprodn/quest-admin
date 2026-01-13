@@ -50,7 +50,7 @@ func NewMenuRepo(data *data.Data, logger log.Logger) biz.MenuRepo {
 	}
 }
 
-func (r *menuRepo) Create(ctx context.Context, menu *biz.Menu) (*biz.Menu, error) {
+func (r *menuRepo) Create(ctx context.Context, menu *biz.Menu) error {
 	now := time.Now()
 	dbMenu := &Menu{
 		ID:            idgen.GenerateID(),
@@ -67,18 +67,18 @@ func (r *menuRepo) Create(ctx context.Context, menu *biz.Menu) (*biz.Menu, error
 		Visible:       menu.Visible,
 		KeepAlive:     menu.KeepAlive,
 		AlwaysShow:    menu.AlwaysShow,
-		CreateBy:      menu.CreateBy,
+		CreateBy:      "todo",
 		CreateAt:      now,
-		UpdateBy:      menu.UpdateBy,
+		UpdateBy:      "todo",
 		UpdateAt:      now,
 	}
 
 	_, err := r.data.DB(ctx).NewInsert().Model(dbMenu).Exec(ctx)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return r.toBizMenu(dbMenu), nil
+	return nil
 }
 
 func (r *menuRepo) FindByID(ctx context.Context, id string) (*biz.Menu, error) {
@@ -86,7 +86,7 @@ func (r *menuRepo) FindByID(ctx context.Context, id string) (*biz.Menu, error) {
 	err := r.data.DB(ctx).NewSelect().Model(dbMenu).WherePK().Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, biz.ErrMenuNotFound
+			return nil, nil
 		}
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func (r *menuRepo) FindByName(ctx context.Context, name string) (*biz.Menu, erro
 	err := r.data.DB(ctx).NewSelect().Model(dbMenu).Where("name = ?", name).Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, biz.ErrMenuNotFound
+			return nil, nil
 		}
 		return nil, err
 	}
@@ -113,6 +113,9 @@ func (r *menuRepo) List(ctx context.Context) ([]*biz.Menu, error) {
 		Order("sort ASC, create_at DESC").
 		Scan(ctx)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return []*biz.Menu{}, nil
+		}
 		return nil, err
 	}
 
@@ -130,6 +133,9 @@ func (r *menuRepo) FindByParentID(ctx context.Context, parentID string) ([]*biz.
 		Where("parent_id = ?", parentID).
 		Scan(ctx)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return []*biz.Menu{}, nil
+		}
 		return nil, err
 	}
 
@@ -140,7 +146,7 @@ func (r *menuRepo) FindByParentID(ctx context.Context, parentID string) ([]*biz.
 	return menus, nil
 }
 
-func (r *menuRepo) Update(ctx context.Context, menu *biz.Menu) (*biz.Menu, error) {
+func (r *menuRepo) Update(ctx context.Context, menu *biz.Menu) error {
 	dbMenu := &Menu{
 		ID:            menu.ID,
 		Name:          menu.Name,
@@ -156,15 +162,15 @@ func (r *menuRepo) Update(ctx context.Context, menu *biz.Menu) (*biz.Menu, error
 		Visible:       menu.Visible,
 		KeepAlive:     menu.KeepAlive,
 		AlwaysShow:    menu.AlwaysShow,
+		UpdateBy:      "todo",
 		UpdateAt:      time.Now(),
 	}
 
-	_, err := r.data.DB(ctx).NewUpdate().Model(dbMenu).WherePK().OmitZero().Exec(ctx)
+	_, err := r.data.DB(ctx).NewUpdate().Model(dbMenu).WherePK().Exec(ctx)
 	if err != nil {
-		return nil, err
+		return err
 	}
-
-	return r.FindByID(ctx, menu.ID)
+	return nil
 }
 
 func (r *menuRepo) Delete(ctx context.Context, id string) error {
