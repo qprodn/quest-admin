@@ -2,6 +2,7 @@ package permission
 
 import (
 	"context"
+	"quest-admin/pkg/lang/ptr"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -71,10 +72,14 @@ func (uc *MenuUsecase) GetMenuTree(ctx context.Context) ([]*Menu, error) {
 }
 
 func (uc *MenuUsecase) UpdateMenu(ctx context.Context, menu *Menu) error {
-	_, err := uc.repo.FindByID(ctx, menu.ID)
+	dbMenu, err := uc.repo.FindByID(ctx, menu.ID)
 	if err != nil {
-		uc.log.WithContext(ctx).Errorf("menu not found,id:%v", menu.ID)
+		uc.log.WithContext(ctx).Errorf("found menu failed,id:%v", menu.ID)
 		return err
+	}
+	if dbMenu == nil {
+		uc.log.WithContext(ctx).Errorf("menu not found,id:%v", menu.ID)
+		return ErrMenuNotFound
 	}
 
 	if menu.ParentID != "" && menu.ParentID != menu.ID {
@@ -84,7 +89,7 @@ func (uc *MenuUsecase) UpdateMenu(ctx context.Context, menu *Menu) error {
 			return ErrInvalidParentMenu
 		}
 	} else {
-		uc.log.WithContext(ctx).Errorf("parent menu not valid,id:%v", menu.ID)
+		uc.log.WithContext(ctx).Errorf("parent menu not valid,id:%v", ptr.From(menu).ID)
 		return ErrInvalidParentMenu
 	}
 	err = uc.repo.Update(ctx, menu)
