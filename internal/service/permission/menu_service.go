@@ -41,7 +41,7 @@ func (s *MenuService) CreateMenu(ctx context.Context, in *v1.CreateMenuRequest) 
 		AlwaysShow:    in.GetAlwaysShow(),
 	}
 
-	_, err := s.mc.CreateMenu(ctx, menu)
+	err := s.mc.CreateMenu(ctx, menu)
 	if err != nil {
 		return nil, err
 	}
