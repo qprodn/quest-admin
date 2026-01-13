@@ -2,7 +2,6 @@ package permission
 
 import (
 	"context"
-	"quest-admin/pkg/lang/ptr"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -82,15 +81,20 @@ func (uc *MenuUsecase) UpdateMenu(ctx context.Context, menu *Menu) error {
 		return ErrMenuNotFound
 	}
 
-	if menu.ParentID != "" && menu.ParentID != menu.ID {
-		_, err := uc.repo.FindByID(ctx, menu.ParentID)
+	if menu.ParentID != "" {
+		if menu.ParentID == menu.ID {
+			uc.log.WithContext(ctx).Errorf("parent menu not valid,id:%v", menu.ID)
+			return ErrInvalidParentMenu
+		}
+		parentMenu, err := uc.repo.FindByID(ctx, menu.ParentID)
 		if err != nil {
 			uc.log.WithContext(ctx).Errorf("parent menu not found,id:%v", menu.ID)
 			return ErrInvalidParentMenu
 		}
-	} else {
-		uc.log.WithContext(ctx).Errorf("parent menu not valid,id:%v", ptr.From(menu).ID)
-		return ErrInvalidParentMenu
+		if parentMenu == nil {
+			uc.log.WithContext(ctx).Errorf("parent menu not found,id:%v", menu.ParentID)
+			return ErrInvalidParentMenu
+		}
 	}
 	err = uc.repo.Update(ctx, menu)
 	if err != nil {
@@ -100,10 +104,14 @@ func (uc *MenuUsecase) UpdateMenu(ctx context.Context, menu *Menu) error {
 }
 
 func (uc *MenuUsecase) DeleteMenu(ctx context.Context, id string) error {
-	_, err := uc.repo.FindByID(ctx, id)
+	dbMenu, err := uc.repo.FindByID(ctx, id)
 	if err != nil {
-		uc.log.WithContext(ctx).Errorf("menu not found,id:%v", id)
+		uc.log.WithContext(ctx).Errorf("menu find failed,id:%v", id)
 		return err
+	}
+	if dbMenu == nil {
+		uc.log.WithContext(ctx).Errorf("menu not found,id:%v", id)
+		return ErrMenuNotFound
 	}
 
 	children, err := uc.repo.FindByParentID(ctx, id)

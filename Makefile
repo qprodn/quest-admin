@@ -80,6 +80,7 @@ all:
 	make api;
 	make config;
 	make generate;
+	make wire;
 
 .PHONY: wire
 wire:
