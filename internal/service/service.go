@@ -1,6 +1,7 @@
 package service
 
 import (
+	"quest-admin/internal/service/auth"
 	"quest-admin/internal/service/greeter"
 	"quest-admin/internal/service/organization"
 	"quest-admin/internal/service/permission"
@@ -20,4 +21,5 @@ var ProviderSet = wire.NewSet(
 	permission.NewRoleService,
 	organization.NewDepartmentService,
 	organization.NewPostService,
+	auth.NewAuthService,
 )

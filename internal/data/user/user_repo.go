@@ -99,7 +99,7 @@ func (r *userRepo) FindByUsername(ctx context.Context, username string) (*biz.Us
 	err := r.data.DB(ctx).NewSelect().Model(dbUser).Where("username = ?", username).Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, biz.ErrUserNotFound
+			return nil, nil
 		}
 		return nil, err
 	}

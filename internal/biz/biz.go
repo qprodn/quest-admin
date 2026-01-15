@@ -2,6 +2,7 @@ package biz
 
 import (
 	"context"
+	"quest-admin/internal/biz/auth"
 	"quest-admin/internal/biz/greeter"
 	"quest-admin/internal/biz/organization"
 	"quest-admin/internal/biz/permission"
@@ -24,6 +25,7 @@ var ProviderSet = wire.NewSet(
 	tenant.NewTenantPackageUsecase,
 	permission.NewMenuUsecase,
 	permission.NewRoleUsecase,
+	auth.NewAuthUsecase,
 )
 
 type Transaction interface {

@@ -7,15 +7,16 @@ import (
 )
 
 var (
-	ErrDepartmentNotFound      = errors.NotFound(v1.ErrorReason_DEPARTMENT_NOT_FOUND.String(), "department not found")
-	ErrDepartmentNameExists    = errors.Conflict(v1.ErrorReason_DEPARTMENT_NAME_EXISTS.String(), "department name already exists")
-	ErrDepartmentHasChildren   = errors.BadRequest(v1.ErrorReason_DEPARTMENT_HAS_CHILDREN.String(), "department has children")
-	ErrDepartmentHasUsers      = errors.BadRequest(v1.ErrorReason_DEPARTMENT_HAS_USERS.String(), "department has users")
-	ErrInvalidParentDepartment = errors.BadRequest(v1.ErrorReason_INVALID_PARENT_DEPARTMENT.String(), "invalid parent department")
+	ErrDepartmentNotFound      = errors.NotFound("DEPARTMENT_NOT_FOUND", "department not found")
+	ErrDepartmentNameExists    = errors.Conflict("DEPARTMENT_NAME_EXISTS", "department name already exists")
+	ErrDepartmentHasChildren   = errors.BadRequest("DEPARTMENT_HAS_CHILDREN", "department has children")
+	ErrDepartmentHasUsers      = errors.BadRequest("DEPARTMENT_HAS_USERS", "department has users")
+	ErrInvalidParentDepartment = errors.BadRequest("INVALID_PARENT_DEPARTMENT", "invalid parent department")
 )
 
 var (
-	ErrPostNotFound   = errors.NotFound(v1.ErrorReason_POST_NOT_FOUND.String(), "post not found")
-	ErrPostNameExists = errors.Conflict(v1.ErrorReason_POST_NAME_EXISTS.String(), "post name already exists")
-	ErrPostHasUsers   = errors.BadRequest(v1.ErrorReason_POST_HAS_USERS.String(), "post has users")
+	ErrPostNotFound   = errors.NotFound("POST_NOT_FOUND", "post not found")
+	ErrPostNameExists = errors.Conflict("POST_NAME_EXISTS", "post name already exists")
+	ErrPostHasUsers   = errors.BadRequest(
+		"POST_HAS_USERS", "post has users")
 )

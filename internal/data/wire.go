@@ -1,6 +1,7 @@
 package data
 
 import (
+	"quest-admin/internal/data/auth"
 	"quest-admin/internal/data/data"
 	"quest-admin/internal/data/greeter"
 	"quest-admin/internal/data/organization"
@@ -31,4 +32,5 @@ var ProviderSet = wire.NewSet(
 	permission.NewRoleRepo,
 	permission.NewMenuRepo,
 	permission.NewRoleMenuRepo,
+	auth.NewAuthManager,
 )

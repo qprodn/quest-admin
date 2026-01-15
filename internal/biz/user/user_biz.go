@@ -61,6 +61,19 @@ func (uc *UserUsecase) GetUser(ctx context.Context, id string) (*User, error) {
 	return uc.repo.FindByID(ctx, id)
 }
 
+func (uc *UserUsecase) GetUserByUsername(ctx context.Context, username string) (*User, error) {
+	return uc.repo.FindByUsername(ctx, username)
+}
+
+func (uc *UserUsecase) VerifyPassword(ctx context.Context, hashedPassword, plainPassword string) (bool, error) {
+	ok, err := pswd.VerifyPassword(plainPassword, hashedPassword)
+	if err != nil {
+		uc.log.WithContext(ctx).Errorf("密码验证失败,error:%v", err)
+		return false, ErrPasswordConfirmMismatch
+	}
+	return ok, nil
+}
+
 func (uc *UserUsecase) ListUsers(ctx context.Context, query *ListUsersQuery) (*ListUsersResult, error) {
 	opt := &WhereUserOpt{
 		Limit:     query.PageSize,

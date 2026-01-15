@@ -25,6 +25,40 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/helloworld.v1.HelloReply'
+    /qs/v1/auth/admin/login:
+        post:
+            tags:
+                - AuthService
+            summary: 用户登录
+            description: 根据用户名和密码进行登录，返回访问令牌
+            operationId: AuthService_Login
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.auth.v1.LoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.auth.v1.LoginReply'
+    /qs/v1/auth/admin/permission-info:
+        get:
+            tags:
+                - AuthService
+            summary: 获取用户权限信息
+            description: 获取当前登录用户的详细信息、角色、权限和菜单
+            operationId: AuthService_GetPermissionInfo
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.auth.v1.GetPermissionInfoReply'
     /qs/v1/organizations/department/create:
         post:
             tags:
@@ -837,6 +871,165 @@ components:
                 message:
                     type: string
             description: The response message containing the greetings
+        system.auth.v1.GetPermissionInfoReply:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/system.auth.v1.UserInfo'
+                roles:
+                    example: ["admin", "user"]
+                    type: array
+                    items:
+                        type: string
+                    description: 角色代码列表
+                permissions:
+                    example: ["system:user:list", "system:user:create"]
+                    type: array
+                    items:
+                        type: string
+                    description: 权限标识列表
+                menus:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/system.auth.v1.MenuInfo'
+                    description: 菜单树结构
+            description: 获取权限信息响应体
+        system.auth.v1.LoginReply:
+            type: object
+            properties:
+                token:
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                    type: string
+                    description: 访问令牌
+                user:
+                    $ref: '#/components/schemas/system.auth.v1.UserInfo'
+            description: 登录响应体
+        system.auth.v1.LoginRequest:
+            example: {"username": "admin", "password": "123456"}
+            type: object
+            properties:
+                username:
+                    example: admin
+                    type: string
+                    description: 用户名
+                password:
+                    example: 123456
+                    type: string
+                    description: 密码
+            description: 登录请求体
+        system.auth.v1.MenuInfo:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 菜单唯一标识符
+                name:
+                    example: 系统管理
+                    type: string
+                    description: 菜单名称
+                permission:
+                    example: system:user:list
+                    type: string
+                    description: 权限标识
+                type:
+                    example: 1
+                    type: integer
+                    description: 菜单类型
+                    format: int32
+                sort:
+                    example: 1
+                    type: integer
+                    description: 显示顺序
+                    format: int32
+                parentId:
+                    example: 0
+                    type: string
+                    description: 父菜单ID，根菜单为0
+                path:
+                    example: /system/user
+                    type: string
+                    description: 路由地址
+                icon:
+                    example: user
+                    type: string
+                    description: 菜单图标
+                component:
+                    example: system/user/index
+                    type: string
+                    description: 组件路径
+                componentName:
+                    example: User
+                    type: string
+                    description: 组件名
+                status:
+                    example: 1
+                    type: integer
+                    description: '菜单状态: 0-禁用, 1-正常'
+                    format: int32
+                visible:
+                    example: true
+                    type: boolean
+                    description: 是否可见
+                keepAlive:
+                    example: true
+                    type: boolean
+                    description: 是否缓存
+                alwaysShow:
+                    example: true
+                    type: boolean
+                    description: 是否总是显示
+                children:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/system.auth.v1.MenuInfo'
+                    description: 子菜单列表
+            description: 菜单信息
+        system.auth.v1.UserInfo:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 用户唯一标识符
+                username:
+                    example: admin
+                    type: string
+                    description: 用户名
+                nickname:
+                    example: 管理员
+                    type: string
+                    description: 用户昵称
+                email:
+                    example: admin@example.com
+                    type: string
+                    description: 邮箱地址
+                mobile:
+                    example: 13800138000
+                    type: string
+                    description: 手机号码
+                sex:
+                    example: 1
+                    type: integer
+                    description: '性别: 0-未知, 1-男, 2-女'
+                    format: int32
+                avatar:
+                    example: https://example.com/avatar.jpg
+                    type: string
+                    description: 用户头像URL
+                status:
+                    example: 1
+                    type: integer
+                    description: '用户状态: 0-禁用, 1-正常'
+                    format: int32
+                remark:
+                    type: string
+                    description: 备注信息
+                createAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+            description: 用户基本信息
         system.organization.v1.CreateDepartmentRequest:
             type: object
             properties:
@@ -2177,29 +2370,32 @@ components:
                     description: 租户ID
             description: 用户的基本信息，包含用户的所有属性
 tags:
-    - name: DepartmentService
+    - name: AuthService
+      description: 认证相关操作
+    - name: AuthService
     - name: DepartmentService
       description: 部门相关操作
+    - name: DepartmentService
     - name: Greeter
       description: The greeting service definition.
     - name: MenuService
-      description: 菜单管理相关操作
     - name: MenuService
+      description: 菜单管理相关操作
     - name: PostService
     - name: PostService
       description: 岗位相关操作
     - name: RoleService
-    - name: RoleService
       description: 角色管理相关操作
+    - name: RoleService
+    - name: TenantPackageService
     - name: TenantPackageService
       description: 租户套餐相关操作
-    - name: TenantPackageService
     - name: TenantService
       description: 租户相关操作
     - name: TenantService
     - name: UserRoleService
-    - name: UserRoleService
       description: 用户角色关联相关操作
-    - name: UserService
+    - name: UserRoleService
     - name: UserService
       description: 用户相关操作
+    - name: UserService

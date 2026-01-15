@@ -1,0 +1,115 @@
+syntax = "proto3";
+
+package system.auth.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "openapi/v3/annotations.proto";
+
+option go_package = "quest-admin/api/auth/v1;v1";
+
+
+option (openapi.v3.document) = {
+  tags: [
+    {
+      name: "AuthService";
+      description: "认证相关操作";
+    }
+  ];
+};
+
+service AuthService {
+  // 登录
+  rpc Login (LoginRequest) returns (LoginReply) {
+    option (google.api.http) = {
+      post: "/qs/v1/auth/admin/login"
+      body: "*"
+    };
+    option (openapi.v3.operation) = {
+      summary: "用户登录";
+      description: "根据用户名和密码进行登录，返回访问令牌";
+    };
+  }
+
+  // 获取用户权限信息
+  rpc GetPermissionInfo (GetPermissionInfoRequest) returns (GetPermissionInfoReply) {
+    option (google.api.http) = {
+      get: "/qs/v1/auth/admin/permission-info"
+    };
+    option (openapi.v3.operation) = {
+      summary: "获取用户权限信息";
+      description: "获取当前登录用户的详细信息、角色、权限和菜单";
+    };
+  }
+}
+
+message LoginRequest {
+  option (openapi.v3.schema) = {
+    description: "登录请求体";
+    example: {
+      yaml: "{\"username\": \"admin\", \"password\": \"123456\"}";
+    };
+  };
+  optional string username = 1 [(openapi.v3.property) = {description: "用户名"; example: {yaml: "admin"};}];
+  optional string password = 2 [(openapi.v3.property) = {description: "密码"; example: {yaml: "123456"};}];
+}
+
+message LoginReply {
+  option (openapi.v3.schema) = {
+    description: "登录响应体";
+  };
+  string token = 1 [(openapi.v3.property) = {description: "访问令牌"; example: {yaml: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."};}];
+  UserInfo user = 2 [(openapi.v3.property) = {description: "用户信息";}];
+}
+
+message GetPermissionInfoRequest {
+  option (openapi.v3.schema) = {
+    description: "获取权限信息请求体";
+  };
+}
+
+message GetPermissionInfoReply {
+  option (openapi.v3.schema) = {
+    description: "获取权限信息响应体";
+  };
+  UserInfo user = 1 [(openapi.v3.property) = {description: "用户信息";}];
+  repeated string roles = 2 [(openapi.v3.property) = {description: "角色代码列表"; example: {yaml: "[\"admin\", \"user\"]"};}];
+  repeated string permissions = 3 [(openapi.v3.property) = {description: "权限标识列表"; example: {yaml: "[\"system:user:list\", \"system:user:create\"]"};}];
+  repeated MenuInfo menus = 4 [(openapi.v3.property) = {description: "菜单树结构";}];
+}
+
+message UserInfo {
+  option (openapi.v3.schema) = {
+    description: "用户基本信息";
+  };
+  string id = 1 [(openapi.v3.property) = {description: "用户唯一标识符"; example: {yaml: "123456789"};}];
+  string username = 2 [(openapi.v3.property) = {description: "用户名"; example: {yaml: "admin"};}];
+  string nickname = 3 [(openapi.v3.property) = {description: "用户昵称"; example: {yaml: "管理员"};}];
+  string email = 4 [(openapi.v3.property) = {description: "邮箱地址"; example: {yaml: "admin@example.com"};}];
+  string mobile = 5 [(openapi.v3.property) = {description: "手机号码"; example: {yaml: "13800138000"};}];
+  int32 sex = 6 [(openapi.v3.property) = {description: "性别: 0-未知, 1-男, 2-女"; example: {yaml: "1"};}];
+  string avatar = 7 [(openapi.v3.property) = {description: "用户头像URL"; example: {yaml: "https://example.com/avatar.jpg"};}];
+  int32 status = 8 [(openapi.v3.property) = {description: "用户状态: 0-禁用, 1-正常"; example: {yaml: "1"};}];
+  string remark = 9 [(openapi.v3.property) = {description: "备注信息";}];
+  google.protobuf.Timestamp create_at = 10 [(openapi.v3.property) = {description: "创建时间";}];
+}
+
+message MenuInfo {
+  option (openapi.v3.schema) = {
+    description: "菜单信息";
+  };
+  string id = 1 [(openapi.v3.property) = {description: "菜单唯一标识符"; example: {yaml: "123456789"};}];
+  string name = 2 [(openapi.v3.property) = {description: "菜单名称"; example: {yaml: "系统管理"};}];
+  string permission = 3 [(openapi.v3.property) = {description: "权限标识"; example: {yaml: "system:user:list"};}];
+  int32 type = 4 [(openapi.v3.property) = {description: "菜单类型"; example: {yaml: "1"};}];
+  int32 sort = 5 [(openapi.v3.property) = {description: "显示顺序"; example: {yaml: "1"};}];
+  string parent_id = 6 [(openapi.v3.property) = {description: "父菜单ID，根菜单为0"; example: {yaml: "0"};}];
+  string path = 7 [(openapi.v3.property) = {description: "路由地址"; example: {yaml: "/system/user"};}];
+  string icon = 8 [(openapi.v3.property) = {description: "菜单图标"; example: {yaml: "user"};}];
+  string component = 9 [(openapi.v3.property) = {description: "组件路径"; example: {yaml: "system/user/index"};}];
+  string component_name = 10 [(openapi.v3.property) = {description: "组件名"; example: {yaml: "User"};}];
+  int32 status = 11 [(openapi.v3.property) = {description: "菜单状态: 0-禁用, 1-正常"; example: {yaml: "1"};}];
+  bool visible = 12 [(openapi.v3.property) = {description: "是否可见"; example: {yaml: "true"};}];
+  bool keep_alive = 13 [(openapi.v3.property) = {description: "是否缓存"; example: {yaml: "true"};}];
+  bool always_show = 14 [(openapi.v3.property) = {description: "是否总是显示"; example: {yaml: "true"};}];
+}
