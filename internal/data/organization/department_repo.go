@@ -3,10 +3,10 @@ package organization
 import (
 	"context"
 	"database/sql"
+	"quest-admin/internal/data/data"
 	"time"
 
 	biz "quest-admin/internal/biz/organization"
-	"quest-admin/internal/data/data"
 	"quest-admin/pkg/util/idgen"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -90,7 +90,7 @@ func (r *departmentRepo) FindByID(ctx context.Context, id string) (*biz.Departme
 	err := r.data.DB(ctx).NewSelect().Model(dbDept).WherePK().Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, biz.ErrDepartmentNotFound
+			return nil, nil
 		}
 		return nil, err
 	}
@@ -102,7 +102,7 @@ func (r *departmentRepo) FindByName(ctx context.Context, name string) (*biz.Depa
 	err := r.data.DB(ctx).NewSelect().Model(dbDept).Where("name = ?", name).Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, biz.ErrDepartmentNotFound
+			return nil, nil
 		}
 		return nil, err
 	}

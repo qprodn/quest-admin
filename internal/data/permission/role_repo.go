@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"quest-admin/internal/data/data"
 	"time"
 
 	biz "quest-admin/internal/biz/permission"
-	"quest-admin/internal/data/data"
 	"quest-admin/pkg/util/idgen"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -79,7 +79,7 @@ func (r *roleRepo) FindByID(ctx context.Context, id string) (*biz.Role, error) {
 	err := r.data.DB(ctx).NewSelect().Model(dbRole).WherePK().Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, biz.ErrRoleNotFound
+			return nil, nil
 		}
 		return nil, err
 	}
@@ -91,7 +91,7 @@ func (r *roleRepo) FindByName(ctx context.Context, name string) (*biz.Role, erro
 	err := r.data.DB(ctx).NewSelect().Model(dbRole).Where("name = ?", name).Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, biz.ErrRoleNotFound
+			return nil, nil
 		}
 		return nil, err
 	}
@@ -103,7 +103,7 @@ func (r *roleRepo) FindByCode(ctx context.Context, code string) (*biz.Role, erro
 	err := r.data.DB(ctx).NewSelect().Model(dbRole).Where("code = ?", code).Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, biz.ErrRoleNotFound
+			return nil, nil
 		}
 		return nil, err
 	}

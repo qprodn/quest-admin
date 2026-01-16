@@ -1,13 +1,13 @@
 package server
 
 import (
-	greeterv1 "quest-admin/api/gen/helloworld/v1"
+	authv1 "quest-admin/api/gen/auth/v1"
 	orgv1 "quest-admin/api/gen/organization/v1"
 	permissionv1 "quest-admin/api/gen/permission/v1"
 	tenantv1 "quest-admin/api/gen/tenant/v1"
 	userv1 "quest-admin/api/gen/user/v1"
 	"quest-admin/internal/conf"
-	"quest-admin/internal/service/greeter"
+	"quest-admin/internal/service/auth"
 	"quest-admin/internal/service/organization"
 	"quest-admin/internal/service/permission"
 	"quest-admin/internal/service/tenant"
@@ -22,14 +22,13 @@ import (
 
 // NewHTTPServer new an HTTP server.
 func NewHTTPServer(c *conf.Bootstrap, logger log.Logger,
-	greeter *greeter.GreeterService,
 	userService *user.UserService,
-	userRoleService *user.UserRoleService,
 	tenantService *tenant.TenantService,
 	roleService *permission.RoleService,
 	menuService *permission.MenuService,
 	departmentService *organization.DepartmentService,
 	postService *organization.PostService,
+	authService *auth.AuthService,
 ) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
@@ -47,14 +46,13 @@ func NewHTTPServer(c *conf.Bootstrap, logger log.Logger,
 		opts = append(opts, http.Timeout(time.Duration(c.Server.Http.Timeout)*time.Second))
 	}
 	srv := http.NewServer(opts...)
-	greeterv1.RegisterGreeterHTTPServer(srv, greeter)
 	userv1.RegisterUserServiceHTTPServer(srv, userService)
-	userv1.RegisterUserRoleServiceHTTPServer(srv, userRoleService)
 	tenantv1.RegisterTenantServiceHTTPServer(srv, tenantService)
 	orgv1.RegisterDepartmentServiceHTTPServer(srv, departmentService)
 	orgv1.RegisterPostServiceHTTPServer(srv, postService)
 	permissionv1.RegisterMenuServiceHTTPServer(srv, menuService)
 	permissionv1.RegisterRoleServiceHTTPServer(srv, roleService)
+	authv1.RegisterAuthServiceHTTPServer(srv, authService)
 
 	return srv
 }

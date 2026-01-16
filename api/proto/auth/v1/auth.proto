@@ -52,6 +52,7 @@ message LoginRequest {
   };
   optional string username = 1 [(openapi.v3.property) = {description: "用户名"; example: {yaml: "admin"};}];
   optional string password = 2 [(openapi.v3.property) = {description: "密码"; example: {yaml: "123456"};}];
+  optional string device = 3 [(openapi.v3.property) = {description: "设备"; example: {yaml: "pc"};}];
 }
 
 message LoginReply {
@@ -59,7 +60,6 @@ message LoginReply {
     description: "登录响应体";
   };
   string token = 1 [(openapi.v3.property) = {description: "访问令牌"; example: {yaml: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."};}];
-  UserInfo user = 2 [(openapi.v3.property) = {description: "用户信息";}];
 }
 
 message GetPermissionInfoRequest {

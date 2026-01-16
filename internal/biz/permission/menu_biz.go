@@ -14,6 +14,7 @@ type MenuRepo interface {
 	FindByParentID(ctx context.Context, parentID string) ([]*Menu, error)
 	Update(ctx context.Context, menu *Menu) error
 	Delete(ctx context.Context, id string) error
+	FindByMenuIDs(ctx context.Context, menuIDs []string) ([]*Menu, error)
 }
 
 type MenuUsecase struct {
@@ -128,4 +129,23 @@ func (uc *MenuUsecase) DeleteMenu(ctx context.Context, id string) error {
 		return ErrInternalServer
 	}
 	return nil
+}
+
+func (uc *MenuUsecase) ListByMenuIDs(ctx context.Context, menuIDs []string) ([]*Menu, error) {
+	menus, err := uc.repo.FindByMenuIDs(ctx, menuIDs)
+	if err != nil {
+		uc.log.WithContext(ctx).Error("failed to list menus by ids, error:%v", err)
+		return nil, err
+	}
+	return menus, nil
+}
+
+func (uc *MenuUsecase) ProcessDisabledMenus(menus []*Menu) []*Menu {
+	var result []*Menu
+	for _, menu := range menus {
+		if menu.Status == 1 {
+			result = append(result, menu)
+		}
+	}
+	return result
 }

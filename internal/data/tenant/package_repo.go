@@ -3,10 +3,10 @@ package tenant
 import (
 	"context"
 	"database/sql"
+	"quest-admin/internal/data/data"
 	"time"
 
 	biz "quest-admin/internal/biz/tenant"
-	"quest-admin/internal/data/data"
 	"quest-admin/pkg/util/idgen"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -68,7 +68,7 @@ func (r *packageRepo) FindByID(ctx context.Context, id string) (*biz.TenantPacka
 	err := r.data.DB(ctx).NewSelect().Model(dbPkg).WherePK().Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, biz.ErrTenantPackageNotFound
+			return nil, nil
 		}
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func (r *packageRepo) FindByName(ctx context.Context, name string) (*biz.TenantP
 	err := r.data.DB(ctx).NewSelect().Model(dbPkg).Where("name = ?", name).Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, biz.ErrTenantPackageNotFound
+			return nil, nil
 		}
 		return nil, err
 	}

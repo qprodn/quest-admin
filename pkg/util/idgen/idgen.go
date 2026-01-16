@@ -1,10 +1,10 @@
 package idgen
 
 import (
-	"github.com/google/uuid"
+	"crypto/rand"
 )
 
 // GenerateID generates a unique ID
 func GenerateID() string {
-	return uuid.New().String()
+	return rand.Text()
 }

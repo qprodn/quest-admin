@@ -41,6 +41,18 @@ type Menu struct {
 	Children      []*Menu
 }
 
+type RoleMenu struct {
+	ID       string
+	RoleID   string
+	MenuID   string
+	CreateBy string
+	CreateAt time.Time
+	UpdateBy string
+	UpdateAt time.Time
+	DeleteAt *time.Time
+	TenantID string
+}
+
 type ListRolesQuery struct {
 	Page      int32
 	PageSize  int32

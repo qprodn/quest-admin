@@ -3,54 +3,34 @@ package user
 import (
 	"context"
 
-	"github.com/go-kratos/kratos/v2/log"
+	"quest-admin/internal/biz/organization"
 )
 
-type UserPostRepo interface {
-	GetUserPosts(ctx context.Context, userID string) ([]string, error)
-	ManageUserPosts(ctx context.Context, bo *AssignUserPostsBO) error
-	CheckPostsExist(ctx context.Context, postIDs []string) (bool, error)
-	DeleteUserPosts(ctx context.Context, userID string, postIDs []string) error
-	AddUserPosts(ctx context.Context, userID string, postIDs []string) error
+func (uc *UserUsecase) GetUserPosts(ctx context.Context, userID string) ([]string, error) {
+	return uc.userPostRepo.GetUserPosts(ctx, userID)
 }
 
-type UserPostUsecase struct {
-	repo UserPostRepo
-	log  *log.Helper
-}
-
-func NewUserPostUsecase(repo UserPostRepo, logger log.Logger) *UserPostUsecase {
-	return &UserPostUsecase{
-		repo: repo,
-		log:  log.NewHelper(log.With(logger, "module", "user/biz/user-post")),
-	}
-}
-
-func (uc *UserPostUsecase) GetUserPosts(ctx context.Context, userID string) ([]string, error) {
-	return uc.repo.GetUserPosts(ctx, userID)
-}
-
-func (uc *UserPostUsecase) ManageUserPosts(ctx context.Context, bo *AssignUserPostsBO) error {
+func (uc *UserUsecase) ManageUserPosts(ctx context.Context, bo *AssignUserPostsBO) error {
 	if len(bo.PostIDs) == 0 {
-		existingPostIDs, err := uc.repo.GetUserPosts(ctx, bo.UserID)
+		existingPostIDs, err := uc.userPostRepo.GetUserPosts(ctx, bo.UserID)
 		if err != nil {
 			return err
 		}
 		if len(existingPostIDs) > 0 {
-			return uc.repo.DeleteUserPosts(ctx, bo.UserID, existingPostIDs)
+			return uc.userPostRepo.DeleteUserPosts(ctx, bo.UserID, existingPostIDs)
 		}
 		return nil
 	}
 
-	exists, err := uc.repo.CheckPostsExist(ctx, bo.PostIDs)
+	exists, err := uc.userPostRepo.CheckPostsExist(ctx, bo.PostIDs)
 	if err != nil {
 		return err
 	}
 	if !exists {
-		return ErrPostNotFound
+		return organization.ErrPostNotFound
 	}
 
-	existingPostIDs, err := uc.repo.GetUserPosts(ctx, bo.UserID)
+	existingPostIDs, err := uc.userPostRepo.GetUserPosts(ctx, bo.UserID)
 	if err != nil {
 		return err
 	}
@@ -80,13 +60,13 @@ func (uc *UserPostUsecase) ManageUserPosts(ctx context.Context, bo *AssignUserPo
 	}
 
 	if len(toDelete) > 0 {
-		if err := uc.repo.DeleteUserPosts(ctx, bo.UserID, toDelete); err != nil {
+		if err := uc.userPostRepo.DeleteUserPosts(ctx, bo.UserID, toDelete); err != nil {
 			return err
 		}
 	}
 
 	if len(toAdd) > 0 {
-		if err := uc.repo.AddUserPosts(ctx, bo.UserID, toAdd); err != nil {
+		if err := uc.userPostRepo.AddUserPosts(ctx, bo.UserID, toAdd); err != nil {
 			return err
 		}
 	}

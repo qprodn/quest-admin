@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"quest-admin/internal/data/data"
 	"time"
 
 	biz "quest-admin/internal/biz/organization"
-	"quest-admin/internal/data/data"
 	"quest-admin/pkg/util/idgen"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -73,7 +73,7 @@ func (r *postRepo) FindByID(ctx context.Context, id string) (*biz.Post, error) {
 	err := r.data.DB(ctx).NewSelect().Model(dbPost).WherePK().Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, biz.ErrPostNotFound
+			return nil, nil
 		}
 		return nil, err
 	}
@@ -85,7 +85,7 @@ func (r *postRepo) FindByName(ctx context.Context, name string) (*biz.Post, erro
 	err := r.data.DB(ctx).NewSelect().Model(dbPost).Where("name = ?", name).Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, biz.ErrPostNotFound
+			return nil, nil
 		}
 		return nil, err
 	}
@@ -97,7 +97,7 @@ func (r *postRepo) FindByCode(ctx context.Context, code string) (*biz.Post, erro
 	err := r.data.DB(ctx).NewSelect().Model(dbPost).Where("code = ?", code).Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, biz.ErrPostNotFound
+			return nil, nil
 		}
 		return nil, err
 	}

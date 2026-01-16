@@ -6,6 +6,10 @@ import (
 	authBiz "quest-admin/internal/biz/auth"
 	permBiz "quest-admin/internal/biz/permission"
 	userBiz "quest-admin/internal/biz/user"
+	"quest-admin/pkg/errorx"
+	"quest-admin/pkg/lang/ptr"
+	"quest-admin/pkg/lang/slices"
+	"quest-admin/types/errkey"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
@@ -15,67 +19,38 @@ import (
 // AuthService 认证服务
 type AuthService struct {
 	v1.UnimplementedAuthServiceServer
-	authUsecase     *authBiz.AuthUsecase
-	userUsecase     *userBiz.UserUsecase
-	userRoleUsecase *userBiz.UserRoleUsecase
-	roleUsecase     *permBiz.RoleUsecase
-	menuUsecase     *permBiz.MenuUsecase
-	log             *log.Helper
+	authUsecase *authBiz.AuthUsecase
+	userUsecase *userBiz.UserUsecase
+	roleUsecase *permBiz.RoleUsecase
+	menuUsecase *permBiz.MenuUsecase
+	log         *log.Helper
 }
 
 // NewAuthService 创建认证服务
 func NewAuthService(
+	logger log.Logger,
 	authUsecase *authBiz.AuthUsecase,
 	userUsecase *userBiz.UserUsecase,
-	userRoleUsecase *userBiz.UserRoleUsecase,
 	roleUsecase *permBiz.RoleUsecase,
 	menuUsecase *permBiz.MenuUsecase,
-	logger log.Logger,
 ) *AuthService {
 	return &AuthService{
-		authUsecase:     authUsecase,
-		userUsecase:     userUsecase,
-		userRoleUsecase: userRoleUsecase,
-		roleUsecase:     roleUsecase,
-		menuUsecase:     menuUsecase,
-		log:             log.NewHelper(log.With(logger, "module", "auth/service")),
+		log:         log.NewHelper(log.With(logger, "module", "auth/service")),
+		authUsecase: authUsecase,
+		roleUsecase: roleUsecase,
+		userUsecase: userUsecase,
+		menuUsecase: menuUsecase,
 	}
 }
 
 // Login 用户登录
-func (s *AuthService) Login(ctx context.Context, in *v1.LoginRequest) (*v1.LoginReply, error) {
-	user, err := s.userUsecase.GetUserByUsername(ctx, in.GetUsername())
+func (s *AuthService) Login(ctx context.Context, request *v1.LoginRequest) (*v1.LoginReply, error) {
+	token, err := s.LoginByUsernameAndPassword(ctx, request)
 	if err != nil {
 		return nil, err
 	}
-	if user == nil {
-		s.log.WithContext(ctx).Errorf("用户不存在,username:%s", in.GetUsername())
-		return nil, errors.NotFound("USER_NOT_FOUND", "用户不存在")
-	}
-
-	if user.Status != 1 {
-		s.log.WithContext(ctx).Errorf("用户已被禁用,username:%s,status:%d", in.GetUsername(), user.Status)
-		return nil, errors.Forbidden("USER_DISABLED", "用户已被禁用")
-	}
-
-	ok, err := s.userUsecase.VerifyPassword(ctx, user.Password, in.GetPassword())
-	if err != nil {
-		return nil, err
-	}
-	if !ok {
-		s.log.WithContext(ctx).Errorf("密码错误,username:%s", in.GetUsername())
-		return nil, errors.Unauthorized("INVALID_PASSWORD", "密码错误")
-	}
-
-	token, err := s.authUsecase.GenerateToken(ctx, user.ID)
-	if err != nil {
-		s.log.WithContext(ctx).Errorf("生成token失败,userID:%s,error:%v", user.ID, err)
-		return nil, errors.InternalServer("INTERNAL_ERROR", "生成token失败")
-	}
-
 	return &v1.LoginReply{
 		Token: token,
-		User:  s.toProtoUser(user),
 	}, nil
 }
 
@@ -91,7 +66,7 @@ func (s *AuthService) GetPermissionInfo(ctx context.Context, in *v1.GetPermissio
 		return nil, errors.NotFound("USER_NOT_FOUND", "用户不存在")
 	}
 
-	roleIDs, err := s.userRoleUsecase.GetUserRoles(ctx, userID)
+	roleIDs, err := s.userUsecase.GetUserRoles(ctx, userID)
 	if err != nil {
 		s.log.WithContext(ctx).Errorf("获取用户角色失败,userID:%s,error:%v", userID, err)
 		return nil, errors.InternalServer("INTERNAL_ERROR", "获取用户角色失败")
@@ -137,6 +112,58 @@ func (s *AuthService) GetPermissionInfo(ctx context.Context, in *v1.GetPermissio
 		Permissions: permissions,
 		Menus:       menus,
 	}, nil
+}
+
+func (s *AuthService) LoginByUsernameAndPassword(ctx context.Context, request *v1.LoginRequest) (token string, err error) {
+	user, err := s.userUsecase.GetUserByUsername(ctx, ptr.From(request.Username))
+	if err != nil {
+		return "", err
+	}
+	if user == nil {
+		return "", errorx.Err(errkey.ErrUserNotFound)
+	}
+	ok, err := s.userUsecase.VerifyStatus(ctx, user)
+	if err != nil {
+		return "", err
+	}
+	if !ok {
+		return "", errorx.Err(errkey.ErrUserDisabled)
+	}
+
+	_, err = s.userUsecase.VerifyPassword(ctx, user.Password, ptr.From(request.Password))
+	if err != nil {
+		return "", err
+	}
+
+	//获取用户关联角色
+	roles, err := s.userUsecase.GetUserRoles(ctx, user.ID)
+	if err != nil {
+		return "", err
+	}
+
+	//获取角色管理的菜单
+	menuIDs, err := s.roleUsecase.GetMenusByRoleIDs(ctx, roles)
+	if err != nil {
+		return "", err
+	}
+	menus, err := s.menuUsecase.ListByMenuIDs(ctx, menuIDs)
+	if err != nil {
+		return "", err
+	}
+	menus = s.menuUsecase.ProcessDisabledMenus(menus)
+	permissions := slices.Map(menus, func(item *permBiz.Menu, index int) string { return item.Permission })
+
+	token, err = s.authUsecase.AdminGenerateToken(ctx, &authBiz.GenerateTokenBO{UserID: user.ID, Device: ptr.From(request.Device)})
+	if err != nil {
+		return "", err
+	}
+	err = s.authUsecase.SetRolesAndPermission(ctx, user.ID, roles, permissions)
+	if err != nil {
+		return "", err
+	}
+	s.log.WithContext(ctx).Infof("登录成功,userID:%s", user.ID)
+	//todo 记录登录日志
+	return token, nil
 }
 
 func (s *AuthService) toProtoUser(user *userBiz.User) *v1.UserInfo {

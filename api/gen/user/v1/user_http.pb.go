@@ -22,20 +22,24 @@ const _ = http.SupportPackageIsVersion1
 
 const OperationUserServiceAssignUserDept = "/system.user.v1.UserService/AssignUserDept"
 const OperationUserServiceAssignUserPost = "/system.user.v1.UserService/AssignUserPost"
+const OperationUserServiceAssignUserRoles = "/system.user.v1.UserService/AssignUserRoles"
 const OperationUserServiceChangePassword = "/system.user.v1.UserService/ChangePassword"
 const OperationUserServiceChangeUserStatus = "/system.user.v1.UserService/ChangeUserStatus"
 const OperationUserServiceCreateUser = "/system.user.v1.UserService/CreateUser"
 const OperationUserServiceDeleteUser = "/system.user.v1.UserService/DeleteUser"
 const OperationUserServiceGetUser = "/system.user.v1.UserService/GetUser"
+const OperationUserServiceGetUserRoles = "/system.user.v1.UserService/GetUserRoles"
 const OperationUserServiceListUsers = "/system.user.v1.UserService/ListUsers"
 const OperationUserServiceSetAvatar = "/system.user.v1.UserService/SetAvatar"
 const OperationUserServiceUpdateUser = "/system.user.v1.UserService/UpdateUser"
 
 type UserServiceHTTPServer interface {
-	// AssignUserDept 管理用户部门
+	// AssignUserDept 分配用户部门
 	AssignUserDept(context.Context, *AssignUserDeptRequest) (*emptypb.Empty, error)
-	// AssignUserPost 管理用户岗位
+	// AssignUserPost 分配用户岗位
 	AssignUserPost(context.Context, *AssignUserPostRequest) (*emptypb.Empty, error)
+	// AssignUserRoles 分配用户角色
+	AssignUserRoles(context.Context, *AssignUserRolesRequest) (*emptypb.Empty, error)
 	// ChangePassword 修改用户密码
 	ChangePassword(context.Context, *ChangePasswordRequest) (*emptypb.Empty, error)
 	// ChangeUserStatus 变更用户状态
@@ -46,6 +50,8 @@ type UserServiceHTTPServer interface {
 	DeleteUser(context.Context, *DeleteUserRequest) (*emptypb.Empty, error)
 	// GetUser 获取用户信息
 	GetUser(context.Context, *GetUserRequest) (*GetUserReply, error)
+	// GetUserRoles 获取用户角色列表
+	GetUserRoles(context.Context, *GetUserRolesRequest) (*GetUserRolesReply, error)
 	// ListUsers 用户列表查询
 	ListUsers(context.Context, *ListUsersRequest) (*ListUsersReply, error)
 	// SetAvatar 设置用户头像
@@ -66,6 +72,8 @@ func RegisterUserServiceHTTPServer(s *http.Server, srv UserServiceHTTPServer) {
 	r.PUT("/qs/v1/user/assign-post", _UserService_AssignUserPost0_HTTP_Handler(srv))
 	r.PUT("/qs/v1/user/assign-dept", _UserService_AssignUserDept0_HTTP_Handler(srv))
 	r.DELETE("/qs/v1/user/delete", _UserService_DeleteUser0_HTTP_Handler(srv))
+	r.PUT("/qs/v1/users/assign-role", _UserService_AssignUserRoles0_HTTP_Handler(srv))
+	r.GET("/qs/v1/users/roles/{id}", _UserService_GetUserRoles0_HTTP_Handler(srv))
 }
 
 func _UserService_CreateUser0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx http.Context) error {
@@ -279,11 +287,57 @@ func _UserService_DeleteUser0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx h
 	}
 }
 
+func _UserService_AssignUserRoles0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in AssignUserRolesRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserServiceAssignUserRoles)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.AssignUserRoles(ctx, req.(*AssignUserRolesRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*emptypb.Empty)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _UserService_GetUserRoles0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetUserRolesRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserServiceGetUserRoles)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetUserRoles(ctx, req.(*GetUserRolesRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetUserRolesReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type UserServiceHTTPClient interface {
-	// AssignUserDept 管理用户部门
+	// AssignUserDept 分配用户部门
 	AssignUserDept(ctx context.Context, req *AssignUserDeptRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
-	// AssignUserPost 管理用户岗位
+	// AssignUserPost 分配用户岗位
 	AssignUserPost(ctx context.Context, req *AssignUserPostRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	// AssignUserRoles 分配用户角色
+	AssignUserRoles(ctx context.Context, req *AssignUserRolesRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// ChangePassword 修改用户密码
 	ChangePassword(ctx context.Context, req *ChangePasswordRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// ChangeUserStatus 变更用户状态
@@ -294,6 +348,8 @@ type UserServiceHTTPClient interface {
 	DeleteUser(ctx context.Context, req *DeleteUserRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// GetUser 获取用户信息
 	GetUser(ctx context.Context, req *GetUserRequest, opts ...http.CallOption) (rsp *GetUserReply, err error)
+	// GetUserRoles 获取用户角色列表
+	GetUserRoles(ctx context.Context, req *GetUserRolesRequest, opts ...http.CallOption) (rsp *GetUserRolesReply, err error)
 	// ListUsers 用户列表查询
 	ListUsers(ctx context.Context, req *ListUsersRequest, opts ...http.CallOption) (rsp *ListUsersReply, err error)
 	// SetAvatar 设置用户头像
@@ -310,7 +366,7 @@ func NewUserServiceHTTPClient(client *http.Client) UserServiceHTTPClient {
 	return &UserServiceHTTPClientImpl{client}
 }
 
-// AssignUserDept 管理用户部门
+// AssignUserDept 分配用户部门
 func (c *UserServiceHTTPClientImpl) AssignUserDept(ctx context.Context, in *AssignUserDeptRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
 	pattern := "/qs/v1/user/assign-dept"
@@ -324,12 +380,26 @@ func (c *UserServiceHTTPClientImpl) AssignUserDept(ctx context.Context, in *Assi
 	return &out, nil
 }
 
-// AssignUserPost 管理用户岗位
+// AssignUserPost 分配用户岗位
 func (c *UserServiceHTTPClientImpl) AssignUserPost(ctx context.Context, in *AssignUserPostRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
 	pattern := "/qs/v1/user/assign-post"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationUserServiceAssignUserPost))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// AssignUserRoles 分配用户角色
+func (c *UserServiceHTTPClientImpl) AssignUserRoles(ctx context.Context, in *AssignUserRolesRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "/qs/v1/users/assign-role"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserServiceAssignUserRoles))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
 	if err != nil {
@@ -400,6 +470,20 @@ func (c *UserServiceHTTPClientImpl) GetUser(ctx context.Context, in *GetUserRequ
 	pattern := "/qs/v1/user/get"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationUserServiceGetUser))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// GetUserRoles 获取用户角色列表
+func (c *UserServiceHTTPClientImpl) GetUserRoles(ctx context.Context, in *GetUserRolesRequest, opts ...http.CallOption) (*GetUserRolesReply, error) {
+	var out GetUserRolesReply
+	pattern := "/qs/v1/users/roles/{id}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationUserServiceGetUserRoles))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {

@@ -30,6 +30,8 @@ const (
 	UserService_AssignUserPost_FullMethodName   = "/system.user.v1.UserService/AssignUserPost"
 	UserService_AssignUserDept_FullMethodName   = "/system.user.v1.UserService/AssignUserDept"
 	UserService_DeleteUser_FullMethodName       = "/system.user.v1.UserService/DeleteUser"
+	UserService_AssignUserRoles_FullMethodName  = "/system.user.v1.UserService/AssignUserRoles"
+	UserService_GetUserRoles_FullMethodName     = "/system.user.v1.UserService/GetUserRoles"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -50,12 +52,16 @@ type UserServiceClient interface {
 	SetAvatar(ctx context.Context, in *SetAvatarRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 变更用户状态
 	ChangeUserStatus(ctx context.Context, in *ChangeUserStatusRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// 管理用户岗位
+	// 分配用户岗位
 	AssignUserPost(ctx context.Context, in *AssignUserPostRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// 管理用户部门
+	// 分配用户部门
 	AssignUserDept(ctx context.Context, in *AssignUserDeptRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 删除用户
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// 分配用户角色
+	AssignUserRoles(ctx context.Context, in *AssignUserRolesRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// 获取用户角色列表
+	GetUserRoles(ctx context.Context, in *GetUserRolesRequest, opts ...grpc.CallOption) (*GetUserRolesReply, error)
 }
 
 type userServiceClient struct {
@@ -166,6 +172,26 @@ func (c *userServiceClient) DeleteUser(ctx context.Context, in *DeleteUserReques
 	return out, nil
 }
 
+func (c *userServiceClient) AssignUserRoles(ctx context.Context, in *AssignUserRolesRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, UserService_AssignUserRoles_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetUserRoles(ctx context.Context, in *GetUserRolesRequest, opts ...grpc.CallOption) (*GetUserRolesReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUserRolesReply)
+	err := c.cc.Invoke(ctx, UserService_GetUserRoles_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility.
@@ -184,12 +210,16 @@ type UserServiceServer interface {
 	SetAvatar(context.Context, *SetAvatarRequest) (*emptypb.Empty, error)
 	// 变更用户状态
 	ChangeUserStatus(context.Context, *ChangeUserStatusRequest) (*emptypb.Empty, error)
-	// 管理用户岗位
+	// 分配用户岗位
 	AssignUserPost(context.Context, *AssignUserPostRequest) (*emptypb.Empty, error)
-	// 管理用户部门
+	// 分配用户部门
 	AssignUserDept(context.Context, *AssignUserDeptRequest) (*emptypb.Empty, error)
 	// 删除用户
 	DeleteUser(context.Context, *DeleteUserRequest) (*emptypb.Empty, error)
+	// 分配用户角色
+	AssignUserRoles(context.Context, *AssignUserRolesRequest) (*emptypb.Empty, error)
+	// 获取用户角色列表
+	GetUserRoles(context.Context, *GetUserRolesRequest) (*GetUserRolesReply, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -229,6 +259,12 @@ func (UnimplementedUserServiceServer) AssignUserDept(context.Context, *AssignUse
 }
 func (UnimplementedUserServiceServer) DeleteUser(context.Context, *DeleteUserRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteUser not implemented")
+}
+func (UnimplementedUserServiceServer) AssignUserRoles(context.Context, *AssignUserRolesRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method AssignUserRoles not implemented")
+}
+func (UnimplementedUserServiceServer) GetUserRoles(context.Context, *GetUserRolesRequest) (*GetUserRolesReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetUserRoles not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 func (UnimplementedUserServiceServer) testEmbeddedByValue()                     {}
@@ -431,6 +467,42 @@ func _UserService_DeleteUser_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_AssignUserRoles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AssignUserRolesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).AssignUserRoles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_AssignUserRoles_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).AssignUserRoles(ctx, req.(*AssignUserRolesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetUserRoles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserRolesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetUserRoles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetUserRoles_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetUserRoles(ctx, req.(*GetUserRolesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -477,6 +549,14 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteUser",
 			Handler:    _UserService_DeleteUser_Handler,
+		},
+		{
+			MethodName: "AssignUserRoles",
+			Handler:    _UserService_AssignUserRoles_Handler,
+		},
+		{
+			MethodName: "GetUserRoles",
+			Handler:    _UserService_GetUserRoles_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

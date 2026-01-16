@@ -2,8 +2,11 @@ package permission
 
 import (
 	"context"
+	"errors"
+	"quest-admin/pkg/errorx"
+	"quest-admin/pkg/lang/slices"
+	"quest-admin/types/errkey"
 
-	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 )
 
@@ -21,6 +24,7 @@ type RoleRepo interface {
 type RoleMenuRepo interface {
 	AssignMenus(ctx context.Context, roleID string, menuIDs []string) error
 	GetMenuIDs(ctx context.Context, roleID string) ([]string, error)
+	FindListByRoleIDs(ctx context.Context, roles []string) ([]*RoleMenu, error)
 }
 
 type RoleUsecase struct {
@@ -102,9 +106,12 @@ func (uc *RoleUsecase) DeleteRole(ctx context.Context, id string) error {
 func (uc *RoleUsecase) AssignRoleMenu(ctx context.Context, roleID string, menuIDs []string) error {
 	uc.log.WithContext(ctx).Infof("AssignRoleMenu: roleID=%s, menuIDs=%v", roleID, menuIDs)
 
-	_, err := uc.repo.FindByID(ctx, roleID)
+	role, err := uc.repo.FindByID(ctx, roleID)
 	if err != nil {
-		return err
+		return nil
+	}
+	if role == nil {
+		return errorx.Err(errkey.ErrRoleNotFound)
 	}
 
 	return uc.roleMenuRepo.AssignMenus(ctx, roleID, menuIDs)
@@ -113,10 +120,31 @@ func (uc *RoleUsecase) AssignRoleMenu(ctx context.Context, roleID string, menuID
 func (uc *RoleUsecase) GetRoleMenus(ctx context.Context, roleID string) ([]string, error) {
 	uc.log.WithContext(ctx).Infof("GetRoleMenus: roleID=%s", roleID)
 
-	_, err := uc.repo.FindByID(ctx, roleID)
+	role, err := uc.repo.FindByID(ctx, roleID)
 	if err != nil {
 		return nil, err
 	}
+	if role == nil {
+		return nil, nil
+	}
 
 	return uc.roleMenuRepo.GetMenuIDs(ctx, roleID)
+}
+
+func (uc *RoleUsecase) GetMenusByRoleIDs(ctx context.Context, roles []string) ([]string, error) {
+	allMenuIDs := make([]string, 0)
+
+	for _, roleID := range roles {
+		roleMenus, err := uc.roleMenuRepo.FindListByRoleIDs(ctx, roles)
+		if err != nil {
+			uc.log.WithContext(ctx).Errorf("Failed to get menus for role %s: %v", roleID, err)
+			continue
+		}
+		allMenuIDs = append(allMenuIDs, slices.Map(roleMenus, func(menu *RoleMenu, index int) string {
+			return menu.MenuID
+		})...)
+	}
+	allMenuIDs = slices.Uniq(allMenuIDs)
+
+	return allMenuIDs, nil
 }

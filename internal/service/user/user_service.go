@@ -13,18 +13,14 @@ import (
 
 type UserService struct {
 	v1.UnimplementedUserServiceServer
-	uc         *biz.UserUsecase
-	userPostUc *biz.UserPostUsecase
-	userDeptUc *biz.UserDeptUsecase
-	log        *log.Helper
+	uc  *biz.UserUsecase
+	log *log.Helper
 }
 
-func NewUserService(uc *biz.UserUsecase, userPostUc *biz.UserPostUsecase, userDeptUc *biz.UserDeptUsecase, logger log.Logger) *UserService {
+func NewUserService(uc *biz.UserUsecase, logger log.Logger) *UserService {
 	return &UserService{
-		uc:         uc,
-		userPostUc: userPostUc,
-		userDeptUc: userDeptUc,
-		log:        log.NewHelper(log.With(logger, "module", "user/service")),
+		uc:  uc,
+		log: log.NewHelper(log.With(logger, "module", "user/service")),
 	}
 }
 
@@ -150,7 +146,7 @@ func (s *UserService) AssignUserPosts(ctx context.Context, in *v1.AssignUserPost
 		PostIDs:   in.GetPostIds(),
 		Operation: in.GetOperation(),
 	}
-	err := s.userPostUc.ManageUserPosts(ctx, bo)
+	err := s.uc.ManageUserPosts(ctx, bo)
 	if err != nil {
 		return nil, err
 	}
@@ -164,7 +160,7 @@ func (s *UserService) AssignUserDepts(ctx context.Context, in *v1.AssignUserDept
 		DeptIDs:   in.GetDeptIds(),
 		Operation: in.GetOperation(),
 	}
-	err := s.userDeptUc.ManageUserDepts(ctx, bo)
+	err := s.uc.ManageUserDepts(ctx, bo)
 	if err != nil {
 		return nil, err
 	}

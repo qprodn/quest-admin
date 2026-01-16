@@ -2,10 +2,10 @@ package user
 
 import (
 	"context"
+	"quest-admin/internal/data/data"
 	"time"
 
 	biz "quest-admin/internal/biz/user"
-	"quest-admin/internal/data/data"
 	"quest-admin/pkg/util/idgen"
 
 	"github.com/go-kratos/kratos/v2/log"

@@ -4,14 +4,21 @@ import "time"
 
 // LoginRequest 登录请求
 type LoginRequest struct {
-	Username string
-	Password string
+	LoginType int32
+	Username  string
+	Password  string
+	Device    string
 }
 
 // LoginReply 登录响应
 type LoginReply struct {
 	Token string
 	User  *User
+}
+
+type GenerateTokenBO struct {
+	UserID string
+	Device string
 }
 
 // User 用户信息

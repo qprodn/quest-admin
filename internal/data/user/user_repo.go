@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"quest-admin/internal/data/data"
 	"time"
 
 	biz "quest-admin/internal/biz/user"
-	"quest-admin/internal/data/data"
 	"quest-admin/pkg/util/idgen"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -87,7 +87,7 @@ func (r *userRepo) FindByID(ctx context.Context, id string) (*biz.User, error) {
 		Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, biz.ErrUserNotFound
+			return nil, nil
 		}
 		return nil, err
 	}

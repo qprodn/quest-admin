@@ -9,21 +9,22 @@ package main
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
-	greeter2 "quest-admin/internal/biz/greeter"
+	auth2 "quest-admin/internal/biz/auth"
 	organization2 "quest-admin/internal/biz/organization"
 	permission2 "quest-admin/internal/biz/permission"
 	tenant2 "quest-admin/internal/biz/tenant"
 	user2 "quest-admin/internal/biz/user"
 	"quest-admin/internal/conf"
+	"quest-admin/internal/data/auth"
 	"quest-admin/internal/data/data"
-	"quest-admin/internal/data/greeter"
 	"quest-admin/internal/data/organization"
 	"quest-admin/internal/data/permission"
 	"quest-admin/internal/data/pg"
+	"quest-admin/internal/data/redis"
 	"quest-admin/internal/data/tenant"
 	"quest-admin/internal/data/user"
 	"quest-admin/internal/server"
-	greeter3 "quest-admin/internal/service/greeter"
+	auth3 "quest-admin/internal/service/auth"
 	organization3 "quest-admin/internal/service/organization"
 	permission3 "quest-admin/internal/service/permission"
 	tenant3 "quest-admin/internal/service/tenant"
@@ -41,19 +42,12 @@ func wireApp(bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(),
 	db := pg.NewDB(bootstrap)
 	dataData := data.NewData(db)
 	userRepo := user.NewUserRepo(dataData, logger)
-	userUsecase := user2.NewUserUsecase(userRepo, logger)
-	userPostRepo := user.NewUserPostRepo(dataData, logger)
-	userPostUsecase := user2.NewUserPostUsecase(userPostRepo, logger)
 	userDeptRepo := user.NewUserDeptRepo(dataData, logger)
-	userDeptUsecase := user2.NewUserDeptUsecase(userDeptRepo, logger)
-	userService := user3.NewUserService(userUsecase, userPostUsecase, userDeptUsecase, logger)
+	userPostRepo := user.NewUserPostRepo(dataData, logger)
 	userRoleRepo := user.NewUserRoleRepo(dataData, logger)
-	userRoleUsecase := user2.NewUserRoleUsecase(userRoleRepo, logger)
-	userRoleService := user3.NewUserRoleService(userRoleUsecase, logger)
-	grpcServer := server.NewGRPCServer(bootstrap, logger, userService, userRoleService)
-	greeterRepo := greeter.NewGreeterRepo(dataData, logger)
-	greeterUsecase := greeter2.NewGreeterUsecase(greeterRepo, logger)
-	greeterService := greeter3.NewGreeterService(greeterUsecase)
+	userUsecase := user2.NewUserUsecase(logger, userRepo, userDeptRepo, userPostRepo, userRoleRepo)
+	userService := user3.NewUserService(userUsecase, logger)
+	grpcServer := server.NewGRPCServer(bootstrap, logger, userService)
 	tenantRepo := tenant.NewTenantRepo(dataData, logger)
 	tenantUsecase := tenant2.NewTenantUsecase(tenantRepo, logger)
 	tenantPackageRepo := tenant.NewTenantPackageRepo(dataData, logger)
@@ -72,7 +66,11 @@ func wireApp(bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(),
 	postRepo := organization.NewPostRepo(dataData, logger)
 	postUsecase := organization2.NewPostUsecase(postRepo, logger)
 	postService := organization3.NewPostService(postUsecase, logger)
-	httpServer := server.NewHTTPServer(bootstrap, logger, greeterService, userService, userRoleService, tenantService, roleService, menuService, departmentService, postService)
+	client := redis.NewRedis(bootstrap)
+	manager := auth.NewAuthManager(client)
+	authUsecase := auth2.NewAuthUsecase(manager, logger, userUsecase, roleUsecase, menuUsecase)
+	authService := auth3.NewAuthService(logger, authUsecase, userUsecase, roleUsecase, menuUsecase)
+	httpServer := server.NewHTTPServer(bootstrap, logger, userService, tenantService, roleService, menuService, departmentService, postService, authService)
 	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
 	}, nil

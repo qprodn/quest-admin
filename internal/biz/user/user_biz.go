@@ -2,11 +2,12 @@ package user
 
 import (
 	"context"
+	"quest-admin/pkg/errorx"
 	"quest-admin/pkg/util/pagination"
 	"quest-admin/pkg/util/pswd"
+	"quest-admin/types/errkey"
 	"time"
 
-	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 )
 
@@ -23,25 +24,56 @@ type UserRepo interface {
 	Delete(ctx context.Context, bo *DeleteUserBO) error
 }
 
-type UserUsecase struct {
-	repo UserRepo
-	log  *log.Helper
+type UserDeptRepo interface {
+	GetUserDepts(ctx context.Context, userID string) ([]string, error)
+	ManageUserDepts(ctx context.Context, bo *AssignUserDeptsBO) error
 }
 
-func NewUserUsecase(repo UserRepo, logger log.Logger) *UserUsecase {
+type UserPostRepo interface {
+	GetUserPosts(ctx context.Context, userID string) ([]string, error)
+	ManageUserPosts(ctx context.Context, bo *AssignUserPostsBO) error
+	CheckPostsExist(ctx context.Context, postIDs []string) (bool, error)
+	DeleteUserPosts(ctx context.Context, userID string, postIDs []string) error
+	AddUserPosts(ctx context.Context, userID string, postIDs []string) error
+}
+
+type UserRoleRepo interface {
+	GetUserRoles(ctx context.Context, userID string) ([]string, error)
+	ManageUserRoles(ctx context.Context, bo *AssignUserRolesBO) error
+}
+
+type UserUsecase struct {
+	userRepo     UserRepo
+	userDeptRepo UserDeptRepo
+	userPostRepo UserPostRepo
+	userRoleRepo UserRoleRepo
+	log          *log.Helper
+}
+
+func NewUserUsecase(
+	logger log.Logger,
+	repo UserRepo,
+	deptRepo UserDeptRepo,
+	postRepo UserPostRepo,
+	roleRepo UserRoleRepo,
+) *UserUsecase {
 	return &UserUsecase{
-		repo: repo,
-		log:  log.NewHelper(log.With(logger, "module", "user/biz/user")),
+		log:          log.NewHelper(log.With(logger, "module", "user/biz/user")),
+		userRepo:     repo,
+		userDeptRepo: deptRepo,
+		userPostRepo: postRepo,
+		userRoleRepo: roleRepo,
 	}
 }
 
 func (uc *UserUsecase) CreateUser(ctx context.Context, user *User) error {
-	existing, err := uc.repo.FindByUsername(ctx, user.Username)
-	if err != nil && !errors.Is(err, ErrUserNotFound) {
+	existing, err := uc.userRepo.FindByUsername(ctx, user.Username)
+	if err != nil {
+		uc.log.WithContext(ctx).Errorf("查询用户失败,username:%s,error:%v", user.Username, err)
 		return err
 	}
 	if existing != nil {
-		uc.log.WithContext(ctx).Error("已存在相同用户名")
+		uc.log.WithContext(ctx).Error("已存在相同用户名,username:%s", user.Username)
 		return ErrUserExists
 	}
 	if user.Password == "" {
@@ -54,22 +86,25 @@ func (uc *UserUsecase) CreateUser(ctx context.Context, user *User) error {
 	}
 	user.Password = password
 
-	return uc.repo.Create(ctx, user)
+	return uc.userRepo.Create(ctx, user)
 }
 
 func (uc *UserUsecase) GetUser(ctx context.Context, id string) (*User, error) {
-	return uc.repo.FindByID(ctx, id)
+	return uc.userRepo.FindByID(ctx, id)
 }
 
 func (uc *UserUsecase) GetUserByUsername(ctx context.Context, username string) (*User, error) {
-	return uc.repo.FindByUsername(ctx, username)
+	return uc.userRepo.FindByUsername(ctx, username)
 }
 
 func (uc *UserUsecase) VerifyPassword(ctx context.Context, hashedPassword, plainPassword string) (bool, error) {
 	ok, err := pswd.VerifyPassword(plainPassword, hashedPassword)
 	if err != nil {
 		uc.log.WithContext(ctx).Errorf("密码验证失败,error:%v", err)
-		return false, ErrPasswordConfirmMismatch
+		return false, errorx.Err(errkey.ErrInternalServer)
+	}
+	if !ok {
+		return false, errorx.Err(errkey.ErrPasswordNotMatch)
 	}
 	return ok, nil
 }
@@ -86,12 +121,12 @@ func (uc *UserUsecase) ListUsers(ctx context.Context, query *ListUsersQuery) (*L
 		SortField: query.SortField,
 		SortOrder: query.SortOrder,
 	}
-	list, err := uc.repo.List(ctx, opt)
+	list, err := uc.userRepo.List(ctx, opt)
 	if err != nil {
 		uc.log.WithContext(ctx).Error("查询用户列表失败", err)
 		return nil, err
 	}
-	total, err := uc.repo.Count(ctx, opt)
+	total, err := uc.userRepo.Count(ctx, opt)
 	if err != nil {
 		uc.log.WithContext(ctx).Error("查询用户列表总数失败", err)
 		return nil, err
@@ -106,11 +141,11 @@ func (uc *UserUsecase) ListUsers(ctx context.Context, query *ListUsersQuery) (*L
 }
 
 func (uc *UserUsecase) UpdateUser(ctx context.Context, user *User) error {
-	return uc.repo.Update(ctx, user)
+	return uc.userRepo.Update(ctx, user)
 }
 
 func (uc *UserUsecase) ChangePassword(ctx context.Context, bo *UpdatePasswordBO) error {
-	user, err := uc.repo.FindByID(ctx, bo.UserID)
+	user, err := uc.userRepo.FindByID(ctx, bo.UserID)
 	if err != nil {
 		uc.log.Error("查询用户失败,userID:%s,error:%v", bo.UserID, err)
 		return err
@@ -131,27 +166,27 @@ func (uc *UserUsecase) ChangePassword(ctx context.Context, bo *UpdatePasswordBO)
 	}
 	bo.NewPassword = password
 
-	return uc.repo.UpdatePassword(ctx, bo)
+	return uc.userRepo.UpdatePassword(ctx, bo)
 }
 
 func (uc *UserUsecase) ChangeUserStatus(ctx context.Context, bo *UpdateStatusBO) error {
-	_, err := uc.repo.FindByID(ctx, bo.UserID)
+	_, err := uc.userRepo.FindByID(ctx, bo.UserID)
 	if err != nil {
 		uc.log.WithContext(ctx).WithContext(ctx).Error("查询用户失败,userID:%s,error:%v", bo.UserID, err)
 		return err
 	}
 
-	return uc.repo.UpdateStatus(ctx, bo)
+	return uc.userRepo.UpdateStatus(ctx, bo)
 }
 
 func (uc *UserUsecase) DeleteUser(ctx context.Context, id string) error {
-	_, err := uc.repo.FindByID(ctx, id)
+	_, err := uc.userRepo.FindByID(ctx, id)
 	if err != nil {
 		uc.log.WithContext(ctx).Error("用户不存在,userID:%s,error:%v", id, err)
 		return err
 	}
 
-	return uc.repo.Delete(ctx, &DeleteUserBO{
+	return uc.userRepo.Delete(ctx, &DeleteUserBO{
 		UserID:     id,
 		UpdateBy:   "",
 		UpdateTime: time.Now(),
@@ -159,5 +194,12 @@ func (uc *UserUsecase) DeleteUser(ctx context.Context, id string) error {
 }
 
 func (uc *UserUsecase) UpdateLoginInfo(ctx context.Context, bo *UpdateLoginInfoBO) error {
-	return uc.repo.UpdateLoginInfo(ctx, bo)
+	return uc.userRepo.UpdateLoginInfo(ctx, bo)
+}
+
+func (uc *UserUsecase) VerifyStatus(ctx context.Context, user *User) (bool, error) {
+	if user.Status != 1 {
+		return false, nil
+	}
+	return true, nil
 }

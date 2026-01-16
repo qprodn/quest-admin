@@ -3,10 +3,10 @@ package permission
 import (
 	"context"
 	"database/sql"
+	"quest-admin/internal/data/data"
 	"time"
 
 	biz "quest-admin/internal/biz/permission"
-	"quest-admin/internal/data/data"
 	"quest-admin/pkg/util/idgen"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -43,11 +43,35 @@ type menuRepo struct {
 	log  *log.Helper
 }
 
+var _ biz.MenuRepo = &menuRepo{}
+
 func NewMenuRepo(data *data.Data, logger log.Logger) biz.MenuRepo {
 	return &menuRepo{
 		data: data,
 		log:  log.NewHelper(logger),
 	}
+}
+
+func (r *menuRepo) FindByMenuIDs(ctx context.Context, menuIDs []string) ([]*biz.Menu, error) {
+	if len(menuIDs) == 0 {
+		return []*biz.Menu{}, nil
+	}
+	var dbMenus []*Menu
+	err := r.data.DB(ctx).NewSelect().
+		Model(&dbMenus).
+		Where("id in ?", bun.In(menuIDs)).
+		Scan(ctx)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return []*biz.Menu{}, nil
+		}
+		return nil, err
+	}
+	menus := make([]*biz.Menu, 0, len(dbMenus))
+	for _, dbMenu := range dbMenus {
+		menus = append(menus, r.toBizMenu(dbMenu))
+	}
+	return menus, nil
 }
 
 func (r *menuRepo) Create(ctx context.Context, menu *biz.Menu) error {

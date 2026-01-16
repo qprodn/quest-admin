@@ -4,6 +4,9 @@ go 1.24.6
 
 require (
 	github.com/bytedance/gg v1.1.0
+	github.com/click33/sa-token-go/core v0.1.7
+	github.com/click33/sa-token-go/storage/redis v0.1.7
+	github.com/click33/sa-token-go/stputil v0.1.7
 	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20251231122250-a7b85f5cfaa1
 	github.com/go-kratos/kratos/v2 v2.9.2
 	github.com/go-redsync/redsync/v4 v4.15.0
@@ -30,9 +33,7 @@ require (
 	dario.cat/mergo v1.0.0 // indirect
 	github.com/BurntSushi/toml v1.6.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/click33/sa-token-go/core v0.1.7 // indirect
-	github.com/click33/sa-token-go/storage/redis v0.1.7 // indirect
-	github.com/click33/sa-token-go/stputil v0.1.7 // indirect
+	github.com/click33/sa-token-go/storage/memory v0.1.7 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect

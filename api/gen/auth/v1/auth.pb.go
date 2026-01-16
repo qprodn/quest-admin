@@ -28,6 +28,7 @@ type LoginRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Username      *string                `protobuf:"bytes,1,opt,name=username,proto3,oneof" json:"username,omitempty"`
 	Password      *string                `protobuf:"bytes,2,opt,name=password,proto3,oneof" json:"password,omitempty"`
+	Device        *string                `protobuf:"bytes,3,opt,name=device,proto3,oneof" json:"device,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -76,10 +77,16 @@ func (x *LoginRequest) GetPassword() string {
 	return ""
 }
 
+func (x *LoginRequest) GetDevice() string {
+	if x != nil && x.Device != nil {
+		return *x.Device
+	}
+	return ""
+}
+
 type LoginReply struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
-	User          *UserInfo              `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -119,13 +126,6 @@ func (x *LoginReply) GetToken() string {
 		return x.Token
 	}
 	return ""
-}
-
-func (x *LoginReply) GetUser() *UserInfo {
-	if x != nil {
-		return x.User
-	}
-	return nil
 }
 
 type GetPermissionInfoRequest struct {
@@ -364,7 +364,6 @@ type MenuInfo struct {
 	Visible       bool                   `protobuf:"varint,12,opt,name=visible,proto3" json:"visible,omitempty"`
 	KeepAlive     bool                   `protobuf:"varint,13,opt,name=keep_alive,json=keepAlive,proto3" json:"keep_alive,omitempty"`
 	AlwaysShow    bool                   `protobuf:"varint,14,opt,name=always_show,json=alwaysShow,proto3" json:"always_show,omitempty"`
-	Children      []*MenuInfo            `protobuf:"bytes,15,rep,name=children,proto3" json:"children,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -497,27 +496,21 @@ func (x *MenuInfo) GetAlwaysShow() bool {
 	return false
 }
 
-func (x *MenuInfo) GetChildren() []*MenuInfo {
-	if x != nil {
-		return x.Children
-	}
-	return nil
-}
-
 var File_auth_v1_auth_proto protoreflect.FileDescriptor
 
 const file_auth_v1_auth_proto_rawDesc = "" +
 	"\n" +
-	"\x12auth/v1/auth.proto\x12\x0esystem.auth.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1copenapi/v3/annotations.proto\"\xe2\x01\n" +
+	"\x12auth/v1/auth.proto\x12\x0esystem.auth.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1copenapi/v3/annotations.proto\"\x9e\x02\n" +
 	"\fLoginRequest\x129\n" +
 	"\busername\x18\x01 \x01(\tB\x18\xbaG\x15:\a\x12\x05admin\x92\x02\t用户名H\x00R\busername\x88\x01\x01\x127\n" +
-	"\bpassword\x18\x02 \x01(\tB\x16\xbaG\x13:\b\x12\x06123456\x92\x02\x06密码H\x01R\bpassword\x88\x01\x01:D\xbaGA:-\x12+{\"username\": \"admin\", \"password\": \"123456\"}\x92\x02\x0f登录请求体B\v\n" +
+	"\bpassword\x18\x02 \x01(\tB\x16\xbaG\x13:\b\x12\x06123456\x92\x02\x06密码H\x01R\bpassword\x88\x01\x01\x12/\n" +
+	"\x06device\x18\x03 \x01(\tB\x12\xbaG\x0f:\x04\x12\x02pc\x92\x02\x06设备H\x02R\x06device\x88\x01\x01:D\xbaGA:-\x12+{\"username\": \"admin\", \"password\": \"123456\"}\x92\x02\x0f登录请求体B\v\n" +
 	"\t_usernameB\v\n" +
-	"\t_password\"\xba\x01\n" +
+	"\t_passwordB\t\n" +
+	"\a_device\"x\n" +
 	"\n" +
 	"LoginReply\x12S\n" +
-	"\x05token\x18\x01 \x01(\tB=\xbaG::)\x12'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\x92\x02\f访问令牌R\x05token\x12@\n" +
-	"\x04user\x18\x02 \x01(\v2\x18.system.auth.v1.UserInfoB\x12\xbaG\x0f\x92\x02\f用户信息R\x04user:\x15\xbaG\x12\x92\x02\x0f登录响应体\"=\n" +
+	"\x05token\x18\x01 \x01(\tB=\xbaG::)\x12'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\x92\x02\f访问令牌R\x05token:\x15\xbaG\x12\x92\x02\x0f登录响应体\"=\n" +
 	"\x18GetPermissionInfoRequest:!\xbaG\x1e\x92\x02\x1b获取权限信息请求体\"\xf3\x02\n" +
 	"\x16GetPermissionInfoReply\x12@\n" +
 	"\x04user\x18\x01 \x01(\v2\x18.system.auth.v1.UserInfoB\x12\xbaG\x0f\x92\x02\f用户信息R\x04user\x12C\n" +
@@ -535,7 +528,7 @@ const file_auth_v1_auth_proto_rawDesc = "" +
 	"\x06status\x18\b \x01(\x05B+\xbaG(:\x03\x12\x011\x92\x02 用户状态: 0-禁用, 1-正常R\x06status\x12*\n" +
 	"\x06remark\x18\t \x01(\tB\x12\xbaG\x0f\x92\x02\f备注信息R\x06remark\x12K\n" +
 	"\tcreate_at\x18\n" +
-	" \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f创建时间R\bcreateAt:\x18\xbaG\x15\x92\x02\x12用户基本信息\"\xac\a\n" +
+	" \x01(\v2\x1a.google.protobuf.TimestampB\x12\xbaG\x0f\x92\x02\f创建时间R\bcreateAt:\x18\xbaG\x15\x92\x02\x12用户基本信息\"\xdf\x06\n" +
 	"\bMenuInfo\x128\n" +
 	"\x02id\x18\x01 \x01(\tB(\xbaG%:\v\x12\t123456789\x92\x02\x15菜单唯一标识符R\x02id\x126\n" +
 	"\x04name\x18\x02 \x01(\tB\"\xbaG\x1f:\x0e\x12\f系统管理\x92\x02\f菜单名称R\x04name\x12F\n" +
@@ -555,8 +548,7 @@ const file_auth_v1_auth_proto_rawDesc = "" +
 	"\n" +
 	"keep_alive\x18\r \x01(\bB\x1a\xbaG\x17:\x06\x12\x04true\x92\x02\f是否缓存R\tkeepAlive\x12A\n" +
 	"\valways_show\x18\x0e \x01(\bB \xbaG\x1d:\x06\x12\x04true\x92\x02\x12是否总是显示R\n" +
-	"alwaysShow\x12K\n" +
-	"\bchildren\x18\x0f \x03(\v2\x18.system.auth.v1.MenuInfoB\x15\xbaG\x12\x92\x02\x0f子菜单列表R\bchildren:\x12\xbaG\x0f\x92\x02\f菜单信息2\xb6\x03\n" +
+	"alwaysShow:\x12\xbaG\x0f\x92\x02\f菜单信息2\xb6\x03\n" +
 	"\vAuthService\x12\xb1\x01\n" +
 	"\x05Login\x12\x1c.system.auth.v1.LoginRequest\x1a\x1a.system.auth.v1.LoginReply\"n\xbaGI\x12\f用户登录\x1a9根据用户名和密码进行登录，返回访问令牌\x82\xd3\xe4\x93\x02\x1c:\x01*\"\x17/qs/v1/auth/admin/login\x12\xf2\x01\n" +
 	"\x11GetPermissionInfo\x12(.system.auth.v1.GetPermissionInfoRequest\x1a&.system.auth.v1.GetPermissionInfoReply\"\x8a\x01\xbaG^\x12\x18获取用户权限信息\x1aB获取当前登录用户的详细信息、角色、权限和菜单\x82\xd3\xe4\x93\x02#\x12!/qs/v1/auth/admin/permission-infoBB\xbaG#:!\n" +
@@ -585,20 +577,18 @@ var file_auth_v1_auth_proto_goTypes = []any{
 	(*timestamppb.Timestamp)(nil),    // 6: google.protobuf.Timestamp
 }
 var file_auth_v1_auth_proto_depIdxs = []int32{
-	4, // 0: system.auth.v1.LoginReply.user:type_name -> system.auth.v1.UserInfo
-	4, // 1: system.auth.v1.GetPermissionInfoReply.user:type_name -> system.auth.v1.UserInfo
-	5, // 2: system.auth.v1.GetPermissionInfoReply.menus:type_name -> system.auth.v1.MenuInfo
-	6, // 3: system.auth.v1.UserInfo.create_at:type_name -> google.protobuf.Timestamp
-	5, // 4: system.auth.v1.MenuInfo.children:type_name -> system.auth.v1.MenuInfo
-	0, // 5: system.auth.v1.AuthService.Login:input_type -> system.auth.v1.LoginRequest
-	2, // 6: system.auth.v1.AuthService.GetPermissionInfo:input_type -> system.auth.v1.GetPermissionInfoRequest
-	1, // 7: system.auth.v1.AuthService.Login:output_type -> system.auth.v1.LoginReply
-	3, // 8: system.auth.v1.AuthService.GetPermissionInfo:output_type -> system.auth.v1.GetPermissionInfoReply
-	7, // [7:9] is the sub-list for method output_type
-	5, // [5:7] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	4, // 0: system.auth.v1.GetPermissionInfoReply.user:type_name -> system.auth.v1.UserInfo
+	5, // 1: system.auth.v1.GetPermissionInfoReply.menus:type_name -> system.auth.v1.MenuInfo
+	6, // 2: system.auth.v1.UserInfo.create_at:type_name -> google.protobuf.Timestamp
+	0, // 3: system.auth.v1.AuthService.Login:input_type -> system.auth.v1.LoginRequest
+	2, // 4: system.auth.v1.AuthService.GetPermissionInfo:input_type -> system.auth.v1.GetPermissionInfoRequest
+	1, // 5: system.auth.v1.AuthService.Login:output_type -> system.auth.v1.LoginReply
+	3, // 6: system.auth.v1.AuthService.GetPermissionInfo:output_type -> system.auth.v1.GetPermissionInfoReply
+	5, // [5:7] is the sub-list for method output_type
+	3, // [3:5] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_auth_v1_auth_proto_init() }
