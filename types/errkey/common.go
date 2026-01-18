@@ -12,7 +12,7 @@ var (
 )
 
 func init() {
-	errorx.Register(ErrInternalServer, 500, "INTERNAL_SERVER_ERROR", "出错了,请稍后再试")
+	errorx.Register(ErrInternalServer, 500, "INTERNAL_SERVER_ERROR", "出错了，请稍后再试~")
 	errorx.Register(ErrBadRequest, 400, "BAD_REQUEST", "请求参数错误: %s")
 	errorx.Register(ErrUnauthorized, 401, "UNAUTHORIZED", "未授权访问")
 	errorx.Register(ErrForbidden, 403, "FORBIDDEN", "禁止访问")

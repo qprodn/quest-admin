@@ -85,7 +85,7 @@ func InitConfig() *conf.Bootstrap {
 
 func InitLogger(bc *conf.Bootstrap) log.Logger {
 	// 初始化日志
-	return logger.NewLoggerProvider(
+	provider := logger.NewLoggerProvider(
 		&logger.ServiceInfo{
 			Id:      "",
 			Name:    Name,
@@ -100,4 +100,7 @@ func InitLogger(bc *conf.Bootstrap) log.Logger {
 		logger.WithStdout(bc.Log.Stdout),
 		logger.WithSimpleTrace(true),
 	)
+	// 设置全局logger
+	log.SetLogger(provider)
+	return provider
 }
