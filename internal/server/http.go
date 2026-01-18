@@ -7,12 +7,14 @@ import (
 	tenantv1 "quest-admin/api/gen/tenant/v1"
 	userv1 "quest-admin/api/gen/user/v1"
 	"quest-admin/internal/conf"
+	authManager "quest-admin/internal/data/auth"
 	"quest-admin/internal/service/auth"
 	"quest-admin/internal/service/organization"
 	"quest-admin/internal/service/permission"
 	"quest-admin/internal/service/tenant"
 	"quest-admin/internal/service/user"
 	pkglogger "quest-admin/pkg/logger"
+	authmiddleware "quest-admin/pkg/middleware/auth"
 	"quest-admin/pkg/middleware/err"
 	"time"
 
@@ -25,7 +27,10 @@ import (
 )
 
 // NewHTTPServer new an HTTP server.
-func NewHTTPServer(c *conf.Bootstrap, logger log.Logger,
+func NewHTTPServer(
+	c *conf.Bootstrap,
+	logger log.Logger,
+	authManager *authManager.Manager,
 	userService *user.UserService,
 	tenantService *tenant.TenantService,
 	roleService *permission.RoleService,
@@ -40,6 +45,7 @@ func NewHTTPServer(c *conf.Bootstrap, logger log.Logger,
 			metadata.Server(),
 			pkglogger.SimpleTraceIdProvider(),
 			logging.Server(logger),
+			authmiddleware.AdminHttpServer(authManager),
 			err.Server(),
 		),
 		http.Filter(handlers.CORS(

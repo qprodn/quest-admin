@@ -60,7 +60,7 @@ func (uc *DepartmentUsecase) GetDepartmentTree(ctx context.Context) ([]*Departme
 
 	var roots []*Department
 	for _, dept := range deptMap {
-		if dept.ParentID == "" || dept.ParentID == "0" {
+		if dept.ParentID == "" {
 			roots = append(roots, dept)
 		} else if parent, ok := deptMap[dept.ParentID]; ok {
 			parent.Children = append(parent.Children, dept)

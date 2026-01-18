@@ -2,6 +2,7 @@ package permission
 
 import (
 	"context"
+	"sort"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -49,26 +50,19 @@ func (uc *MenuUsecase) GetMenu(ctx context.Context, id string) (*Menu, error) {
 }
 
 func (uc *MenuUsecase) GetMenuTree(ctx context.Context) ([]*Menu, error) {
+	// TODO: 根据租户套餐过滤菜单
 	menus, err := uc.repo.List(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	menuMap := make(map[string]*Menu)
-	for _, menu := range menus {
-		menuMap[menu.ID] = menu
+	menuTree, err := uc.BuildMenuTree(menus)
+	if err != nil {
+		return nil, err
 	}
+	uc.sortMenuTree(menuTree)
 
-	var roots []*Menu
-	for _, menu := range menuMap {
-		if menu.ParentID == "" {
-			roots = append(roots, menu)
-		} else if parent, ok := menuMap[menu.ParentID]; ok {
-			parent.Children = append(parent.Children, menu)
-		}
-	}
-
-	return roots, nil
+	return menuTree, nil
 }
 
 func (uc *MenuUsecase) UpdateMenu(ctx context.Context, menu *Menu) error {
@@ -148,4 +142,47 @@ func (uc *MenuUsecase) ProcessDisabledMenus(menus []*Menu) []*Menu {
 		}
 	}
 	return result
+}
+
+func (uc *MenuUsecase) BuildMenuTree(menus []*Menu) ([]*Menu, error) {
+	menuMap := make(map[string]*Menu)
+
+	for _, menu := range menus {
+		menuMap[menu.ID] = menu
+		menu.Children = []*Menu{}
+	}
+
+	for _, menu := range menus {
+		if menu.ParentID == "" {
+			continue
+		}
+		if parentMenu, exists := menuMap[menu.ParentID]; exists {
+			parentMenu.Children = append(parentMenu.Children, menu)
+		}
+	}
+
+	var rootMenus []*Menu
+	for _, menu := range menus {
+		if menu.ParentID == "" {
+			rootMenus = append(rootMenus, menu)
+		}
+	}
+
+	uc.sortMenuTree(rootMenus)
+
+	return rootMenus, nil
+}
+
+func (uc *MenuUsecase) sortMenuTree(menus []*Menu) {
+	if len(menus) == 0 {
+		return
+	}
+	sort.Slice(menus, func(i, j int) bool {
+		return menus[i].Sort < menus[j].Sort
+	})
+	for _, menu := range menus {
+		if len(menu.Children) > 0 {
+			uc.sortMenuTree(menu.Children)
+		}
+	}
 }

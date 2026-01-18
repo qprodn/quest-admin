@@ -9,9 +9,9 @@ import (
 	"quest-admin/pkg/errorx"
 	"quest-admin/pkg/lang/ptr"
 	"quest-admin/pkg/lang/slices"
+	"quest-admin/pkg/util/ctxs"
 	"quest-admin/types/errkey"
 
-	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -56,61 +56,49 @@ func (s *AuthService) Login(ctx context.Context, request *v1.LoginRequest) (*v1.
 
 // GetPermissionInfo 获取用户权限信息
 func (s *AuthService) GetPermissionInfo(ctx context.Context, in *v1.GetPermissionInfoRequest) (*v1.GetPermissionInfoReply, error) {
-	s.log.WithContext(ctx).Info("GetPermissionInfo")
-
-	userID := "1"
-
+	userID := ctxs.GetLoginID(ctx)
 	user, err := s.userUsecase.GetUser(ctx, userID)
 	if err != nil {
 		s.log.WithContext(ctx).Errorf("获取用户信息失败,userID:%s,error:%v", userID, err)
-		return nil, errors.NotFound("USER_NOT_FOUND", "用户不存在")
+		return nil, err
+	}
+	if user == nil {
+		return nil, errorx.Err(errkey.ErrUserNotFound)
 	}
 
 	roleIDs, err := s.userUsecase.GetUserRoles(ctx, userID)
 	if err != nil {
 		s.log.WithContext(ctx).Errorf("获取用户角色失败,userID:%s,error:%v", userID, err)
-		return nil, errors.InternalServer("INTERNAL_ERROR", "获取用户角色失败")
+		return nil, err
 	}
-
-	roles := make([]string, 0, len(roleIDs))
-	for _, roleID := range roleIDs {
-		role, err := s.roleUsecase.GetRole(ctx, roleID)
-		if err != nil {
-			s.log.WithContext(ctx).Warnf("获取角色信息失败,roleID:%s,error:%v", roleID, err)
-			continue
-		}
-		roles = append(roles, role.Code)
+	slices.Uniq(roleIDs)
+	menuIDs, err := s.roleUsecase.GetMenusByRoleIDs(ctx, roleIDs)
+	if err != nil {
+		s.log.WithContext(ctx).Errorf("获取角色菜单失败,roleID:%s,error:%v", roleIDs, err)
+		return nil, err
 	}
-
-	menuIDs := make([]string, 0)
-	for _, roleID := range roleIDs {
-		roleMenuIDs, err := s.roleUsecase.GetRoleMenus(ctx, roleID)
-		if err != nil {
-			s.log.WithContext(ctx).Warnf("获取角色菜单失败,roleID:%s,error:%v", roleID, err)
-			continue
-		}
-		menuIDs = append(menuIDs, roleMenuIDs...)
+	menus, err := s.menuUsecase.ListByMenuIDs(ctx, menuIDs)
+	if err != nil {
+		s.log.WithContext(ctx).Errorf("获取菜单信息失败,menuID:%s,error:%v", menuIDs, err)
+		return nil, err
 	}
-
-	permissions := make([]string, 0)
-	menus := make([]*v1.MenuInfo, 0)
-	for _, menuID := range menuIDs {
-		menu, err := s.menuUsecase.GetMenu(ctx, menuID)
-		if err != nil {
-			s.log.WithContext(ctx).Warnf("获取菜单信息失败,menuID:%s,error:%v", menuID, err)
-			continue
-		}
-		if menu.Permission != "" {
-			permissions = append(permissions, menu.Permission)
-		}
-		menus = append(menus, s.toProtoMenu(menu))
+	slices.Uniq(menus)
+	permissions := slices.Map(menus, func(item *permBiz.Menu, index int) string {
+		return item.Permission
+	})
+	menuTree, err := s.menuUsecase.BuildMenuTree(menus)
+	if err != nil {
+		s.log.WithContext(ctx).Errorf("构建菜单树失败,error:%v", err)
+		return nil, err
 	}
 
 	return &v1.GetPermissionInfoReply{
 		User:        s.toProtoUser(user),
-		Roles:       roles,
+		Roles:       roleIDs,
 		Permissions: permissions,
-		Menus:       menus,
+		Menus: slices.Map(menuTree, func(item *permBiz.Menu, index int) *v1.MenuInfo {
+			return s.toProtoMenu(item)
+		}),
 	}, nil
 }
 
