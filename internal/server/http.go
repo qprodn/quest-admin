@@ -45,8 +45,8 @@ func NewHTTPServer(
 			metadata.Server(),
 			pkglogger.SimpleTraceIdProvider(),
 			logging.Server(logger),
-			authmiddleware.AdminHttpServer(authManager),
 			err.Server(),
+			authmiddleware.AdminHttpServer(authManager),
 		),
 		http.Filter(handlers.CORS(
 			handlers.AllowedHeaders([]string{"Accept", "Accept-Language", "Content-Language", "Origin", "Content-Type", "Content-Length", "Accept-Encoding", "Authorization"}),

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"quest-admin/internal/data/data"
+	"quest-admin/pkg/util/ctxs"
 	"time"
 
 	biz "quest-admin/internal/biz/organization"
@@ -87,7 +88,12 @@ func (r *departmentRepo) Create(ctx context.Context, dept *biz.Department) (*biz
 
 func (r *departmentRepo) FindByID(ctx context.Context, id string) (*biz.Department, error) {
 	dbDept := &Department{ID: id}
-	err := r.data.DB(ctx).NewSelect().Model(dbDept).WherePK().Scan(ctx)
+	err := r.data.DB(ctx).
+		NewSelect().
+		Model(dbDept).
+		WherePK().
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
+		Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -99,7 +105,12 @@ func (r *departmentRepo) FindByID(ctx context.Context, id string) (*biz.Departme
 
 func (r *departmentRepo) FindByName(ctx context.Context, name string) (*biz.Department, error) {
 	dbDept := &Department{}
-	err := r.data.DB(ctx).NewSelect().Model(dbDept).Where("name = ?", name).Scan(ctx)
+	err := r.data.DB(ctx).
+		NewSelect().
+		Model(dbDept).
+		Where("name = ?", name).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
+		Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -114,6 +125,7 @@ func (r *departmentRepo) List(ctx context.Context) ([]*biz.Department, error) {
 	err := r.data.DB(ctx).NewSelect().
 		Model(&dbDepts).
 		Where("status = ?", 1).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Order("level ASC, sort ASC").
 		Scan(ctx)
 	if err != nil {
@@ -132,6 +144,7 @@ func (r *departmentRepo) FindByParentID(ctx context.Context, parentID string) ([
 	err := r.data.DB(ctx).NewSelect().
 		Model(&dbDepts).
 		Where("parent_id = ?", parentID).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Scan(ctx)
 	if err != nil {
 		return nil, err
@@ -154,10 +167,17 @@ func (r *departmentRepo) Update(ctx context.Context, dept *biz.Department) (*biz
 		Phone:        dept.Phone,
 		Email:        dept.Email,
 		Status:       dept.Status,
+		UpdateBy:     dept.UpdateBy,
 		UpdateAt:     time.Now(),
 	}
 
-	_, err := r.data.DB(ctx).NewUpdate().Model(dbDept).WherePK().OmitZero().Exec(ctx)
+	_, err := r.data.DB(ctx).
+		NewUpdate().
+		Model(dbDept).
+		WherePK().
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
+		OmitZero().
+		Exec(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -166,8 +186,11 @@ func (r *departmentRepo) Update(ctx context.Context, dept *biz.Department) (*biz
 }
 
 func (r *departmentRepo) Delete(ctx context.Context, id string) error {
-	_, err := r.data.DB(ctx).NewDelete().
+	_, err := r.data.DB(ctx).NewUpdate().
 		Model((*Department)(nil)).
+		Set("delete_at = ?", time.Now()).
+		Set("update_by", ctxs.GetLoginID(ctx)).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Where("id = ?", id).
 		Exec(ctx)
 	return err
@@ -177,6 +200,7 @@ func (r *departmentRepo) HasUsers(ctx context.Context, id string) (bool, error) 
 	count, err := r.data.DB(ctx).NewSelect().
 		Model((*UserDept)(nil)).
 		Where("dept_id = ?", id).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Count(ctx)
 	if err != nil {
 		return false, err

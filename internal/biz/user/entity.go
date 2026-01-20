@@ -90,7 +90,5 @@ type AssignUserRolesBO struct {
 }
 
 type DeleteUserBO struct {
-	UserID     string
-	UpdateBy   string
-	UpdateTime time.Time
+	UserID string
 }

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"quest-admin/internal/data/data"
+	"quest-admin/pkg/util/ctxs"
 	"time"
 
 	biz "quest-admin/internal/biz/organization"
@@ -53,11 +54,11 @@ func (r *postRepo) Create(ctx context.Context, post *biz.Post) (*biz.Post, error
 		Sort:     post.Sort,
 		Status:   post.Status,
 		Remark:   post.Remark,
-		CreateBy: post.CreateBy,
+		CreateBy: ctxs.GetLoginID(ctx),
 		CreateAt: now,
-		UpdateBy: post.UpdateBy,
+		UpdateBy: ctxs.GetLoginID(ctx),
 		UpdateAt: now,
-		TenantID: post.TenantID,
+		TenantID: ctxs.GetTenantID(ctx),
 	}
 
 	_, err := r.data.DB(ctx).NewInsert().Model(dbPost).Exec(ctx)
@@ -70,7 +71,12 @@ func (r *postRepo) Create(ctx context.Context, post *biz.Post) (*biz.Post, error
 
 func (r *postRepo) FindByID(ctx context.Context, id string) (*biz.Post, error) {
 	dbPost := &Post{ID: id}
-	err := r.data.DB(ctx).NewSelect().Model(dbPost).WherePK().Scan(ctx)
+	err := r.data.DB(ctx).
+		NewSelect().
+		Model(dbPost).
+		WherePK().
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
+		Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -82,7 +88,12 @@ func (r *postRepo) FindByID(ctx context.Context, id string) (*biz.Post, error) {
 
 func (r *postRepo) FindByName(ctx context.Context, name string) (*biz.Post, error) {
 	dbPost := &Post{}
-	err := r.data.DB(ctx).NewSelect().Model(dbPost).Where("name = ?", name).Scan(ctx)
+	err := r.data.DB(ctx).
+		NewSelect().
+		Model(dbPost).
+		Where("name = ?", name).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
+		Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -94,7 +105,12 @@ func (r *postRepo) FindByName(ctx context.Context, name string) (*biz.Post, erro
 
 func (r *postRepo) FindByCode(ctx context.Context, code string) (*biz.Post, error) {
 	dbPost := &Post{}
-	err := r.data.DB(ctx).NewSelect().Model(dbPost).Where("code = ?", code).Scan(ctx)
+	err := r.data.DB(ctx).
+		NewSelect().
+		Model(dbPost).
+		Where("code = ?", code).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
+		Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -146,7 +162,7 @@ func (r *postRepo) List(ctx context.Context, query *biz.ListPostsQuery) (*biz.Li
 		q = q.Order("sort ASC, create_at DESC")
 	}
 
-	err = q.Scan(ctx)
+	err = q.Where("tenant_id = ?", ctxs.GetTenantID(ctx)).Scan(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -178,7 +194,13 @@ func (r *postRepo) Update(ctx context.Context, post *biz.Post) (*biz.Post, error
 		UpdateAt: time.Now(),
 	}
 
-	_, err := r.data.DB(ctx).NewUpdate().Model(dbPost).WherePK().OmitZero().Exec(ctx)
+	_, err := r.data.DB(ctx).
+		NewUpdate().
+		Model(dbPost).
+		WherePK().
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
+		OmitZero().
+		Exec(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -190,6 +212,7 @@ func (r *postRepo) Delete(ctx context.Context, id string) error {
 	_, err := r.data.DB(ctx).NewDelete().
 		Model((*Post)(nil)).
 		Where("id = ?", id).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Exec(ctx)
 	return err
 }
@@ -200,6 +223,7 @@ func (r *postRepo) HasUsers(ctx context.Context, id string) (bool, error) {
 		Model((*Post)(nil)).
 		TableExpr("qa_user_post AS up").
 		Where("up.post_id = ?", id).
+		Where("up.tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Count(ctx)
 	if err != nil {
 		return false, err

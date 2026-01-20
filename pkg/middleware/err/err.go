@@ -26,7 +26,7 @@ func Server() middleware.Middleware {
 				}
 				se.Metadata["trace_id"] = value.(string)
 			}
-			return
+			return reply, se
 		}
 	}
 }

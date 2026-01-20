@@ -6,7 +6,6 @@ import (
 	"quest-admin/pkg/util/pagination"
 	"quest-admin/pkg/util/pswd"
 	"quest-admin/types/errkey"
-	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -187,9 +186,7 @@ func (uc *UserUsecase) DeleteUser(ctx context.Context, id string) error {
 	}
 
 	return uc.userRepo.Delete(ctx, &DeleteUserBO{
-		UserID:     id,
-		UpdateBy:   "",
-		UpdateTime: time.Now(),
+		UserID: id,
 	})
 }
 

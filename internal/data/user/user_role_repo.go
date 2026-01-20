@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"quest-admin/internal/data/data"
+	"quest-admin/pkg/util/ctxs"
 	"time"
 
 	biz "quest-admin/internal/biz/user"
@@ -43,6 +44,7 @@ func (r *userRoleRepo) GetUserRoles(ctx context.Context, userID string) ([]strin
 	err := r.data.DB(ctx).NewSelect().
 		Model(&userRoles).
 		Where("user_id = ?", userID).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Scan(ctx)
 	if err != nil {
 		return nil, err
@@ -89,6 +91,7 @@ func (r *userRoleRepo) removeUserRoles(ctx context.Context, userID string, roleI
 		Model((*UserRole)(nil)).
 		Where("user_id = ?", userID).
 		Where("role_id IN (?)", bun.In(roleIDs)).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Exec(ctx)
 	return err
 }
@@ -98,6 +101,7 @@ func (r *userRoleRepo) replaceUserRoles(ctx context.Context, userID string, role
 		_, err := tx.NewDelete().
 			Model((*UserRole)(nil)).
 			Where("user_id = ?", userID).
+			Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 			Exec(ctx)
 		if err != nil {
 			return err

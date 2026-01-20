@@ -5,6 +5,7 @@ import (
 	"quest-admin/internal/biz/permission"
 	"quest-admin/internal/data/data"
 	"quest-admin/pkg/lang/slices"
+	"quest-admin/pkg/util/ctxs"
 	"time"
 
 	"quest-admin/pkg/util/idgen"
@@ -44,6 +45,7 @@ func (r *roleMapMenuRepo) FindListByRoleIDs(ctx context.Context, roles []string)
 	err := r.data.DB(ctx).NewSelect().
 		Model(&roleMenus).
 		Where("role_id in ?", bun.In(roles)).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Scan(ctx)
 	if err != nil {
 		return nil, err
@@ -62,6 +64,7 @@ func (r *roleMapMenuRepo) AssignMenus(ctx context.Context, roleID string, menuID
 	_, err := r.data.DB(ctx).NewDelete().
 		Model((*RoleMenu)(nil)).
 		Where("role_id = ?", roleID).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Exec(ctx)
 	if err != nil {
 		return err
@@ -92,6 +95,7 @@ func (r *roleMapMenuRepo) GetMenuIDs(ctx context.Context, roleID string) ([]stri
 	err := r.data.DB(ctx).NewSelect().
 		Model(&roleMenus).
 		Where("role_id = ?", roleID).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Scan(ctx)
 	if err != nil {
 		return nil, err

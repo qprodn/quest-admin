@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"quest-admin/internal/data/data"
+	"quest-admin/pkg/util/ctxs"
 	"time"
 
 	biz "quest-admin/internal/biz/permission"
@@ -59,11 +60,11 @@ func (r *roleRepo) Create(ctx context.Context, role *biz.Role) (*biz.Role, error
 		Status:           role.Status,
 		Type:             role.Type,
 		Remark:           role.Remark,
-		CreateBy:         role.CreateBy,
+		CreateBy:         ctxs.GetLoginID(ctx),
 		CreateAt:         now,
-		UpdateBy:         role.UpdateBy,
+		UpdateBy:         ctxs.GetLoginID(ctx),
 		UpdateAt:         now,
-		TenantID:         role.TenantID,
+		TenantID:         ctxs.GetTenantID(ctx),
 	}
 
 	_, err := r.data.DB(ctx).NewInsert().Model(dbRole).Exec(ctx)
@@ -76,7 +77,12 @@ func (r *roleRepo) Create(ctx context.Context, role *biz.Role) (*biz.Role, error
 
 func (r *roleRepo) FindByID(ctx context.Context, id string) (*biz.Role, error) {
 	dbRole := &Role{ID: id}
-	err := r.data.DB(ctx).NewSelect().Model(dbRole).WherePK().Scan(ctx)
+	err := r.data.DB(ctx).
+		NewSelect().
+		Model(dbRole).
+		WherePK().
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
+		Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -88,7 +94,12 @@ func (r *roleRepo) FindByID(ctx context.Context, id string) (*biz.Role, error) {
 
 func (r *roleRepo) FindByName(ctx context.Context, name string) (*biz.Role, error) {
 	dbRole := &Role{}
-	err := r.data.DB(ctx).NewSelect().Model(dbRole).Where("name = ?", name).Scan(ctx)
+	err := r.data.DB(ctx).
+		NewSelect().
+		Model(dbRole).
+		Where("name = ?", name).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
+		Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -100,7 +111,12 @@ func (r *roleRepo) FindByName(ctx context.Context, name string) (*biz.Role, erro
 
 func (r *roleRepo) FindByCode(ctx context.Context, code string) (*biz.Role, error) {
 	dbRole := &Role{}
-	err := r.data.DB(ctx).NewSelect().Model(dbRole).Where("code = ?", code).Scan(ctx)
+	err := r.data.DB(ctx).
+		NewSelect().
+		Model(dbRole).
+		Where("code = ?", code).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
+		Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -152,7 +168,7 @@ func (r *roleRepo) List(ctx context.Context, query *biz.ListRolesQuery) (*biz.Li
 		q = q.Order("sort ASC, create_at DESC")
 	}
 
-	err = q.Scan(ctx)
+	err = q.Where("tenant_id = ?", ctxs.GetTenantID(ctx)).Scan(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -187,7 +203,12 @@ func (r *roleRepo) Update(ctx context.Context, role *biz.Role) (*biz.Role, error
 		UpdateAt:         time.Now(),
 	}
 
-	_, err := r.data.DB(ctx).NewUpdate().Model(dbRole).WherePK().OmitZero().Exec(ctx)
+	_, err := r.data.DB(ctx).
+		NewUpdate().
+		Model(dbRole).
+		WherePK().
+		OmitZero().
+		Exec(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -196,8 +217,10 @@ func (r *roleRepo) Update(ctx context.Context, role *biz.Role) (*biz.Role, error
 }
 
 func (r *roleRepo) Delete(ctx context.Context, id string) error {
-	_, err := r.data.DB(ctx).NewDelete().
+	_, err := r.data.DB(ctx).NewUpdate().
 		Model((*Role)(nil)).
+		Set("delete_at", time.Now()).
+		Set("update_by", ctxs.GetLoginID(ctx)).
 		Where("id = ?", id).
 		Exec(ctx)
 	return err
@@ -209,6 +232,7 @@ func (r *roleRepo) HasUsers(ctx context.Context, id string) (bool, error) {
 		Model((*Role)(nil)).
 		TableExpr("qa_user_map_role AS ur").
 		Where("ur.role_id = ?", id).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Count(ctx)
 	if err != nil {
 		return false, err

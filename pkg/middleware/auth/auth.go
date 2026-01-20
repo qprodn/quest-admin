@@ -14,7 +14,7 @@ func AdminHttpServer(manager *auth.Manager) middleware.Middleware {
 		return func(ctx context.Context, req interface{}) (reply interface{}, err error) {
 			var (
 				loginID  = "unknown"
-				tenantId = "unknown"
+				tenantId = ""
 			)
 			if tr, ok := transport.FromServerContext(ctx); ok {
 				token := tr.RequestHeader().Get("Authorization")
@@ -24,8 +24,7 @@ func AdminHttpServer(manager *auth.Manager) middleware.Middleware {
 						return nil, errors.New(401, "UNAUTHORIZED", "Token is invalid")
 					}
 				}
-				tmpTenantId := tr.RequestHeader().Get("Tenant")
-				if tmpTenantId != "" {
+				if tmpTenantId := tr.RequestHeader().Get("Tenant"); tmpTenantId != "" {
 					tenantId = tmpTenantId
 				}
 			}

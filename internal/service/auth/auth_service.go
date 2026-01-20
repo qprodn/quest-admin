@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"fmt"
 	v1 "quest-admin/api/gen/auth/v1"
 	authBiz "quest-admin/internal/biz/auth"
 	permBiz "quest-admin/internal/biz/permission"
@@ -108,7 +109,8 @@ func (s *AuthService) LoginByUsernameAndPassword(ctx context.Context, request *v
 		return "", err
 	}
 	if user == nil {
-		return "", errorx.Err(errkey.ErrUserNotFound)
+		//return "", errorx.Err(errkey.ErrUserNotFound)
+		return "", fmt.Errorf("Asgsdfas")
 	}
 	ok, err := s.userUsecase.VerifyStatus(ctx, user)
 	if err != nil {

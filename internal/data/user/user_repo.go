@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"quest-admin/internal/data/data"
+	"quest-admin/pkg/util/ctxs"
 	"time"
 
 	biz "quest-admin/internal/biz/user"
@@ -84,6 +85,7 @@ func (r *userRepo) FindByID(ctx context.Context, id string) (*biz.User, error) {
 	err := r.data.DB(ctx).NewSelect().
 		Model(dbUser).
 		Where("id = ?", id).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -96,7 +98,12 @@ func (r *userRepo) FindByID(ctx context.Context, id string) (*biz.User, error) {
 
 func (r *userRepo) FindByUsername(ctx context.Context, username string) (*biz.User, error) {
 	dbUser := &User{}
-	err := r.data.DB(ctx).NewSelect().Model(dbUser).Where("username = ?", username).Scan(ctx)
+	err := r.data.DB(ctx).
+		NewSelect().
+		Model(dbUser).
+		Where("username = ?", username).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
+		Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -135,7 +142,7 @@ func (r *userRepo) List(ctx context.Context, opt *biz.WhereUserOpt) ([]*biz.User
 	} else {
 		q = q.Order("id DESC")
 	}
-	err := q.Scan(ctx)
+	err := q.Where("tenant_id = ?", ctxs.GetTenantID(ctx)).Scan(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -165,7 +172,7 @@ func (r *userRepo) Count(ctx context.Context, opt *biz.WhereUserOpt) (int64, err
 	if opt.Sex != nil {
 		q = q.Where("sex = ?", *opt.Sex)
 	}
-	total, err := q.Count(ctx)
+	total, err := q.Where("tenant_id = ?", ctxs.GetTenantID(ctx)).Count(ctx)
 	if err != nil {
 		return 0, err
 	}
@@ -184,7 +191,13 @@ func (r *userRepo) Update(ctx context.Context, user *biz.User) error {
 		UpdateAt: time.Now(),
 	}
 
-	_, err := r.data.DB(ctx).NewUpdate().Model(dbUser).WherePK().OmitZero().Exec(ctx)
+	_, err := r.data.DB(ctx).
+		NewUpdate().
+		Model(dbUser).
+		WherePK().
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
+		OmitZero().
+		Exec(ctx)
 	if err != nil {
 		return err
 	}
@@ -198,6 +211,7 @@ func (r *userRepo) UpdatePassword(ctx context.Context, bo *biz.UpdatePasswordBO)
 		Set("password = ?", bo.NewPassword).
 		Set("update_at = ?", time.Now()).
 		Where("id = ?", bo.UserID).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Exec(ctx)
 	return err
 }
@@ -208,6 +222,7 @@ func (r *userRepo) UpdateStatus(ctx context.Context, bo *biz.UpdateStatusBO) err
 		Set("status = ?", bo.Status).
 		Set("update_at = ?", time.Now()).
 		Where("id = ?", bo.UserID).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Exec(ctx)
 	return err
 }
@@ -219,6 +234,7 @@ func (r *userRepo) UpdateLoginInfo(ctx context.Context, bo *biz.UpdateLoginInfoB
 		Set("login_date = ?", bo.LoginDate).
 		Set("update_at = ?", time.Now()).
 		Where("id = ?", bo.UserID).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Exec(ctx)
 	return err
 }
@@ -226,10 +242,11 @@ func (r *userRepo) UpdateLoginInfo(ctx context.Context, bo *biz.UpdateLoginInfoB
 func (r *userRepo) Delete(ctx context.Context, bo *biz.DeleteUserBO) error {
 	_, err := r.data.DB(ctx).NewUpdate().
 		Model((*User)(nil)).
-		Set("update_by = ?", bo.UpdateBy).
-		Set("update_at = ?", bo.UpdateTime).
+		Set("update_by = ?", ctxs.GetLoginID(ctx)).
+		Set("update_at = ?", time.Now()).
 		Set("deleted_at = ?", time.Now()).
 		Where("id = ?", bo.UserID).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Exec(ctx)
 	return err
 }
