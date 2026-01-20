@@ -32,6 +32,8 @@ const (
 	UserService_DeleteUser_FullMethodName       = "/system.user.v1.UserService/DeleteUser"
 	UserService_AssignUserRoles_FullMethodName  = "/system.user.v1.UserService/AssignUserRoles"
 	UserService_GetUserRoles_FullMethodName     = "/system.user.v1.UserService/GetUserRoles"
+	UserService_GetUserDepts_FullMethodName     = "/system.user.v1.UserService/GetUserDepts"
+	UserService_GetUserPosts_FullMethodName     = "/system.user.v1.UserService/GetUserPosts"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -62,6 +64,10 @@ type UserServiceClient interface {
 	AssignUserRoles(ctx context.Context, in *AssignUserRolesRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 获取用户角色列表
 	GetUserRoles(ctx context.Context, in *GetUserRolesRequest, opts ...grpc.CallOption) (*GetUserRolesReply, error)
+	// 获取用户部门列表
+	GetUserDepts(ctx context.Context, in *GetUserDeptsRequest, opts ...grpc.CallOption) (*GetUserDeptsReply, error)
+	// 获取用户岗位列表
+	GetUserPosts(ctx context.Context, in *GetUserPostsRequest, opts ...grpc.CallOption) (*GetUserPostsReply, error)
 }
 
 type userServiceClient struct {
@@ -192,6 +198,26 @@ func (c *userServiceClient) GetUserRoles(ctx context.Context, in *GetUserRolesRe
 	return out, nil
 }
 
+func (c *userServiceClient) GetUserDepts(ctx context.Context, in *GetUserDeptsRequest, opts ...grpc.CallOption) (*GetUserDeptsReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUserDeptsReply)
+	err := c.cc.Invoke(ctx, UserService_GetUserDepts_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetUserPosts(ctx context.Context, in *GetUserPostsRequest, opts ...grpc.CallOption) (*GetUserPostsReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUserPostsReply)
+	err := c.cc.Invoke(ctx, UserService_GetUserPosts_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility.
@@ -220,6 +246,10 @@ type UserServiceServer interface {
 	AssignUserRoles(context.Context, *AssignUserRolesRequest) (*emptypb.Empty, error)
 	// 获取用户角色列表
 	GetUserRoles(context.Context, *GetUserRolesRequest) (*GetUserRolesReply, error)
+	// 获取用户部门列表
+	GetUserDepts(context.Context, *GetUserDeptsRequest) (*GetUserDeptsReply, error)
+	// 获取用户岗位列表
+	GetUserPosts(context.Context, *GetUserPostsRequest) (*GetUserPostsReply, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -265,6 +295,12 @@ func (UnimplementedUserServiceServer) AssignUserRoles(context.Context, *AssignUs
 }
 func (UnimplementedUserServiceServer) GetUserRoles(context.Context, *GetUserRolesRequest) (*GetUserRolesReply, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetUserRoles not implemented")
+}
+func (UnimplementedUserServiceServer) GetUserDepts(context.Context, *GetUserDeptsRequest) (*GetUserDeptsReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetUserDepts not implemented")
+}
+func (UnimplementedUserServiceServer) GetUserPosts(context.Context, *GetUserPostsRequest) (*GetUserPostsReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetUserPosts not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 func (UnimplementedUserServiceServer) testEmbeddedByValue()                     {}
@@ -503,6 +539,42 @@ func _UserService_GetUserRoles_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_GetUserDepts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserDeptsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetUserDepts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetUserDepts_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetUserDepts(ctx, req.(*GetUserDeptsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetUserPosts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserPostsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetUserPosts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetUserPosts_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetUserPosts(ctx, req.(*GetUserPostsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -557,6 +629,14 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserRoles",
 			Handler:    _UserService_GetUserRoles_Handler,
+		},
+		{
+			MethodName: "GetUserDepts",
+			Handler:    _UserService_GetUserDepts_Handler,
+		},
+		{
+			MethodName: "GetUserPosts",
+			Handler:    _UserService_GetUserPosts_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

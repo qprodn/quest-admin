@@ -28,6 +28,8 @@ const OperationUserServiceChangeUserStatus = "/system.user.v1.UserService/Change
 const OperationUserServiceCreateUser = "/system.user.v1.UserService/CreateUser"
 const OperationUserServiceDeleteUser = "/system.user.v1.UserService/DeleteUser"
 const OperationUserServiceGetUser = "/system.user.v1.UserService/GetUser"
+const OperationUserServiceGetUserDepts = "/system.user.v1.UserService/GetUserDepts"
+const OperationUserServiceGetUserPosts = "/system.user.v1.UserService/GetUserPosts"
 const OperationUserServiceGetUserRoles = "/system.user.v1.UserService/GetUserRoles"
 const OperationUserServiceListUsers = "/system.user.v1.UserService/ListUsers"
 const OperationUserServiceSetAvatar = "/system.user.v1.UserService/SetAvatar"
@@ -50,6 +52,10 @@ type UserServiceHTTPServer interface {
 	DeleteUser(context.Context, *DeleteUserRequest) (*emptypb.Empty, error)
 	// GetUser 获取用户信息
 	GetUser(context.Context, *GetUserRequest) (*GetUserReply, error)
+	// GetUserDepts 获取用户部门列表
+	GetUserDepts(context.Context, *GetUserDeptsRequest) (*GetUserDeptsReply, error)
+	// GetUserPosts 获取用户岗位列表
+	GetUserPosts(context.Context, *GetUserPostsRequest) (*GetUserPostsReply, error)
 	// GetUserRoles 获取用户角色列表
 	GetUserRoles(context.Context, *GetUserRolesRequest) (*GetUserRolesReply, error)
 	// ListUsers 用户列表查询
@@ -74,6 +80,8 @@ func RegisterUserServiceHTTPServer(s *http.Server, srv UserServiceHTTPServer) {
 	r.DELETE("/qs/v1/user/delete", _UserService_DeleteUser0_HTTP_Handler(srv))
 	r.PUT("/qs/v1/users/assign-role", _UserService_AssignUserRoles0_HTTP_Handler(srv))
 	r.GET("/qs/v1/users/roles/{id}", _UserService_GetUserRoles0_HTTP_Handler(srv))
+	r.GET("/qs/v1/users/depts/{id}", _UserService_GetUserDepts0_HTTP_Handler(srv))
+	r.GET("/qs/v1/users/posts/{id}", _UserService_GetUserPosts0_HTTP_Handler(srv))
 }
 
 func _UserService_CreateUser0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx http.Context) error {
@@ -331,6 +339,50 @@ func _UserService_GetUserRoles0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx
 	}
 }
 
+func _UserService_GetUserDepts0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetUserDeptsRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserServiceGetUserDepts)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetUserDepts(ctx, req.(*GetUserDeptsRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetUserDeptsReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _UserService_GetUserPosts0_HTTP_Handler(srv UserServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetUserPostsRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserServiceGetUserPosts)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetUserPosts(ctx, req.(*GetUserPostsRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetUserPostsReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type UserServiceHTTPClient interface {
 	// AssignUserDept 分配用户部门
 	AssignUserDept(ctx context.Context, req *AssignUserDeptRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
@@ -348,6 +400,10 @@ type UserServiceHTTPClient interface {
 	DeleteUser(ctx context.Context, req *DeleteUserRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// GetUser 获取用户信息
 	GetUser(ctx context.Context, req *GetUserRequest, opts ...http.CallOption) (rsp *GetUserReply, err error)
+	// GetUserDepts 获取用户部门列表
+	GetUserDepts(ctx context.Context, req *GetUserDeptsRequest, opts ...http.CallOption) (rsp *GetUserDeptsReply, err error)
+	// GetUserPosts 获取用户岗位列表
+	GetUserPosts(ctx context.Context, req *GetUserPostsRequest, opts ...http.CallOption) (rsp *GetUserPostsReply, err error)
 	// GetUserRoles 获取用户角色列表
 	GetUserRoles(ctx context.Context, req *GetUserRolesRequest, opts ...http.CallOption) (rsp *GetUserRolesReply, err error)
 	// ListUsers 用户列表查询
@@ -470,6 +526,34 @@ func (c *UserServiceHTTPClientImpl) GetUser(ctx context.Context, in *GetUserRequ
 	pattern := "/qs/v1/user/get"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationUserServiceGetUser))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// GetUserDepts 获取用户部门列表
+func (c *UserServiceHTTPClientImpl) GetUserDepts(ctx context.Context, in *GetUserDeptsRequest, opts ...http.CallOption) (*GetUserDeptsReply, error) {
+	var out GetUserDeptsReply
+	pattern := "/qs/v1/users/depts/{id}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationUserServiceGetUserDepts))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// GetUserPosts 获取用户岗位列表
+func (c *UserServiceHTTPClientImpl) GetUserPosts(ctx context.Context, in *GetUserPostsRequest, opts ...http.CallOption) (*GetUserPostsReply, error) {
+	var out GetUserPostsReply
+	pattern := "/qs/v1/users/posts/{id}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationUserServiceGetUserPosts))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {

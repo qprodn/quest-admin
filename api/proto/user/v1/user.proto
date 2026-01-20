@@ -161,6 +161,28 @@ service UserService {
       description: "获取用户已分配的角色列表";
     };
   }
+
+  // 获取用户部门列表
+  rpc GetUserDepts (GetUserDeptsRequest) returns (GetUserDeptsReply) {
+    option (google.api.http) = {
+      get: "/qs/v1/users/depts/{id}"
+    };
+    option (openapi.v3.operation) = {
+      summary: "获取用户部门列表";
+      description: "获取用户已分配的部门列表";
+    };
+  }
+
+  // 获取用户岗位列表
+  rpc GetUserPosts (GetUserPostsRequest) returns (GetUserPostsReply) {
+    option (google.api.http) = {
+      get: "/qs/v1/users/posts/{id}"
+    };
+    option (openapi.v3.operation) = {
+      summary: "获取用户岗位列表";
+      description: "获取用户已分配的岗位列表";
+    };
+  }
 }
 
 // 用户基本信息
@@ -342,4 +364,32 @@ message GetUserRolesReply {
     description: "获取用户角色列表响应体";
   };
   repeated string role_ids = 1 [(openapi.v3.property) = {description: "角色ID列表";}];
+}
+
+message GetUserDeptsRequest {
+  option (openapi.v3.schema) = {
+    description: "获取用户部门列表请求体";
+  };
+  optional string id = 1 [(openapi.v3.property) = {description: "用户ID"; example: {yaml: "123456789"};}];
+}
+
+message GetUserDeptsReply {
+  option (openapi.v3.schema) = {
+    description: "获取用户部门列表响应体";
+  };
+  repeated string dept_ids = 1 [(openapi.v3.property) = {description: "部门ID列表";}];
+}
+
+message GetUserPostsRequest {
+  option (openapi.v3.schema) = {
+    description: "获取用户岗位列表请求体";
+  };
+  optional string id = 1 [(openapi.v3.property) = {description: "用户ID"; example: {yaml: "123456789"};}];
+}
+
+message GetUserPostsReply {
+  option (openapi.v3.schema) = {
+    description: "获取用户岗位列表响应体";
+  };
+  repeated string post_ids = 1 [(openapi.v3.property) = {description: "岗位ID列表";}];
 }

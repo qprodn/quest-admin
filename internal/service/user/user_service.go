@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"quest-admin/internal/biz/organization"
 	"quest-admin/internal/biz/permission"
 
 	v1 "quest-admin/api/gen/user/v1"
@@ -16,13 +17,18 @@ type UserService struct {
 	v1.UnimplementedUserServiceServer
 	uc   *biz.UserUsecase
 	role *permission.RoleUsecase
+	dept *organization.DepartmentUsecase
+	post *organization.PostUsecase
 	log  *log.Helper
 }
 
-func NewUserService(uc *biz.UserUsecase, logger log.Logger) *UserService {
+func NewUserService(uc *biz.UserUsecase, role *permission.RoleUsecase, dept *organization.DepartmentUsecase, post *organization.PostUsecase, logger log.Logger) *UserService {
 	return &UserService{
-		uc:  uc,
-		log: log.NewHelper(log.With(logger, "module", "user/service")),
+		uc:   uc,
+		role: role,
+		dept: dept,
+		post: post,
+		log:  log.NewHelper(log.With(logger, "module", "user/service")),
 	}
 }
 
@@ -135,34 +141,6 @@ func (s *UserService) ChangeUserStatus(ctx context.Context, in *v1.ChangeUserSta
 		Status: in.GetStatus(),
 	}
 	err := s.uc.ChangeUserStatus(ctx, bo)
-	if err != nil {
-		return nil, err
-	}
-
-	return &emptypb.Empty{}, nil
-}
-
-func (s *UserService) AssignUserPosts(ctx context.Context, in *v1.AssignUserPostRequest) (*emptypb.Empty, error) {
-	bo := &biz.AssignUserPostsBO{
-		UserID:    in.GetId(),
-		PostIDs:   in.GetPostIds(),
-		Operation: in.GetOperation(),
-	}
-	err := s.uc.ManageUserPosts(ctx, bo)
-	if err != nil {
-		return nil, err
-	}
-
-	return &emptypb.Empty{}, nil
-}
-
-func (s *UserService) AssignUserDepts(ctx context.Context, in *v1.AssignUserDeptRequest) (*emptypb.Empty, error) {
-	bo := &biz.AssignUserDeptsBO{
-		UserID:    in.GetId(),
-		DeptIDs:   in.GetDeptIds(),
-		Operation: in.GetOperation(),
-	}
-	err := s.uc.ManageUserDepts(ctx, bo)
 	if err != nil {
 		return nil, err
 	}

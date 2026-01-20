@@ -2,74 +2,53 @@ package user
 
 import (
 	"context"
-
-	"quest-admin/internal/biz/organization"
+	"quest-admin/pkg/lang/slices"
 )
 
 func (uc *UserUsecase) GetUserPosts(ctx context.Context, userID string) ([]string, error) {
-	return uc.userPostRepo.GetUserPosts(ctx, userID)
+	posts, err := uc.userPostRepo.GetUserPosts(ctx, userID)
+	if err != nil {
+		uc.log.WithContext(ctx).Errorf("获取用户关联职位出现错误,userID:%s,error:%v", userID, err)
+		return nil, err
+	}
+	return slices.Map(posts, func(item *UserPost, index int) string {
+		return item.PostID
+	}), nil
 }
 
-func (uc *UserUsecase) ManageUserPosts(ctx context.Context, bo *AssignUserPostsBO) error {
-	if len(bo.PostIDs) == 0 {
-		existingPostIDs, err := uc.userPostRepo.GetUserPosts(ctx, bo.UserID)
-		if err != nil {
-			return err
+func (uc *UserUsecase) AssignUserPosts(ctx context.Context, bo *AssignUserPostsBO) error {
+	dbUserPosts, err := uc.userPostRepo.GetUserPosts(ctx, bo.UserID)
+	if err != nil {
+		uc.log.WithContext(ctx).Errorf("获取当前用户关联职位出现错误,error:%v", err)
+		return err
+	}
+	dbUserPostCodes := slices.Map(dbUserPosts, func(item *UserPost, index int) string {
+		return item.PostID
+	})
+	newUserPostCodes := bo.PostIDs
+	needDelete, needInsert := slices.Difference(dbUserPostCodes, newUserPostCodes)
+	err = uc.tm.Tx(ctx, func(ctx context.Context) error {
+		for _, item := range needInsert {
+			err = uc.userPostRepo.Create(ctx, &UserPost{UserID: bo.UserID, PostID: item})
+			if err != nil {
+				uc.log.WithContext(ctx).Errorf("添加用户职位出现错误,userID:%s,postID:%s,error:%v", bo.UserID, item, err)
+				return err
+			}
 		}
-		if len(existingPostIDs) > 0 {
-			return uc.userPostRepo.DeleteUserPosts(ctx, bo.UserID, existingPostIDs)
+		for _, item := range dbUserPosts {
+			if slices.Contains(needDelete, item.PostID) {
+				err = uc.userPostRepo.Delete(ctx, item.ID)
+				if err != nil {
+					uc.log.WithContext(ctx).Errorf("删除用户职位出现错误,userID:%s,postID:%s,error:%v", bo.UserID, item.PostID, err)
+					return err
+				}
+			}
 		}
 		return nil
-	}
-
-	exists, err := uc.userPostRepo.CheckPostsExist(ctx, bo.PostIDs)
+	})
 	if err != nil {
+		uc.log.WithContext(ctx).Errorf("分配用户职位出现错误,error:%v", err)
 		return err
 	}
-	if !exists {
-		return organization.ErrPostNotFound
-	}
-
-	existingPostIDs, err := uc.userPostRepo.GetUserPosts(ctx, bo.UserID)
-	if err != nil {
-		return err
-	}
-
-	existingPostMap := make(map[string]bool)
-	for _, postID := range existingPostIDs {
-		existingPostMap[postID] = true
-	}
-
-	requestedPostMap := make(map[string]bool)
-	for _, postID := range bo.PostIDs {
-		requestedPostMap[postID] = true
-	}
-
-	toDelete := make([]string, 0)
-	for postID := range existingPostMap {
-		if !requestedPostMap[postID] {
-			toDelete = append(toDelete, postID)
-		}
-	}
-
-	toAdd := make([]string, 0)
-	for postID := range requestedPostMap {
-		if !existingPostMap[postID] {
-			toAdd = append(toAdd, postID)
-		}
-	}
-
-	if len(toDelete) > 0 {
-		if err := uc.userPostRepo.DeleteUserPosts(ctx, bo.UserID, toDelete); err != nil {
-			return err
-		}
-	}
-
-	if len(toAdd) > 0 {
-		if err := uc.userPostRepo.AddUserPosts(ctx, bo.UserID, toAdd); err != nil {
-			return err
-		}
-	}
-
 	return nil
 }

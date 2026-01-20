@@ -25,16 +25,15 @@ type UserRepo interface {
 }
 
 type UserDeptRepo interface {
-	GetUserDepts(ctx context.Context, userID string) ([]string, error)
-	ManageUserDepts(ctx context.Context, bo *AssignUserDeptsBO) error
+	GetUserDepts(ctx context.Context, userID string) ([]*UserDept, error)
+	Delete(ctx context.Context, id string) error
+	Create(ctx context.Context, item *UserDept) error
 }
 
 type UserPostRepo interface {
-	GetUserPosts(ctx context.Context, userID string) ([]string, error)
-	ManageUserPosts(ctx context.Context, bo *AssignUserPostsBO) error
-	CheckPostsExist(ctx context.Context, postIDs []string) (bool, error)
-	DeleteUserPosts(ctx context.Context, userID string, postIDs []string) error
-	AddUserPosts(ctx context.Context, userID string, postIDs []string) error
+	GetUserPosts(ctx context.Context, userID string) ([]*UserPost, error)
+	Delete(ctx context.Context, id string) error
+	Create(ctx context.Context, item *UserPost) error
 }
 
 type UserRoleRepo interface {

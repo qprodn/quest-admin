@@ -2,7 +2,10 @@ package user
 
 import (
 	"context"
+	"database/sql"
 	"quest-admin/internal/data/data"
+	"quest-admin/pkg/lang/slices"
+	"quest-admin/pkg/util/ctxs"
 	"time"
 
 	biz "quest-admin/internal/biz/user"
@@ -38,88 +41,68 @@ func NewUserDeptRepo(data *data.Data, logger log.Logger) biz.UserDeptRepo {
 	}
 }
 
-func (r *userDeptRepo) GetUserDepts(ctx context.Context, userID string) ([]string, error) {
+func (r *userDeptRepo) Create(ctx context.Context, item *biz.UserDept) error {
+	if item == nil {
+		return nil
+	}
+	now := time.Now()
+	_, err := r.data.DB(ctx).NewInsert().Model(&UserDept{
+		ID:       idgen.GenerateID(),
+		UserID:   item.UserID,
+		DeptID:   item.DeptID,
+		CreateAt: now,
+		CreateBy: ctxs.GetLoginID(ctx),
+		UpdateAt: now,
+		UpdateBy: ctxs.GetLoginID(ctx),
+		TenantID: ctxs.GetTenantID(ctx),
+	}).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *userDeptRepo) Delete(ctx context.Context, id string) error {
+	_, err := r.data.DB(ctx).NewUpdate().
+		Model((*UserDept)(nil)).
+		Set("update_by = ?", ctxs.GetLoginID(ctx)).
+		Where("id = ?", id).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
+		Exec(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *userDeptRepo) GetUserDepts(ctx context.Context, userID string) ([]*biz.UserDept, error) {
 	var userDepts []*UserDept
 	err := r.data.DB(ctx).NewSelect().
 		Model(&userDepts).
 		Where("user_id = ?", userID).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Scan(ctx)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return make([]*biz.UserDept, 0), nil
+		}
 		return nil, err
 	}
 
-	deptIDs := make([]string, 0, len(userDepts))
-	for _, ud := range userDepts {
-		deptIDs = append(deptIDs, ud.DeptID)
+	return slices.Map(userDepts, func(item *UserDept, index int) *biz.UserDept {
+		return r.toBizUserDept(item)
+	}), nil
+}
+
+func (r *userDeptRepo) toBizUserDept(item *UserDept) *biz.UserDept {
+	return &biz.UserDept{
+		ID:       item.ID,
+		UserID:   item.UserID,
+		DeptID:   item.DeptID,
+		CreateBy: item.CreateBy,
+		CreateAt: item.CreateAt,
+		UpdateBy: item.UpdateBy,
+		UpdateAt: item.UpdateAt,
+		TenantID: item.TenantID,
 	}
-	return deptIDs, nil
-}
-
-func (r *userDeptRepo) ManageUserDepts(ctx context.Context, bo *biz.AssignUserDeptsBO) error {
-	switch bo.Operation {
-	case "add":
-		return r.addUserDepts(ctx, bo.UserID, bo.DeptIDs)
-	case "remove":
-		return r.removeUserDepts(ctx, bo.UserID, bo.DeptIDs)
-	case "replace":
-		return r.replaceUserDepts(ctx, bo.UserID, bo.DeptIDs)
-	default:
-		return biz.ErrInvalidOperationType
-	}
-}
-
-func (r *userDeptRepo) addUserDepts(ctx context.Context, userID string, deptIDs []string) error {
-	now := time.Now()
-	userDepts := make([]*UserDept, 0, len(deptIDs))
-	for _, deptID := range deptIDs {
-		userDepts = append(userDepts, &UserDept{
-			ID:       idgen.GenerateID(),
-			UserID:   userID,
-			DeptID:   deptID,
-			CreateAt: now,
-		})
-	}
-
-	_, err := r.data.DB(ctx).NewInsert().Model(&userDepts).Exec(ctx)
-	return err
-}
-
-func (r *userDeptRepo) removeUserDepts(ctx context.Context, userID string, deptIDs []string) error {
-	_, err := r.data.DB(ctx).NewDelete().
-		Model((*UserDept)(nil)).
-		Where("user_id = ?", userID).
-		Where("dept_id IN (?)", bun.In(deptIDs)).
-		Exec(ctx)
-	return err
-}
-
-func (r *userDeptRepo) replaceUserDepts(ctx context.Context, userID string, deptIDs []string) error {
-	return r.data.DB(ctx).RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
-		_, err := tx.NewDelete().
-			Model((*UserDept)(nil)).
-			Where("user_id = ?", userID).
-			Exec(ctx)
-		if err != nil {
-			return err
-		}
-
-		if len(deptIDs) > 0 {
-			now := time.Now()
-			userDepts := make([]*UserDept, 0, len(deptIDs))
-			for _, deptID := range deptIDs {
-				userDepts = append(userDepts, &UserDept{
-					ID:       idgen.GenerateID(),
-					UserID:   userID,
-					DeptID:   deptID,
-					CreateAt: now,
-				})
-			}
-			_, err = tx.NewInsert().Model(&userDepts).Exec(ctx)
-			if err != nil {
-				return err
-			}
-		}
-
-		return nil
-	})
 }

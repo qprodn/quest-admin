@@ -231,6 +231,27 @@ func (r *postRepo) HasUsers(ctx context.Context, id string) (bool, error) {
 	return count > 0, nil
 }
 
+func (r *postRepo) FindListByIDs(ctx context.Context, ids []string) ([]*biz.Post, error) {
+	if len(ids) == 0 {
+		return []*biz.Post{}, nil
+	}
+	var dbPosts []*Post
+	err := r.data.DB(ctx).NewSelect().
+		Model(&dbPosts).
+		Where("id IN (?)", bun.In(ids)).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
+		Scan(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	posts := make([]*biz.Post, 0, len(dbPosts))
+	for _, dbPost := range dbPosts {
+		posts = append(posts, r.toBizPost(dbPost))
+	}
+	return posts, nil
+}
+
 func (r *postRepo) toBizPost(dbPost *Post) *biz.Post {
 	return &biz.Post{
 		ID:       dbPost.ID,

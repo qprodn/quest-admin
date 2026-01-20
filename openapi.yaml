@@ -824,6 +824,46 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /qs/v1/users/depts/{id}:
+        get:
+            tags:
+                - UserService
+            summary: 获取用户部门列表
+            description: 获取用户已分配的部门列表
+            operationId: UserService_GetUserDepts
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.user.v1.GetUserDeptsReply'
+    /qs/v1/users/posts/{id}:
+        get:
+            tags:
+                - UserService
+            summary: 获取用户岗位列表
+            description: 获取用户已分配的岗位列表
+            operationId: UserService_GetUserPosts
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.user.v1.GetUserPostsReply'
     /qs/v1/users/roles/{id}:
         get:
             tags:
@@ -2180,6 +2220,24 @@ components:
                     type: string
                     description: 备注信息
             description: 创建用户请求体
+        system.user.v1.GetUserDeptsReply:
+            type: object
+            properties:
+                deptIds:
+                    type: array
+                    items:
+                        type: string
+                    description: 部门ID列表
+            description: 获取用户部门列表响应体
+        system.user.v1.GetUserPostsReply:
+            type: object
+            properties:
+                postIds:
+                    type: array
+                    items:
+                        type: string
+                    description: 岗位ID列表
+            description: 获取用户岗位列表响应体
         system.user.v1.GetUserReply:
             type: object
             properties:

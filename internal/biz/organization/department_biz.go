@@ -16,6 +16,7 @@ type DepartmentRepo interface {
 	Update(ctx context.Context, dept *Department) (*Department, error)
 	Delete(ctx context.Context, id string) error
 	HasUsers(ctx context.Context, id string) (bool, error)
+	FindListByIDs(ctx context.Context, ids []string) ([]*Department, error)
 }
 
 type DepartmentUsecase struct {
@@ -102,4 +103,16 @@ func (uc *DepartmentUsecase) DeleteDepartment(ctx context.Context, id string) er
 	}
 
 	return uc.repo.Delete(ctx, id)
+}
+
+func (uc *DepartmentUsecase) ListByDeptIDs(ctx context.Context, deptIds []string) ([]*Department, error) {
+	var res []*Department
+	if len(deptIds) == 0 {
+		return res, nil
+	}
+	depts, err := uc.repo.FindListByIDs(ctx, deptIds)
+	if err != nil {
+		return depts, err
+	}
+	return depts, nil
 }

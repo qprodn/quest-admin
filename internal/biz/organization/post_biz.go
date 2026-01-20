@@ -16,6 +16,7 @@ type PostRepo interface {
 	Update(ctx context.Context, post *Post) (*Post, error)
 	Delete(ctx context.Context, id string) error
 	HasUsers(ctx context.Context, id string) (bool, error)
+	FindListByIDs(ctx context.Context, ids []string) ([]*Post, error)
 }
 
 type PostUsecase struct {
@@ -82,4 +83,16 @@ func (uc *PostUsecase) DeletePost(ctx context.Context, id string) error {
 	}
 
 	return uc.repo.Delete(ctx, id)
+}
+
+func (uc *PostUsecase) ListByPostIDs(ctx context.Context, postIds []string) ([]*Post, error) {
+	var res []*Post
+	if len(postIds) == 0 {
+		return res, nil
+	}
+	posts, err := uc.repo.FindListByIDs(ctx, postIds)
+	if err != nil {
+		return posts, err
+	}
+	return posts, nil
 }

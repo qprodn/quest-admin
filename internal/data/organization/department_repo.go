@@ -208,6 +208,27 @@ func (r *departmentRepo) HasUsers(ctx context.Context, id string) (bool, error) 
 	return count > 0, nil
 }
 
+func (r *departmentRepo) FindListByIDs(ctx context.Context, ids []string) ([]*biz.Department, error) {
+	if len(ids) == 0 {
+		return []*biz.Department{}, nil
+	}
+	var dbDepts []*Department
+	err := r.data.DB(ctx).NewSelect().
+		Model(&dbDepts).
+		Where("id IN (?)", bun.In(ids)).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
+		Scan(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	departments := make([]*biz.Department, 0, len(dbDepts))
+	for _, dbDept := range dbDepts {
+		departments = append(departments, r.toBizDepartment(dbDept))
+	}
+	return departments, nil
+}
+
 func (r *departmentRepo) toBizDepartment(dbDept *Department) *biz.Department {
 	return &biz.Department{
 		ID:           dbDept.ID,

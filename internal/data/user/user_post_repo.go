@@ -2,11 +2,13 @@ package user
 
 import (
 	"context"
+	"database/sql"
 	"quest-admin/internal/data/data"
+	"quest-admin/pkg/lang/slices"
+	"quest-admin/pkg/util/ctxs"
 	"time"
 
 	biz "quest-admin/internal/biz/user"
-	"quest-admin/internal/data/organization"
 	"quest-admin/pkg/util/idgen"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -39,137 +41,68 @@ func NewUserPostRepo(data *data.Data, logger log.Logger) biz.UserPostRepo {
 	}
 }
 
-func (r *userPostRepo) GetUserPosts(ctx context.Context, userID string) ([]string, error) {
+func (r *userPostRepo) Create(ctx context.Context, item *biz.UserPost) error {
+	if item == nil {
+		return nil
+	}
+	now := time.Now()
+	_, err := r.data.DB(ctx).NewInsert().Model(&UserPost{
+		ID:       idgen.GenerateID(),
+		UserID:   item.UserID,
+		PostID:   item.PostID,
+		CreateAt: now,
+		CreateBy: ctxs.GetLoginID(ctx),
+		UpdateAt: now,
+		UpdateBy: ctxs.GetLoginID(ctx),
+		TenantID: ctxs.GetTenantID(ctx),
+	}).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *userPostRepo) Delete(ctx context.Context, id string) error {
+	_, err := r.data.DB(ctx).NewUpdate().
+		Model((*UserPost)(nil)).
+		Set("update_by = ?", ctxs.GetLoginID(ctx)).
+		Where("id = ?", id).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
+		Exec(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *userPostRepo) GetUserPosts(ctx context.Context, userID string) ([]*biz.UserPost, error) {
 	var userPosts []*UserPost
 	err := r.data.DB(ctx).NewSelect().
 		Model(&userPosts).
 		Where("user_id = ?", userID).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Scan(ctx)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return make([]*biz.UserPost, 0), nil
+		}
 		return nil, err
 	}
 
-	postIDs := make([]string, 0, len(userPosts))
-	for _, up := range userPosts {
-		postIDs = append(postIDs, up.PostID)
-	}
-	return postIDs, nil
+	return slices.Map(userPosts, func(item *UserPost, index int) *biz.UserPost {
+		return r.toBizUserPost(item)
+	}), nil
 }
 
-func (r *userPostRepo) ManageUserPosts(ctx context.Context, bo *biz.AssignUserPostsBO) error {
-	switch bo.Operation {
-	case "add":
-		return r.addUserPosts(ctx, bo.UserID, bo.PostIDs)
-	case "remove":
-		return r.removeUserPosts(ctx, bo.UserID, bo.PostIDs)
-	case "replace":
-		return r.replaceUserPosts(ctx, bo.UserID, bo.PostIDs)
-	default:
-		return biz.ErrInvalidOperationType
+func (r *userPostRepo) toBizUserPost(item *UserPost) *biz.UserPost {
+	return &biz.UserPost{
+		ID:       item.ID,
+		UserID:   item.UserID,
+		PostID:   item.PostID,
+		CreateBy: item.CreateBy,
+		CreateAt: item.CreateAt,
+		UpdateBy: item.UpdateBy,
+		UpdateAt: item.UpdateAt,
+		TenantID: item.TenantID,
 	}
-}
-
-func (r *userPostRepo) addUserPosts(ctx context.Context, userID string, postIDs []string) error {
-	now := time.Now()
-	userPosts := make([]*UserPost, 0, len(postIDs))
-	for _, postID := range postIDs {
-		userPosts = append(userPosts, &UserPost{
-			ID:       idgen.GenerateID(),
-			UserID:   userID,
-			PostID:   postID,
-			CreateAt: now,
-		})
-	}
-
-	_, err := r.data.DB(ctx).NewInsert().Model(&userPosts).Exec(ctx)
-	return err
-}
-
-func (r *userPostRepo) removeUserPosts(ctx context.Context, userID string, postIDs []string) error {
-	_, err := r.data.DB(ctx).NewDelete().
-		Model((*UserPost)(nil)).
-		Where("user_id = ?", userID).
-		Where("post_id IN (?)", bun.In(postIDs)).
-		Exec(ctx)
-	return err
-}
-
-func (r *userPostRepo) replaceUserPosts(ctx context.Context, userID string, postIDs []string) error {
-	return r.data.DB(ctx).RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
-		_, err := tx.NewDelete().
-			Model((*UserPost)(nil)).
-			Where("user_id = ?", userID).
-			Exec(ctx)
-		if err != nil {
-			return err
-		}
-
-		if len(postIDs) > 0 {
-			now := time.Now()
-			userPosts := make([]*UserPost, 0, len(postIDs))
-			for _, postID := range postIDs {
-				userPosts = append(userPosts, &UserPost{
-					ID:       idgen.GenerateID(),
-					UserID:   userID,
-					PostID:   postID,
-					CreateAt: now,
-				})
-			}
-			_, err = tx.NewInsert().Model(&userPosts).Exec(ctx)
-			if err != nil {
-				return err
-			}
-		}
-
-		return nil
-	})
-}
-
-func (r *userPostRepo) CheckPostsExist(ctx context.Context, postIDs []string) (bool, error) {
-	if len(postIDs) == 0 {
-		return true, nil
-	}
-
-	count, err := r.data.DB(ctx).NewSelect().
-		Model((*organization.Post)(nil)).
-		Where("id IN (?)", bun.In(postIDs)).
-		Count(ctx)
-	if err != nil {
-		return false, err
-	}
-
-	return count == len(postIDs), nil
-}
-
-func (r *userPostRepo) DeleteUserPosts(ctx context.Context, userID string, postIDs []string) error {
-	if len(postIDs) == 0 {
-		return nil
-	}
-
-	_, err := r.data.DB(ctx).NewDelete().
-		Model((*UserPost)(nil)).
-		Where("user_id = ?", userID).
-		Where("post_id IN (?)", bun.In(postIDs)).
-		Exec(ctx)
-	return err
-}
-
-func (r *userPostRepo) AddUserPosts(ctx context.Context, userID string, postIDs []string) error {
-	if len(postIDs) == 0 {
-		return nil
-	}
-
-	now := time.Now()
-	userPosts := make([]*UserPost, 0, len(postIDs))
-	for _, postID := range postIDs {
-		userPosts = append(userPosts, &UserPost{
-			ID:       idgen.GenerateID(),
-			UserID:   userID,
-			PostID:   postID,
-			CreateAt: now,
-		})
-	}
-
-	_, err := r.data.DB(ctx).NewInsert().Model(&userPosts).Exec(ctx)
-	return err
 }

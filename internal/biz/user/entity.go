@@ -103,3 +103,25 @@ type UserRole struct {
 	UpdateAt time.Time
 	TenantID string
 }
+
+type UserDept struct {
+	ID       string
+	UserID   string
+	DeptID   string
+	CreateBy string
+	CreateAt time.Time
+	UpdateBy string
+	UpdateAt time.Time
+	TenantID string
+}
+
+type UserPost struct {
+	ID       string
+	UserID   string
+	PostID   string
+	CreateBy string
+	CreateAt time.Time
+	UpdateBy string
+	UpdateAt time.Time
+	TenantID string
+}
