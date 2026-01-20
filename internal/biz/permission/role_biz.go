@@ -19,6 +19,7 @@ type RoleRepo interface {
 	Update(ctx context.Context, role *Role) (*Role, error)
 	Delete(ctx context.Context, id string) error
 	HasUsers(ctx context.Context, id string) (bool, error)
+	FindListByIDs(ctx context.Context, roleIds []string) ([]*Role, error)
 }
 
 type RoleMenuRepo interface {
@@ -147,4 +148,16 @@ func (uc *RoleUsecase) GetMenusByRoleIDs(ctx context.Context, roles []string) ([
 	allMenuIDs = slices.Uniq(allMenuIDs)
 
 	return allMenuIDs, nil
+}
+
+func (uc *RoleUsecase) ListByRoleIDs(ctx context.Context, roleIds []string) ([]*Role, error) {
+	var res []*Role
+	if len(roleIds) == 0 {
+		return res, nil
+	}
+	roles, err := uc.repo.FindListByIDs(ctx, roleIds)
+	if err != nil {
+		return roles, err
+	}
+	return roles, nil
 }

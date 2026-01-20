@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"quest-admin/internal/biz/permission"
 
 	v1 "quest-admin/api/gen/user/v1"
 	biz "quest-admin/internal/biz/user"
@@ -13,8 +14,9 @@ import (
 
 type UserService struct {
 	v1.UnimplementedUserServiceServer
-	uc  *biz.UserUsecase
-	log *log.Helper
+	uc   *biz.UserUsecase
+	role *permission.RoleUsecase
+	log  *log.Helper
 }
 
 func NewUserService(uc *biz.UserUsecase, logger log.Logger) *UserService {

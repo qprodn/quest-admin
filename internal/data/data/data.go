@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"quest-admin/internal/data/transaction"
 
 	"github.com/go-redsync/redsync/v4"
 	"github.com/redis/go-redis/v9"
@@ -15,8 +16,6 @@ type Data struct {
 	Rsync *redsync.Redsync
 }
 
-type contextTxKey struct{}
-
 func NewData(db *bun.DB) *Data {
 	return &Data{
 		Db: db,
@@ -24,16 +23,9 @@ func NewData(db *bun.DB) *Data {
 }
 
 func (d *Data) DB(ctx context.Context) bun.IDB {
-	idb, ok := ctx.Value(contextTxKey{}).(bun.IDB)
+	idb, ok := ctx.Value(transaction.ContextTxKey{}).(bun.IDB)
 	if ok {
 		return idb
 	}
 	return d.Db
-}
-
-func (d *Data) Tx(ctx context.Context, fn func(ctx context.Context) error) error {
-	return d.Db.RunInTx(ctx, nil, func(ctx context.Context, tx bun.Tx) error {
-		ctx = context.WithValue(ctx, contextTxKey{}, tx)
-		return fn(ctx)
-	})
 }

@@ -2,6 +2,8 @@ package user
 
 import (
 	"context"
+	"quest-admin/pkg/errorx"
+	"quest-admin/types/errkey"
 
 	v1 "quest-admin/api/gen/user/v1"
 	biz "quest-admin/internal/biz/user"
@@ -11,15 +13,20 @@ import (
 
 func (s *UserService) AssignUserRoles(ctx context.Context, in *v1.AssignUserRolesRequest) (*emptypb.Empty, error) {
 	bo := &biz.AssignUserRolesBO{
-		UserID:    in.GetId(),
-		RoleIDs:   in.GetRoleIds(),
-		Operation: in.GetOperation(),
+		UserID:  in.GetId(),
+		RoleIDs: in.GetRoleIds(),
 	}
-	err := s.uc.ManageUserRoles(ctx, bo)
+	roles, err := s.role.ListByRoleIDs(ctx, in.RoleIds)
 	if err != nil {
 		return nil, err
 	}
-
+	if len(roles) != len(in.RoleIds) {
+		return nil, errorx.Err(errkey.ErrRoleNotFound)
+	}
+	err = s.uc.AssignUserRoles(ctx, bo)
+	if err != nil {
+		return nil, err
+	}
 	return &emptypb.Empty{}, nil
 }
 

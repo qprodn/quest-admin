@@ -8,6 +8,7 @@ import (
 	"quest-admin/internal/data/pg"
 	"quest-admin/internal/data/redis"
 	"quest-admin/internal/data/tenant"
+	"quest-admin/internal/data/transaction"
 	"quest-admin/internal/data/user"
 
 	"github.com/google/wire"
@@ -16,6 +17,7 @@ import (
 // ProviderSet is data providers.
 var ProviderSet = wire.NewSet(
 	data.NewData,
+	transaction.NewManager,
 	redis.NewRedis,
 	redis.NewRedSync,
 	pg.NewDB,

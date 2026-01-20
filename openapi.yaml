@@ -2109,10 +2109,6 @@ components:
                     items:
                         type: string
                     description: 角色ID列表
-                operation:
-                    example: add
-                    type: string
-                    description: '操作类型: add-添加, remove-移除, replace-替换'
             description: 管理用户角色请求体
         system.user.v1.ChangePasswordRequest:
             type: object

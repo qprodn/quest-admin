@@ -2,7 +2,10 @@ package user
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"quest-admin/internal/data/data"
+	"quest-admin/pkg/lang/slices"
 	"quest-admin/pkg/util/ctxs"
 	"time"
 
@@ -39,7 +42,41 @@ func NewUserRoleRepo(data *data.Data, logger log.Logger) biz.UserRoleRepo {
 	}
 }
 
-func (r *userRoleRepo) GetUserRoles(ctx context.Context, userID string) ([]string, error) {
+func (r *userRoleRepo) Create(ctx context.Context, item *biz.UserRole) error {
+	if item == nil {
+		return nil
+	}
+	now := time.Now()
+	_, err := r.data.DB(ctx).NewInsert().Model(&UserRole{
+		ID:       idgen.GenerateID(),
+		UserID:   item.UserID,
+		RoleID:   item.RoleID,
+		CreateAt: now,
+		CreateBy: ctxs.GetLoginID(ctx),
+		UpdateAt: now,
+		UpdateBy: ctxs.GetLoginID(ctx),
+		TenantID: ctxs.GetTenantID(ctx),
+	}).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *userRoleRepo) Delete(ctx context.Context, id string) error {
+	_, err := r.data.DB(ctx).NewUpdate().
+		Model((*UserRole)(nil)).
+		Set("update_by = ?", ctxs.GetLoginID(ctx)).
+		Where("id = ?", id).
+		Where("tenant = ?", ctxs.GetTenantID(ctx)).
+		Exec(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *userRoleRepo) GetUserRoles(ctx context.Context, userID string) ([]*biz.UserRole, error) {
 	var userRoles []*UserRole
 	err := r.data.DB(ctx).NewSelect().
 		Model(&userRoles).
@@ -47,27 +84,15 @@ func (r *userRoleRepo) GetUserRoles(ctx context.Context, userID string) ([]strin
 		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Scan(ctx)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return make([]*biz.UserRole, 0), nil
+		}
 		return nil, err
 	}
 
-	roleIDs := make([]string, 0, len(userRoles))
-	for _, ur := range userRoles {
-		roleIDs = append(roleIDs, ur.RoleID)
-	}
-	return roleIDs, nil
-}
-
-func (r *userRoleRepo) ManageUserRoles(ctx context.Context, bo *biz.AssignUserRolesBO) error {
-	switch bo.Operation {
-	case "add":
-		return r.addUserRoles(ctx, bo.UserID, bo.RoleIDs)
-	case "remove":
-		return r.removeUserRoles(ctx, bo.UserID, bo.RoleIDs)
-	case "replace":
-		return r.replaceUserRoles(ctx, bo.UserID, bo.RoleIDs)
-	default:
-		return biz.ErrInvalidOperationType
-	}
+	return slices.Map(userRoles, func(item *UserRole, index int) *biz.UserRole {
+		return r.toBizUserRole(item)
+	}), nil
 }
 
 func (r *userRoleRepo) addUserRoles(ctx context.Context, userID string, roleIDs []string) error {
@@ -126,4 +151,17 @@ func (r *userRoleRepo) replaceUserRoles(ctx context.Context, userID string, role
 
 		return nil
 	})
+}
+
+func (r *userRoleRepo) toBizUserRole(item *UserRole) *biz.UserRole {
+	return &biz.UserRole{
+		ID:       item.ID,
+		UserID:   item.UserID,
+		RoleID:   item.RoleID,
+		CreateBy: item.CreateBy,
+		CreateAt: item.CreateAt,
+		UpdateBy: item.UpdateBy,
+		UpdateAt: item.UpdateAt,
+		TenantID: item.TenantID,
+	}
 }

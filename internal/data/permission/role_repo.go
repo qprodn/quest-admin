@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"quest-admin/internal/data/data"
+	"quest-admin/pkg/lang/slices"
 	"quest-admin/pkg/util/ctxs"
 	"time"
 
@@ -46,6 +47,28 @@ func NewRoleRepo(data *data.Data, logger log.Logger) biz.RoleRepo {
 		data: data,
 		log:  log.NewHelper(logger),
 	}
+}
+
+func (r *roleRepo) FindListByIDs(ctx context.Context, roleIds []string) ([]*biz.Role, error) {
+	if len(roleIds) == 0 {
+		return []*biz.Role{}, nil
+	}
+	var dbRoles []*Role
+	err := r.data.DB(ctx).NewSelect().
+		Model(&dbRoles).
+		Where("id in ?", bun.In(roleIds)).
+		Where("tenant = ?", ctxs.GetTenantID(ctx)).
+		Scan(ctx)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return []*biz.Role{}, nil
+		}
+		return nil, err
+	}
+	roles := slices.Map(dbRoles, func(item *Role, index int) *biz.Role {
+		return r.toBizRole(item)
+	})
+	return roles, nil
 }
 
 func (r *roleRepo) Create(ctx context.Context, role *biz.Role) (*biz.Role, error) {

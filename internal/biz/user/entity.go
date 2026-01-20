@@ -92,3 +92,14 @@ type AssignUserRolesBO struct {
 type DeleteUserBO struct {
 	UserID string
 }
+
+type UserRole struct {
+	ID       string
+	UserID   string
+	RoleID   string
+	CreateBy string
+	CreateAt time.Time
+	UpdateBy string
+	UpdateAt time.Time
+	TenantID string
+}

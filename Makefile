@@ -78,6 +78,7 @@ all:
 	make config;
 	make generate;
 	make wire;
+	@echo '==============success=============='
 
 .PHONY: wire
 wire:

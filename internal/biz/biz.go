@@ -1,7 +1,6 @@
 package biz
 
 import (
-	"context"
 	"quest-admin/internal/biz/auth"
 	"quest-admin/internal/biz/organization"
 	"quest-admin/internal/biz/permission"
@@ -22,7 +21,3 @@ var ProviderSet = wire.NewSet(
 	permission.NewRoleUsecase,
 	auth.NewAuthUsecase,
 )
-
-type Transaction interface {
-	Tx(context.Context, func(ctx context.Context) error) error
-}

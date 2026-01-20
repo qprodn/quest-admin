@@ -1038,7 +1038,6 @@ type AssignUserRolesRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            *string                `protobuf:"bytes,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
 	RoleIds       []string               `protobuf:"bytes,2,rep,name=role_ids,json=roleIds,proto3" json:"role_ids,omitempty"`
-	Operation     *string                `protobuf:"bytes,3,opt,name=operation,proto3,oneof" json:"operation,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1085,13 +1084,6 @@ func (x *AssignUserRolesRequest) GetRoleIds() []string {
 		return x.RoleIds
 	}
 	return nil
-}
-
-func (x *AssignUserRolesRequest) GetOperation() string {
-	if x != nil && x.Operation != nil {
-		return *x.Operation
-	}
-	return ""
 }
 
 type GetUserRolesRequest struct {
@@ -1312,14 +1304,11 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"_operation\"i\n" +
 	"\x11DeleteUserRequest\x120\n" +
 	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b用户IDH\x00R\x02id\x88\x01\x01:\x1b\xbaG\x18\x92\x02\x15删除用户请求体B\x05\n" +
-	"\x03_id\"\x9c\x02\n" +
+	"\x03_id\"\xa5\x01\n" +
 	"\x16AssignUserRolesRequest\x120\n" +
 	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b用户IDH\x00R\x02id\x88\x01\x01\x12/\n" +
-	"\brole_ids\x18\x02 \x03(\tB\x14\xbaG\x11\x92\x02\x0e角色ID列表R\aroleIds\x12g\n" +
-	"\toperation\x18\x03 \x01(\tBD\xbaGA:\x05\x12\x03add\x92\x027操作类型: add-添加, remove-移除, replace-替换H\x01R\toperation\x88\x01\x01:!\xbaG\x1e\x92\x02\x1b管理用户角色请求体B\x05\n" +
-	"\x03_idB\f\n" +
-	"\n" +
-	"_operation\"w\n" +
+	"\brole_ids\x18\x02 \x03(\tB\x14\xbaG\x11\x92\x02\x0e角色ID列表R\aroleIds:!\xbaG\x1e\x92\x02\x1b管理用户角色请求体B\x05\n" +
+	"\x03_id\"w\n" +
 	"\x13GetUserRolesRequest\x120\n" +
 	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b用户IDH\x00R\x02id\x88\x01\x01:'\xbaG$\x92\x02!获取用户角色列表请求体B\x05\n" +
 	"\x03_id\"m\n" +

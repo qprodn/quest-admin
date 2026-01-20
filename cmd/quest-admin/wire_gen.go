@@ -22,6 +22,7 @@ import (
 	"quest-admin/internal/data/pg"
 	"quest-admin/internal/data/redis"
 	"quest-admin/internal/data/tenant"
+	"quest-admin/internal/data/transaction"
 	"quest-admin/internal/data/user"
 	"quest-admin/internal/server"
 	auth3 "quest-admin/internal/service/auth"
@@ -42,14 +43,15 @@ func wireApp(bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(),
 	db := pg.NewDB(bootstrap)
 	dataData := data.NewData(db)
 	userRepo := user.NewUserRepo(dataData, logger)
+	manager := transaction.NewManager(db)
 	userDeptRepo := user.NewUserDeptRepo(dataData, logger)
 	userPostRepo := user.NewUserPostRepo(dataData, logger)
 	userRoleRepo := user.NewUserRoleRepo(dataData, logger)
-	userUsecase := user2.NewUserUsecase(logger, userRepo, userDeptRepo, userPostRepo, userRoleRepo)
+	userUsecase := user2.NewUserUsecase(logger, userRepo, manager, userDeptRepo, userPostRepo, userRoleRepo)
 	userService := user3.NewUserService(userUsecase, logger)
 	grpcServer := server.NewGRPCServer(bootstrap, logger, userService)
 	client := redis.NewRedis(bootstrap)
-	manager := auth.NewAuthManager(client)
+	authManager := auth.NewAuthManager(client)
 	tenantRepo := tenant.NewTenantRepo(dataData, logger)
 	tenantUsecase := tenant2.NewTenantUsecase(tenantRepo, logger)
 	tenantPackageRepo := tenant.NewTenantPackageRepo(dataData, logger)
@@ -68,9 +70,9 @@ func wireApp(bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(),
 	postRepo := organization.NewPostRepo(dataData, logger)
 	postUsecase := organization2.NewPostUsecase(postRepo, logger)
 	postService := organization3.NewPostService(postUsecase, logger)
-	authUsecase := auth2.NewAuthUsecase(manager, logger, userUsecase, roleUsecase, menuUsecase)
+	authUsecase := auth2.NewAuthUsecase(authManager, logger, userUsecase, roleUsecase, menuUsecase)
 	authService := auth3.NewAuthService(logger, authUsecase, userUsecase, roleUsecase, menuUsecase)
-	httpServer := server.NewHTTPServer(bootstrap, logger, manager, userService, tenantService, roleService, menuService, departmentService, postService, authService)
+	httpServer := server.NewHTTPServer(bootstrap, logger, authManager, userService, tenantService, roleService, menuService, departmentService, postService, authService)
 	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
 	}, nil

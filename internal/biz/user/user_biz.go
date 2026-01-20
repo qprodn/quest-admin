@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"quest-admin/internal/data/transaction"
 	"quest-admin/pkg/errorx"
 	"quest-admin/pkg/util/pagination"
 	"quest-admin/pkg/util/pswd"
@@ -37,11 +38,13 @@ type UserPostRepo interface {
 }
 
 type UserRoleRepo interface {
-	GetUserRoles(ctx context.Context, userID string) ([]string, error)
-	ManageUserRoles(ctx context.Context, bo *AssignUserRolesBO) error
+	GetUserRoles(ctx context.Context, userID string) ([]*UserRole, error)
+	Delete(ctx context.Context, id string) error
+	Create(ctx context.Context, item *UserRole) error
 }
 
 type UserUsecase struct {
+	tm           transaction.Manager
 	userRepo     UserRepo
 	userDeptRepo UserDeptRepo
 	userPostRepo UserPostRepo
@@ -52,12 +55,14 @@ type UserUsecase struct {
 func NewUserUsecase(
 	logger log.Logger,
 	repo UserRepo,
+	tm transaction.Manager,
 	deptRepo UserDeptRepo,
 	postRepo UserPostRepo,
 	roleRepo UserRoleRepo,
 ) *UserUsecase {
 	return &UserUsecase{
 		log:          log.NewHelper(log.With(logger, "module", "user/biz/user")),
+		tm:           tm,
 		userRepo:     repo,
 		userDeptRepo: deptRepo,
 		userPostRepo: postRepo,

@@ -328,7 +328,6 @@ message AssignUserRolesRequest {
   };
   optional string id = 1 [(openapi.v3.property) = {description: "用户ID"; example: {yaml: "123456789"};}];
   repeated string role_ids = 2 [(openapi.v3.property) = {description: "角色ID列表";}];
-  optional string operation = 3 [(openapi.v3.property) = {description: "操作类型: add-添加, remove-移除, replace-替换"; example: {yaml: "add"};}];
 }
 
 message GetUserRolesRequest {

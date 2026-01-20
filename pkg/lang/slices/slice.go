@@ -11,10 +11,6 @@ func ToMap[T any, K comparable, V any](s []T, t func(e T) (K, V)) map[K]V {
 	return lo.SliceToMap(s, t)
 }
 
-func Transform[T any, R any](s []T, iteratee func(e T, idx int) R) []R {
-	return lo.Map(s, iteratee)
-}
-
 func Uniq[T comparable, Slice ~[]T](s Slice) Slice {
 	return lo.Uniq(s)
 }
@@ -37,4 +33,8 @@ func FilterMap[T, R any](collection []T, callback func(item T, index int) (R, bo
 
 func ForEach[T any](collection []T, iteratee func(item T, index int)) {
 	lo.ForEach(collection, iteratee)
+}
+
+func Difference[T comparable, Slice ~[]T](list1, list2 Slice) (Slice, Slice) {
+	return lo.Difference(list1, list2)
 }
