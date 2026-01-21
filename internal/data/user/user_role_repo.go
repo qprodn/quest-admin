@@ -48,7 +48,7 @@ func (r *userRoleRepo) Create(ctx context.Context, item *biz.UserRole) error {
 	}
 	now := time.Now()
 	_, err := r.data.DB(ctx).NewInsert().Model(&UserRole{
-		ID:       idgen.GenerateID(),
+		ID:       item.ID,
 		UserID:   item.UserID,
 		RoleID:   item.RoleID,
 		CreateAt: now,

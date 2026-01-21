@@ -2,6 +2,8 @@ package permission
 
 import (
 	"context"
+	"quest-admin/internal/data/idgen"
+	"quest-admin/types/consts/id"
 	"sort"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -19,14 +21,16 @@ type MenuRepo interface {
 }
 
 type MenuUsecase struct {
-	repo MenuRepo
-	log  *log.Helper
+	idgen *idgen.IDGenerator
+	repo  MenuRepo
+	log   *log.Helper
 }
 
-func NewMenuUsecase(repo MenuRepo, logger log.Logger) *MenuUsecase {
+func NewMenuUsecase(idgen *idgen.IDGenerator, repo MenuRepo, logger log.Logger) *MenuUsecase {
 	return &MenuUsecase{
-		repo: repo,
-		log:  log.NewHelper(log.With(logger, "module", "permission/biz/menu")),
+		idgen: idgen,
+		repo:  repo,
+		log:   log.NewHelper(log.With(logger, "module", "permission/biz/menu")),
 	}
 }
 
@@ -38,6 +42,7 @@ func (uc *MenuUsecase) CreateMenu(ctx context.Context, menu *Menu) error {
 			return ErrInvalidParentMenu
 		}
 	}
+	menu.ID = uc.idgen.NextID(id.MENU)
 	err := uc.repo.Create(ctx, menu)
 	if err != nil {
 		return ErrInternalServer

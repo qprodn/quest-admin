@@ -3,6 +3,8 @@ package organization
 import (
 	"context"
 	"errors"
+	"quest-admin/internal/data/idgen"
+	"quest-admin/types/consts/id"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -20,14 +22,19 @@ type DepartmentRepo interface {
 }
 
 type DepartmentUsecase struct {
-	repo DepartmentRepo
-	log  *log.Helper
+	idgen *idgen.IDGenerator
+	repo  DepartmentRepo
+	log   *log.Helper
 }
 
-func NewDepartmentUsecase(repo DepartmentRepo, logger log.Logger) *DepartmentUsecase {
+func NewDepartmentUsecase(
+	idgen *idgen.IDGenerator,
+	repo DepartmentRepo,
+	logger log.Logger) *DepartmentUsecase {
 	return &DepartmentUsecase{
-		repo: repo,
-		log:  log.NewHelper(log.With(logger, "module", "organization/biz/dept")),
+		idgen: idgen,
+		repo:  repo,
+		log:   log.NewHelper(log.With(logger, "module", "organization/biz/dept")),
 	}
 }
 
@@ -39,6 +46,7 @@ func (uc *DepartmentUsecase) CreateDepartment(ctx context.Context, dept *Departm
 	if existing != nil {
 		return nil, ErrDepartmentNameExists
 	}
+	dept.ID = uc.idgen.NextID(id.DEPT)
 
 	return uc.repo.Create(ctx, dept)
 }

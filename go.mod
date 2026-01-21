@@ -3,7 +3,6 @@ module quest-admin
 go 1.24.6
 
 require (
-	github.com/bytedance/gg v1.1.0
 	github.com/click33/sa-token-go/core v0.1.7
 	github.com/click33/sa-token-go/storage/redis v0.1.7
 	github.com/click33/sa-token-go/stputil v0.1.7
@@ -18,6 +17,7 @@ require (
 	github.com/panjf2000/ants/v2 v2.11.4
 	github.com/redis/go-redis/v9 v9.17.2
 	github.com/samber/lo v1.52.0
+	github.com/sony/sonyflake/v2 v2.2.0
 	github.com/stretchr/testify v1.11.1
 	github.com/uptrace/bun v1.2.16
 	github.com/uptrace/bun/dialect/pgdialect v1.2.16

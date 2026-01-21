@@ -9,7 +9,6 @@ import (
 	"time"
 
 	biz "quest-admin/internal/biz/user"
-	"quest-admin/pkg/util/idgen"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/uptrace/bun"
@@ -47,7 +46,7 @@ func (r *userDeptRepo) Create(ctx context.Context, item *biz.UserDept) error {
 	}
 	now := time.Now()
 	_, err := r.data.DB(ctx).NewInsert().Model(&UserDept{
-		ID:       idgen.GenerateID(),
+		ID:       item.ID,
 		UserID:   item.UserID,
 		DeptID:   item.DeptID,
 		CreateAt: now,

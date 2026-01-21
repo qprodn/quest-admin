@@ -3,6 +3,8 @@ package organization
 import (
 	"context"
 	"errors"
+	"quest-admin/internal/data/idgen"
+	"quest-admin/types/consts/id"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -20,14 +22,20 @@ type PostRepo interface {
 }
 
 type PostUsecase struct {
-	repo PostRepo
-	log  *log.Helper
+	idgen *idgen.IDGenerator
+	repo  PostRepo
+	log   *log.Helper
 }
 
-func NewPostUsecase(repo PostRepo, logger log.Logger) *PostUsecase {
+func NewPostUsecase(
+	idgen *idgen.IDGenerator,
+	repo PostRepo,
+	logger log.Logger,
+) *PostUsecase {
 	return &PostUsecase{
-		repo: repo,
-		log:  log.NewHelper(log.With(logger, "module", "organization/biz/post")),
+		idgen: idgen,
+		repo:  repo,
+		log:   log.NewHelper(log.With(logger, "module", "organization/biz/post")),
 	}
 }
 
@@ -41,6 +49,7 @@ func (uc *PostUsecase) CreatePost(ctx context.Context, post *Post) (*Post, error
 	if existing != nil {
 		return nil, ErrPostNameExists
 	}
+	post.ID = uc.idgen.NextID(id.POST)
 
 	return uc.repo.Create(ctx, post)
 }

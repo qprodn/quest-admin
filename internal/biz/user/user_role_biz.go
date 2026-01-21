@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"quest-admin/pkg/lang/slices"
+	"quest-admin/types/consts/id"
 )
 
 func (uc *UserUsecase) GetUserRoles(ctx context.Context, userID string) ([]string, error) {
@@ -29,7 +30,10 @@ func (uc *UserUsecase) AssignUserRoles(ctx context.Context, bo *AssignUserRolesB
 	needDelete, needInsert := slices.Difference(dbUserRoleCodes, newUserRoleCodes)
 	err = uc.tm.Tx(ctx, func(ctx context.Context) error {
 		for _, item := range needInsert {
-			err = uc.userRoleRepo.Create(ctx, &UserRole{UserID: bo.UserID, RoleID: item})
+			err = uc.userRoleRepo.Create(ctx, &UserRole{
+				ID:     uc.idgen.NextID(id.EMPTY),
+				UserID: bo.UserID,
+				RoleID: item})
 			if err != nil {
 				uc.log.WithContext(ctx).Errorf("添加用户角色出现错误,userID:%s,roleID:%s,error:%v", bo.UserID, item, err)
 				return err

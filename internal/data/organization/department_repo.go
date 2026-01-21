@@ -8,7 +8,6 @@ import (
 	"time"
 
 	biz "quest-admin/internal/biz/organization"
-	"quest-admin/pkg/util/idgen"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
@@ -63,7 +62,7 @@ func NewDepartmentRepo(data *data.Data, logger log.Logger) biz.DepartmentRepo {
 func (r *departmentRepo) Create(ctx context.Context, dept *biz.Department) (*biz.Department, error) {
 	now := time.Now()
 	dbDept := &Department{
-		ID:           idgen.GenerateID(),
+		ID:           dept.ID,
 		Name:         dept.Name,
 		ParentID:     dept.ParentID,
 		Sort:         dept.Sort,

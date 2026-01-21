@@ -9,7 +9,6 @@ import (
 	"time"
 
 	biz "quest-admin/internal/biz/user"
-	"quest-admin/pkg/util/idgen"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
@@ -53,7 +52,7 @@ func NewUserRepo(data *data.Data, logger log.Logger) biz.UserRepo {
 func (r *userRepo) Create(ctx context.Context, user *biz.User) error {
 	now := time.Now()
 	dbUser := &User{
-		ID:        idgen.GenerateID(),
+		ID:        user.ID,
 		Username:  user.Username,
 		Password:  user.Password,
 		Nickname:  user.Nickname,

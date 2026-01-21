@@ -3,8 +3,10 @@ package permission
 import (
 	"context"
 	"errors"
+	"quest-admin/internal/data/idgen"
 	"quest-admin/pkg/errorx"
 	"quest-admin/pkg/lang/slices"
+	"quest-admin/types/consts/id"
 	"quest-admin/types/errkey"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -29,13 +31,15 @@ type RoleMenuRepo interface {
 }
 
 type RoleUsecase struct {
+	idgen        *idgen.IDGenerator
 	repo         RoleRepo
 	roleMenuRepo RoleMenuRepo
 	log          *log.Helper
 }
 
-func NewRoleUsecase(repo RoleRepo, roleMenuRepo RoleMenuRepo, logger log.Logger) *RoleUsecase {
+func NewRoleUsecase(idgen *idgen.IDGenerator, repo RoleRepo, roleMenuRepo RoleMenuRepo, logger log.Logger) *RoleUsecase {
 	return &RoleUsecase{
+		idgen:        idgen,
 		repo:         repo,
 		roleMenuRepo: roleMenuRepo,
 		log:          log.NewHelper(log.With(logger, "module", "permission/biz/role")),
@@ -60,6 +64,7 @@ func (uc *RoleUsecase) CreateRole(ctx context.Context, role *Role) (*Role, error
 	if existing != nil {
 		return nil, ErrRoleCodeExists
 	}
+	role.ID = uc.idgen.NextID(id.ROLE)
 
 	return uc.repo.Create(ctx, role)
 }

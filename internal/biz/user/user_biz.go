@@ -2,10 +2,12 @@ package user
 
 import (
 	"context"
+	"quest-admin/internal/data/idgen"
 	"quest-admin/internal/data/transaction"
 	"quest-admin/pkg/errorx"
 	"quest-admin/pkg/util/pagination"
 	"quest-admin/pkg/util/pswd"
+	"quest-admin/types/consts/id"
 	"quest-admin/types/errkey"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -44,6 +46,7 @@ type UserRoleRepo interface {
 
 type UserUsecase struct {
 	tm           transaction.Manager
+	idgen        *idgen.IDGenerator
 	userRepo     UserRepo
 	userDeptRepo UserDeptRepo
 	userPostRepo UserPostRepo
@@ -55,6 +58,7 @@ func NewUserUsecase(
 	logger log.Logger,
 	repo UserRepo,
 	tm transaction.Manager,
+	idgen *idgen.IDGenerator,
 	deptRepo UserDeptRepo,
 	postRepo UserPostRepo,
 	roleRepo UserRoleRepo,
@@ -62,6 +66,7 @@ func NewUserUsecase(
 	return &UserUsecase{
 		log:          log.NewHelper(log.With(logger, "module", "user/biz/user")),
 		tm:           tm,
+		idgen:        idgen,
 		userRepo:     repo,
 		userDeptRepo: deptRepo,
 		userPostRepo: postRepo,
@@ -88,6 +93,7 @@ func (uc *UserUsecase) CreateUser(ctx context.Context, user *User) error {
 		return ErrInternalServer
 	}
 	user.Password = password
+	user.ID = uc.idgen.NextID(id.ADMIN_USER)
 
 	return uc.userRepo.Create(ctx, user)
 }

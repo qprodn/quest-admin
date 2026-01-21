@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"quest-admin/pkg/lang/slices"
+	"quest-admin/types/consts/id"
 )
 
 func (uc *UserUsecase) GetUserPosts(ctx context.Context, userID string) ([]string, error) {
@@ -29,7 +30,10 @@ func (uc *UserUsecase) AssignUserPosts(ctx context.Context, bo *AssignUserPostsB
 	needDelete, needInsert := slices.Difference(dbUserPostCodes, newUserPostCodes)
 	err = uc.tm.Tx(ctx, func(ctx context.Context) error {
 		for _, item := range needInsert {
-			err = uc.userPostRepo.Create(ctx, &UserPost{UserID: bo.UserID, PostID: item})
+			err = uc.userPostRepo.Create(ctx, &UserPost{
+				ID:     uc.idgen.NextID(id.EMPTY),
+				UserID: bo.UserID,
+				PostID: item})
 			if err != nil {
 				uc.log.WithContext(ctx).Errorf("添加用户职位出现错误,userID:%s,postID:%s,error:%v", bo.UserID, item, err)
 				return err

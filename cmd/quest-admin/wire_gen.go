@@ -17,6 +17,7 @@ import (
 	"quest-admin/internal/conf"
 	"quest-admin/internal/data/auth"
 	"quest-admin/internal/data/data"
+	"quest-admin/internal/data/idgen"
 	"quest-admin/internal/data/organization"
 	"quest-admin/internal/data/permission"
 	"quest-admin/internal/data/pg"
@@ -44,17 +45,18 @@ func wireApp(bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(),
 	dataData := data.NewData(db)
 	userRepo := user.NewUserRepo(dataData, logger)
 	manager := transaction.NewManager(db)
+	idGenerator := idgen.NewIDGenerator()
 	userDeptRepo := user.NewUserDeptRepo(dataData, logger)
 	userPostRepo := user.NewUserPostRepo(dataData, logger)
 	userRoleRepo := user.NewUserRoleRepo(dataData, logger)
-	userUsecase := user2.NewUserUsecase(logger, userRepo, manager, userDeptRepo, userPostRepo, userRoleRepo)
+	userUsecase := user2.NewUserUsecase(logger, userRepo, manager, idGenerator, userDeptRepo, userPostRepo, userRoleRepo)
 	roleRepo := permission.NewRoleRepo(dataData, logger)
 	roleMenuRepo := permission.NewRoleMenuRepo(dataData, logger)
-	roleUsecase := permission2.NewRoleUsecase(roleRepo, roleMenuRepo, logger)
+	roleUsecase := permission2.NewRoleUsecase(idGenerator, roleRepo, roleMenuRepo, logger)
 	departmentRepo := organization.NewDepartmentRepo(dataData, logger)
-	departmentUsecase := organization2.NewDepartmentUsecase(departmentRepo, logger)
+	departmentUsecase := organization2.NewDepartmentUsecase(idGenerator, departmentRepo, logger)
 	postRepo := organization.NewPostRepo(dataData, logger)
-	postUsecase := organization2.NewPostUsecase(postRepo, logger)
+	postUsecase := organization2.NewPostUsecase(idGenerator, postRepo, logger)
 	userService := user3.NewUserService(userUsecase, roleUsecase, departmentUsecase, postUsecase, logger)
 	grpcServer := server.NewGRPCServer(bootstrap, logger, userService)
 	client := redis.NewRedis(bootstrap)
@@ -66,7 +68,7 @@ func wireApp(bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(),
 	tenantService := tenant3.NewTenantService(tenantUsecase, tenantPackageUsecase, logger)
 	roleService := permission3.NewRoleService(roleUsecase, logger)
 	menuRepo := permission.NewMenuRepo(dataData, logger)
-	menuUsecase := permission2.NewMenuUsecase(menuRepo, logger)
+	menuUsecase := permission2.NewMenuUsecase(idGenerator, menuRepo, logger)
 	menuService := permission3.NewMenuService(menuUsecase, logger)
 	departmentService := organization3.NewDepartmentService(departmentUsecase, logger)
 	postService := organization3.NewPostService(postUsecase, logger)

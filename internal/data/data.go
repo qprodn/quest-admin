@@ -3,6 +3,7 @@ package data
 import (
 	"quest-admin/internal/data/auth"
 	"quest-admin/internal/data/data"
+	"quest-admin/internal/data/idgen"
 	"quest-admin/internal/data/organization"
 	"quest-admin/internal/data/permission"
 	"quest-admin/internal/data/pg"
@@ -18,6 +19,7 @@ import (
 var ProviderSet = wire.NewSet(
 	data.NewData,
 	transaction.NewManager,
+	idgen.NewIDGenerator,
 	redis.NewRedis,
 	redis.NewRedSync,
 	pg.NewDB,

@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"quest-admin/pkg/lang/slices"
+	"quest-admin/types/consts/id"
 )
 
 func (uc *UserUsecase) GetUserDepts(ctx context.Context, userID string) ([]string, error) {
@@ -29,7 +30,10 @@ func (uc *UserUsecase) AssignUserDepts(ctx context.Context, bo *AssignUserDeptsB
 	needDelete, needInsert := slices.Difference(dbUserDeptCodes, newUserDeptCodes)
 	err = uc.tm.Tx(ctx, func(ctx context.Context) error {
 		for _, item := range needInsert {
-			err = uc.userDeptRepo.Create(ctx, &UserDept{UserID: bo.UserID, DeptID: item})
+			err = uc.userDeptRepo.Create(ctx, &UserDept{
+				ID:     uc.idgen.NextID(id.EMPTY),
+				UserID: bo.UserID,
+				DeptID: item})
 			if err != nil {
 				uc.log.WithContext(ctx).Errorf("添加用户部门出现错误,userID:%s,deptID:%s,error:%v", bo.UserID, item, err)
 				return err

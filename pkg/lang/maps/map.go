@@ -4,9 +4,9 @@
 package maps
 
 import (
-	"github.com/bytedance/gg/gmap"
+	"github.com/samber/lo"
 )
 
-func ToSlice[K comparable, V any, R any](m map[K]V, iteratee func(k K, v V) R) []R {
-	return gmap.ToSlice(m, iteratee)
+func MapToSlice[K comparable, V any, R any](m map[K]V, iteratee func(k K, v V) R) []R {
+	return lo.MapToSlice(m, iteratee)
 }

@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/bytedance/gg/gslice"
+	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -132,8 +132,8 @@ func TestPool_ExecAll(t *testing.T) {
 		err = pool.ExecAll(ctx)
 		assert.Error(t, err)
 		assert.Equal(t,
-			gslice.ToMap([]int{1, 2}, func(v int) (int, bool) { return v, true }),
-			gslice.ToMap(results, func(v int) (int, bool) { return v, true }),
+			lo.SliceToMap([]int{1, 2}, func(v int) (int, bool) { return v, true }),
+			lo.SliceToMap(results, func(v int) (int, bool) { return v, true }),
 		)
 	})
 }

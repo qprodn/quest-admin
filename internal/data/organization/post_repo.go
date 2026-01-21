@@ -9,7 +9,6 @@ import (
 	"time"
 
 	biz "quest-admin/internal/biz/organization"
-	"quest-admin/pkg/util/idgen"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
@@ -48,7 +47,7 @@ func NewPostRepo(data *data.Data, logger log.Logger) biz.PostRepo {
 func (r *postRepo) Create(ctx context.Context, post *biz.Post) (*biz.Post, error) {
 	now := time.Now()
 	dbPost := &Post{
-		ID:       idgen.GenerateID(),
+		ID:       post.ID,
 		Name:     post.Name,
 		Code:     post.Code,
 		Sort:     post.Sort,

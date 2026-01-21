@@ -10,7 +10,6 @@ import (
 	"time"
 
 	biz "quest-admin/internal/biz/permission"
-	"quest-admin/pkg/util/idgen"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
@@ -74,7 +73,7 @@ func (r *roleRepo) FindListByIDs(ctx context.Context, roleIds []string) ([]*biz.
 func (r *roleRepo) Create(ctx context.Context, role *biz.Role) (*biz.Role, error) {
 	now := time.Now()
 	dbRole := &Role{
-		ID:               idgen.GenerateID(),
+		ID:               role.ID,
 		Name:             role.Name,
 		Code:             role.Code,
 		Sort:             role.Sort,

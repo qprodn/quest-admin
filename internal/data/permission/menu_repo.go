@@ -7,7 +7,6 @@ import (
 	"time"
 
 	biz "quest-admin/internal/biz/permission"
-	"quest-admin/pkg/util/idgen"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
@@ -77,7 +76,7 @@ func (r *menuRepo) FindByMenuIDs(ctx context.Context, menuIDs []string) ([]*biz.
 func (r *menuRepo) Create(ctx context.Context, menu *biz.Menu) error {
 	now := time.Now()
 	dbMenu := &Menu{
-		ID:            idgen.GenerateID(),
+		ID:            menu.ID,
 		Name:          menu.Name,
 		Permission:    menu.Permission,
 		Type:          menu.Type,
