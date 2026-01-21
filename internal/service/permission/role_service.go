@@ -5,6 +5,8 @@ import (
 
 	v1 "quest-admin/api/gen/permission/v1"
 	biz "quest-admin/internal/biz/permission"
+	"quest-admin/pkg/errorx"
+	"quest-admin/types/errkey"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -13,14 +15,16 @@ import (
 
 type RoleService struct {
 	v1.UnimplementedRoleServiceServer
-	rc  *biz.RoleUsecase
-	log *log.Helper
+	rc          *biz.RoleUsecase
+	menuUsecase *biz.MenuUsecase
+	log         *log.Helper
 }
 
-func NewRoleService(rc *biz.RoleUsecase, logger log.Logger) *RoleService {
+func NewRoleService(rc *biz.RoleUsecase, menuUsecase *biz.MenuUsecase, logger log.Logger) *RoleService {
 	return &RoleService{
-		rc:  rc,
-		log: log.NewHelper(log.With(logger, "module", "permission/service")),
+		rc:          rc,
+		menuUsecase: menuUsecase,
+		log:         log.NewHelper(log.With(logger, "module", "permission/service")),
 	}
 }
 
@@ -118,7 +122,18 @@ func (s *RoleService) DeleteRole(ctx context.Context, in *v1.DeleteRoleRequest) 
 }
 
 func (s *RoleService) AssignRoleMenu(ctx context.Context, in *v1.AssignRoleMenuRequest) (*emptypb.Empty, error) {
-	err := s.rc.AssignRoleMenu(ctx, in.GetId(), in.GetMenuIds())
+	menus, err := s.menuUsecase.ListByMenuIDs(ctx, in.MenuIds)
+	if err != nil {
+		return nil, err
+	}
+	if len(menus) != len(in.MenuIds) {
+		return nil, errorx.Err(errkey.ErrMenuNotFound)
+	}
+	bo := &biz.AssignRoleMenuBO{
+		RoleID:  in.GetId(),
+		MenuIDs: in.GetMenuIds(),
+	}
+	err = s.rc.AssignRoleMenu(ctx, bo)
 	if err != nil {
 		return nil, err
 	}

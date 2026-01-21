@@ -114,10 +114,8 @@ func (uc *RoleUsecase) DeleteRole(ctx context.Context, id string) error {
 	return uc.repo.Delete(ctx, id)
 }
 
-func (uc *RoleUsecase) AssignRoleMenu(ctx context.Context, roleID string, menuIDs []string) error {
-	uc.log.WithContext(ctx).Infof("AssignRoleMenu: roleID=%s, menuIDs=%v", roleID, menuIDs)
-
-	role, err := uc.repo.FindByID(ctx, roleID)
+func (uc *RoleUsecase) AssignRoleMenu(ctx context.Context, bo *AssignRoleMenuBO) error {
+	role, err := uc.repo.FindByID(ctx, bo.RoleID)
 	if err != nil {
 		return nil
 	}
@@ -125,7 +123,7 @@ func (uc *RoleUsecase) AssignRoleMenu(ctx context.Context, roleID string, menuID
 		return errorx.Err(errkey.ErrRoleNotFound)
 	}
 
-	dbRoleMenus, err := uc.roleMenuRepo.GetRoleMenus(ctx, roleID)
+	dbRoleMenus, err := uc.roleMenuRepo.GetRoleMenus(ctx, bo.RoleID)
 	if err != nil {
 		uc.log.WithContext(ctx).Errorf("获取当前角色关联菜单出现错误,error:%v", err)
 		return err
@@ -133,17 +131,17 @@ func (uc *RoleUsecase) AssignRoleMenu(ctx context.Context, roleID string, menuID
 	dbRoleMenuIDs := slices.Map(dbRoleMenus, func(item *RoleMenu, index int) string {
 		return item.MenuID
 	})
-	newRoleMenuIDs := menuIDs
+	newRoleMenuIDs := bo.MenuIDs
 	needDelete, needInsert := slices.Difference(dbRoleMenuIDs, newRoleMenuIDs)
 
 	err = uc.tm.Tx(ctx, func(ctx context.Context) error {
 		for _, menuID := range needInsert {
 			err = uc.roleMenuRepo.Create(ctx, &RoleMenu{
 				ID:     uc.idgen.NextID(id.EMPTY),
-				RoleID: roleID,
+				RoleID: bo.RoleID,
 				MenuID: menuID})
 			if err != nil {
-				uc.log.WithContext(ctx).Errorf("添加角色菜单出现错误,roleID:%s,menuID:%s,error:%v", roleID, menuID, err)
+				uc.log.WithContext(ctx).Errorf("添加角色菜单出现错误,roleID:%s,menuID:%s,error:%v", bo.RoleID, menuID, err)
 				return err
 			}
 		}
@@ -151,7 +149,7 @@ func (uc *RoleUsecase) AssignRoleMenu(ctx context.Context, roleID string, menuID
 			if slices.Contains(needDelete, item.MenuID) {
 				err = uc.roleMenuRepo.Delete(ctx, item.ID)
 				if err != nil {
-					uc.log.WithContext(ctx).Errorf("删除角色菜单出现错误,roleID:%s,menuID:%s,error:%v", roleID, item.MenuID, err)
+					uc.log.WithContext(ctx).Errorf("删除角色菜单出现错误,roleID:%s,menuID:%s,error:%v", bo.RoleID, item.MenuID, err)
 					return err
 				}
 			}

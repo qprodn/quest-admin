@@ -69,3 +69,8 @@ type ListRolesResult struct {
 	PageSize   int32
 	TotalPages int32
 }
+
+type AssignRoleMenuBO struct {
+	RoleID  string
+	MenuIDs []string
+}
