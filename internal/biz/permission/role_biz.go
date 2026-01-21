@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"quest-admin/internal/data/idgen"
+	"quest-admin/internal/data/transaction"
 	"quest-admin/pkg/errorx"
 	"quest-admin/pkg/lang/slices"
 	"quest-admin/types/consts/id"
@@ -25,20 +26,24 @@ type RoleRepo interface {
 }
 
 type RoleMenuRepo interface {
-	AssignMenus(ctx context.Context, roleID string, menuIDs []string) error
+	Create(ctx context.Context, item *RoleMenu) error
+	Delete(ctx context.Context, id string) error
+	GetRoleMenus(ctx context.Context, roleID string) ([]*RoleMenu, error)
 	GetMenuIDs(ctx context.Context, roleID string) ([]string, error)
 	FindListByRoleIDs(ctx context.Context, roles []string) ([]*RoleMenu, error)
 }
 
 type RoleUsecase struct {
+	tm           transaction.Manager
 	idgen        *idgen.IDGenerator
 	repo         RoleRepo
 	roleMenuRepo RoleMenuRepo
 	log          *log.Helper
 }
 
-func NewRoleUsecase(idgen *idgen.IDGenerator, repo RoleRepo, roleMenuRepo RoleMenuRepo, logger log.Logger) *RoleUsecase {
+func NewRoleUsecase(tm transaction.Manager, idgen *idgen.IDGenerator, repo RoleRepo, roleMenuRepo RoleMenuRepo, logger log.Logger) *RoleUsecase {
 	return &RoleUsecase{
+		tm:           tm,
 		idgen:        idgen,
 		repo:         repo,
 		roleMenuRepo: roleMenuRepo,
@@ -120,7 +125,44 @@ func (uc *RoleUsecase) AssignRoleMenu(ctx context.Context, roleID string, menuID
 		return errorx.Err(errkey.ErrRoleNotFound)
 	}
 
-	return uc.roleMenuRepo.AssignMenus(ctx, roleID, menuIDs)
+	dbRoleMenus, err := uc.roleMenuRepo.GetRoleMenus(ctx, roleID)
+	if err != nil {
+		uc.log.WithContext(ctx).Errorf("获取当前角色关联菜单出现错误,error:%v", err)
+		return err
+	}
+	dbRoleMenuIDs := slices.Map(dbRoleMenus, func(item *RoleMenu, index int) string {
+		return item.MenuID
+	})
+	newRoleMenuIDs := menuIDs
+	needDelete, needInsert := slices.Difference(dbRoleMenuIDs, newRoleMenuIDs)
+
+	err = uc.tm.Tx(ctx, func(ctx context.Context) error {
+		for _, menuID := range needInsert {
+			err = uc.roleMenuRepo.Create(ctx, &RoleMenu{
+				ID:     uc.idgen.NextID(id.EMPTY),
+				RoleID: roleID,
+				MenuID: menuID})
+			if err != nil {
+				uc.log.WithContext(ctx).Errorf("添加角色菜单出现错误,roleID:%s,menuID:%s,error:%v", roleID, menuID, err)
+				return err
+			}
+		}
+		for _, item := range dbRoleMenus {
+			if slices.Contains(needDelete, item.MenuID) {
+				err = uc.roleMenuRepo.Delete(ctx, item.ID)
+				if err != nil {
+					uc.log.WithContext(ctx).Errorf("删除角色菜单出现错误,roleID:%s,menuID:%s,error:%v", roleID, item.MenuID, err)
+					return err
+				}
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		uc.log.WithContext(ctx).Errorf("分配角色菜单出现错误,error:%v", err)
+		return err
+	}
+	return nil
 }
 
 func (uc *RoleUsecase) GetRoleMenus(ctx context.Context, roleID string) ([]string, error) {

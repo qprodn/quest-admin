@@ -52,7 +52,7 @@ func wireApp(bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(),
 	userUsecase := user2.NewUserUsecase(logger, userRepo, manager, idGenerator, userDeptRepo, userPostRepo, userRoleRepo)
 	roleRepo := permission.NewRoleRepo(dataData, logger)
 	roleMenuRepo := permission.NewRoleMenuRepo(dataData, logger)
-	roleUsecase := permission2.NewRoleUsecase(idGenerator, roleRepo, roleMenuRepo, logger)
+	roleUsecase := permission2.NewRoleUsecase(manager, idGenerator, roleRepo, roleMenuRepo, logger)
 	departmentRepo := organization.NewDepartmentRepo(dataData, logger)
 	departmentUsecase := organization2.NewDepartmentUsecase(idGenerator, departmentRepo, logger)
 	postRepo := organization.NewPostRepo(dataData, logger)

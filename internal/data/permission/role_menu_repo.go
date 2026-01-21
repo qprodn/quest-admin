@@ -8,8 +8,6 @@ import (
 	"quest-admin/pkg/util/ctxs"
 	"time"
 
-	"quest-admin/pkg/util/idgen"
-
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/uptrace/bun"
 )
@@ -60,34 +58,57 @@ func (r *roleMapMenuRepo) FindListByRoleIDs(ctx context.Context, roles []string)
 	return bizRoleMenus, nil
 }
 
-func (r *roleMapMenuRepo) AssignMenus(ctx context.Context, roleID string, menuIDs []string) error {
-	_, err := r.data.DB(ctx).NewDelete().
+func (r *roleMapMenuRepo) Create(ctx context.Context, item *permission.RoleMenu) error {
+	if item == nil {
+		return nil
+	}
+	now := time.Now()
+	_, err := r.data.DB(ctx).NewInsert().Model(&RoleMenu{
+		ID:       item.ID,
+		RoleID:   item.RoleID,
+		MenuID:   item.MenuID,
+		CreateAt: now,
+		CreateBy: ctxs.GetLoginID(ctx),
+		UpdateAt: now,
+		UpdateBy: ctxs.GetLoginID(ctx),
+		TenantID: ctxs.GetTenantID(ctx),
+	}).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *roleMapMenuRepo) Delete(ctx context.Context, id string) error {
+	_, err := r.data.DB(ctx).NewUpdate().
 		Model((*RoleMenu)(nil)).
-		Where("role_id = ?", roleID).
+		Set("update_by = ?", ctxs.GetLoginID(ctx)).
+		Set("delete_at = current_timestamp()").
+		Where("id = ?", id).
 		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Exec(ctx)
 	if err != nil {
 		return err
 	}
+	return nil
+}
 
-	if len(menuIDs) == 0 {
-		return nil
+func (r *roleMapMenuRepo) GetRoleMenus(ctx context.Context, roleID string) ([]*permission.RoleMenu, error) {
+	var roleMenus []*RoleMenu
+	err := r.data.DB(ctx).NewSelect().
+		Model(&roleMenus).
+		Where("role_id = ?", roleID).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
+		Scan(ctx)
+	if err != nil {
+		return nil, err
 	}
 
-	now := time.Now()
-	roleMenus := make([]*RoleMenu, 0, len(menuIDs))
-	for _, menuID := range menuIDs {
-		roleMenus = append(roleMenus, &RoleMenu{
-			ID:       idgen.GenerateID(),
-			RoleID:   roleID,
-			MenuID:   menuID,
-			CreateAt: now,
-			UpdateAt: now,
-		})
+	bizRoleMenus := make([]*permission.RoleMenu, 0, len(roleMenus))
+	for _, rm := range roleMenus {
+		bizRoleMenus = append(bizRoleMenus, toBizRoleMenu(rm))
 	}
-
-	_, err = r.data.DB(ctx).NewInsert().Model(&roleMenus).Exec(ctx)
-	return err
+	return bizRoleMenus, nil
 }
 
 func (r *roleMapMenuRepo) GetMenuIDs(ctx context.Context, roleID string) ([]string, error) {
