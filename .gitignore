@@ -38,3 +38,4 @@ bin/
 *.swp
 *.log
 .trae/
+/configs/config-private.yaml
