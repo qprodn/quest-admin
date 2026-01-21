@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        v5.26.1
-// source: conf/conf.proto
+// source: conf/conf-local.proto
 
 package conf
 
@@ -27,15 +27,13 @@ type Bootstrap struct {
 	Server        *Server                `protobuf:"bytes,2,opt,name=server,proto3" json:"server,omitempty"`
 	Data          *Data                  `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
 	Log           *Log                   `protobuf:"bytes,4,opt,name=log,proto3" json:"log,omitempty"`
-	Snowflake     *Snowflake             `protobuf:"bytes,5,opt,name=snowflake,proto3" json:"snowflake,omitempty"`
-	Jwt           *Jwt                   `protobuf:"bytes,6,opt,name=jwt,proto3" json:"jwt,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *Bootstrap) Reset() {
 	*x = Bootstrap{}
-	mi := &file_conf_conf_proto_msgTypes[0]
+	mi := &file_conf_conf_local_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -47,7 +45,7 @@ func (x *Bootstrap) String() string {
 func (*Bootstrap) ProtoMessage() {}
 
 func (x *Bootstrap) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[0]
+	mi := &file_conf_conf_local_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -60,7 +58,7 @@ func (x *Bootstrap) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Bootstrap.ProtoReflect.Descriptor instead.
 func (*Bootstrap) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{0}
+	return file_conf_conf_local_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Bootstrap) GetEnv() *Env {
@@ -91,20 +89,6 @@ func (x *Bootstrap) GetLog() *Log {
 	return nil
 }
 
-func (x *Bootstrap) GetSnowflake() *Snowflake {
-	if x != nil {
-		return x.Snowflake
-	}
-	return nil
-}
-
-func (x *Bootstrap) GetJwt() *Jwt {
-	if x != nil {
-		return x.Jwt
-	}
-	return nil
-}
-
 type Env struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Active        string                 `protobuf:"bytes,1,opt,name=active,proto3" json:"active,omitempty"`
@@ -114,7 +98,7 @@ type Env struct {
 
 func (x *Env) Reset() {
 	*x = Env{}
-	mi := &file_conf_conf_proto_msgTypes[1]
+	mi := &file_conf_conf_local_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -126,7 +110,7 @@ func (x *Env) String() string {
 func (*Env) ProtoMessage() {}
 
 func (x *Env) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[1]
+	mi := &file_conf_conf_local_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -139,7 +123,7 @@ func (x *Env) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Env.ProtoReflect.Descriptor instead.
 func (*Env) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{1}
+	return file_conf_conf_local_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Env) GetActive() string {
@@ -159,7 +143,7 @@ type Server struct {
 
 func (x *Server) Reset() {
 	*x = Server{}
-	mi := &file_conf_conf_proto_msgTypes[2]
+	mi := &file_conf_conf_local_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -171,7 +155,7 @@ func (x *Server) String() string {
 func (*Server) ProtoMessage() {}
 
 func (x *Server) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[2]
+	mi := &file_conf_conf_local_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -184,7 +168,7 @@ func (x *Server) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Server.ProtoReflect.Descriptor instead.
 func (*Server) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{2}
+	return file_conf_conf_local_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Server) GetHttp() *Server_HTTP {
@@ -211,7 +195,7 @@ type Data struct {
 
 func (x *Data) Reset() {
 	*x = Data{}
-	mi := &file_conf_conf_proto_msgTypes[3]
+	mi := &file_conf_conf_local_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -223,7 +207,7 @@ func (x *Data) String() string {
 func (*Data) ProtoMessage() {}
 
 func (x *Data) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[3]
+	mi := &file_conf_conf_local_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -236,7 +220,7 @@ func (x *Data) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Data.ProtoReflect.Descriptor instead.
 func (*Data) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{3}
+	return file_conf_conf_local_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *Data) GetDatabase() *Data_Database {
@@ -267,7 +251,7 @@ type Log struct {
 
 func (x *Log) Reset() {
 	*x = Log{}
-	mi := &file_conf_conf_proto_msgTypes[4]
+	mi := &file_conf_conf_local_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -279,7 +263,7 @@ func (x *Log) String() string {
 func (*Log) ProtoMessage() {}
 
 func (x *Log) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[4]
+	mi := &file_conf_conf_local_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -292,7 +276,7 @@ func (x *Log) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Log.ProtoReflect.Descriptor instead.
 func (*Log) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{4}
+	return file_conf_conf_local_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *Log) GetLevel() string {
@@ -337,158 +321,6 @@ func (x *Log) GetStdout() bool {
 	return false
 }
 
-type Snowflake struct {
-	state             protoimpl.MessageState `protogen:"open.v1"`
-	BaseTime          int64                  `protobuf:"varint,1,opt,name=BaseTime,proto3" json:"BaseTime,omitempty"`                   // 基础时间（ms单位），不能超过当前系统时间
-	WorkerIdBitLength int32                  `protobuf:"varint,2,opt,name=WorkerIdBitLength,proto3" json:"WorkerIdBitLength,omitempty"` // 机器码位长，默认值6，取值范围 [1, 15]（要求：序列数位长+机器码位长不超过22）
-	SeqBitLength      int32                  `protobuf:"varint,3,opt,name=SeqBitLength,proto3" json:"SeqBitLength,omitempty"`           // 序列数位长，默认值6，取值范围 [3, 21]（要求：序列数位长+机器码位长不超过22）
-	MaxSeqNumber      int32                  `protobuf:"varint,4,opt,name=MaxSeqNumber,proto3" json:"MaxSeqNumber,omitempty"`           // 最大序列数（含），设置范围 [MinSeqNumber, 2^SeqBitLength-1]，默认值0，表示最大序列数取最大值（2^SeqBitLength-1]）
-	MinSeqNumber      int32                  `protobuf:"varint,5,opt,name=MinSeqNumber,proto3" json:"MinSeqNumber,omitempty"`           // 最小序列数（含），默认值5，取值范围 [5, MaxSeqNumber]，每毫秒的前5个序列数对应编号0-4是保留位，其中1-4是时间回拨相应预留位，0是手工新值预留位
-	LockKey           string                 `protobuf:"bytes,6,opt,name=LockKey,proto3" json:"LockKey,omitempty"`
-	WorkerIdKey       string                 `protobuf:"bytes,7,opt,name=WorkerIdKey,proto3" json:"WorkerIdKey,omitempty"`
-	WorkerIdIndexKey  string                 `protobuf:"bytes,8,opt,name=WorkerIdIndexKey,proto3" json:"WorkerIdIndexKey,omitempty"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
-}
-
-func (x *Snowflake) Reset() {
-	*x = Snowflake{}
-	mi := &file_conf_conf_proto_msgTypes[5]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Snowflake) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Snowflake) ProtoMessage() {}
-
-func (x *Snowflake) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[5]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Snowflake.ProtoReflect.Descriptor instead.
-func (*Snowflake) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *Snowflake) GetBaseTime() int64 {
-	if x != nil {
-		return x.BaseTime
-	}
-	return 0
-}
-
-func (x *Snowflake) GetWorkerIdBitLength() int32 {
-	if x != nil {
-		return x.WorkerIdBitLength
-	}
-	return 0
-}
-
-func (x *Snowflake) GetSeqBitLength() int32 {
-	if x != nil {
-		return x.SeqBitLength
-	}
-	return 0
-}
-
-func (x *Snowflake) GetMaxSeqNumber() int32 {
-	if x != nil {
-		return x.MaxSeqNumber
-	}
-	return 0
-}
-
-func (x *Snowflake) GetMinSeqNumber() int32 {
-	if x != nil {
-		return x.MinSeqNumber
-	}
-	return 0
-}
-
-func (x *Snowflake) GetLockKey() string {
-	if x != nil {
-		return x.LockKey
-	}
-	return ""
-}
-
-func (x *Snowflake) GetWorkerIdKey() string {
-	if x != nil {
-		return x.WorkerIdKey
-	}
-	return ""
-}
-
-func (x *Snowflake) GetWorkerIdIndexKey() string {
-	if x != nil {
-		return x.WorkerIdIndexKey
-	}
-	return ""
-}
-
-type Jwt struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	System        *Jwt_Param             `protobuf:"bytes,1,opt,name=system,proto3" json:"system,omitempty"`
-	Client        *Jwt_Param             `protobuf:"bytes,2,opt,name=client,proto3" json:"client,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Jwt) Reset() {
-	*x = Jwt{}
-	mi := &file_conf_conf_proto_msgTypes[6]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Jwt) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Jwt) ProtoMessage() {}
-
-func (x *Jwt) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[6]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Jwt.ProtoReflect.Descriptor instead.
-func (*Jwt) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{6}
-}
-
-func (x *Jwt) GetSystem() *Jwt_Param {
-	if x != nil {
-		return x.System
-	}
-	return nil
-}
-
-func (x *Jwt) GetClient() *Jwt_Param {
-	if x != nil {
-		return x.Client
-	}
-	return nil
-}
-
 type Server_HTTP struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Network       string                 `protobuf:"bytes,1,opt,name=network,proto3" json:"network,omitempty"`
@@ -500,7 +332,7 @@ type Server_HTTP struct {
 
 func (x *Server_HTTP) Reset() {
 	*x = Server_HTTP{}
-	mi := &file_conf_conf_proto_msgTypes[7]
+	mi := &file_conf_conf_local_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -512,7 +344,7 @@ func (x *Server_HTTP) String() string {
 func (*Server_HTTP) ProtoMessage() {}
 
 func (x *Server_HTTP) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[7]
+	mi := &file_conf_conf_local_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -525,7 +357,7 @@ func (x *Server_HTTP) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Server_HTTP.ProtoReflect.Descriptor instead.
 func (*Server_HTTP) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{2, 0}
+	return file_conf_conf_local_proto_rawDescGZIP(), []int{2, 0}
 }
 
 func (x *Server_HTTP) GetNetwork() string {
@@ -560,7 +392,7 @@ type Server_GRPC struct {
 
 func (x *Server_GRPC) Reset() {
 	*x = Server_GRPC{}
-	mi := &file_conf_conf_proto_msgTypes[8]
+	mi := &file_conf_conf_local_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -572,7 +404,7 @@ func (x *Server_GRPC) String() string {
 func (*Server_GRPC) ProtoMessage() {}
 
 func (x *Server_GRPC) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[8]
+	mi := &file_conf_conf_local_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -585,7 +417,7 @@ func (x *Server_GRPC) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Server_GRPC.ProtoReflect.Descriptor instead.
 func (*Server_GRPC) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{2, 1}
+	return file_conf_conf_local_proto_rawDescGZIP(), []int{2, 1}
 }
 
 func (x *Server_GRPC) GetNetwork() string {
@@ -622,7 +454,7 @@ type Data_Database struct {
 
 func (x *Data_Database) Reset() {
 	*x = Data_Database{}
-	mi := &file_conf_conf_proto_msgTypes[9]
+	mi := &file_conf_conf_local_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -634,7 +466,7 @@ func (x *Data_Database) String() string {
 func (*Data_Database) ProtoMessage() {}
 
 func (x *Data_Database) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[9]
+	mi := &file_conf_conf_local_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -647,7 +479,7 @@ func (x *Data_Database) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Data_Database.ProtoReflect.Descriptor instead.
 func (*Data_Database) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{3, 0}
+	return file_conf_conf_local_proto_rawDescGZIP(), []int{3, 0}
 }
 
 func (x *Data_Database) GetDriver() string {
@@ -701,7 +533,7 @@ type Data_Redis struct {
 
 func (x *Data_Redis) Reset() {
 	*x = Data_Redis{}
-	mi := &file_conf_conf_proto_msgTypes[10]
+	mi := &file_conf_conf_local_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -713,7 +545,7 @@ func (x *Data_Redis) String() string {
 func (*Data_Redis) ProtoMessage() {}
 
 func (x *Data_Redis) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[10]
+	mi := &file_conf_conf_local_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -726,7 +558,7 @@ func (x *Data_Redis) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Data_Redis.ProtoReflect.Descriptor instead.
 func (*Data_Redis) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{3, 1}
+	return file_conf_conf_local_proto_rawDescGZIP(), []int{3, 1}
 }
 
 func (x *Data_Redis) GetNetwork() string {
@@ -785,71 +617,17 @@ func (x *Data_Redis) GetMinIdleConns() int32 {
 	return 0
 }
 
-type Jwt_Param struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Secret        string                 `protobuf:"bytes,1,opt,name=secret,proto3" json:"secret,omitempty"`
-	Expire        int32                  `protobuf:"varint,2,opt,name=expire,proto3" json:"expire,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
+var File_conf_conf_local_proto protoreflect.FileDescriptor
 
-func (x *Jwt_Param) Reset() {
-	*x = Jwt_Param{}
-	mi := &file_conf_conf_proto_msgTypes[11]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Jwt_Param) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Jwt_Param) ProtoMessage() {}
-
-func (x *Jwt_Param) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_conf_proto_msgTypes[11]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Jwt_Param.ProtoReflect.Descriptor instead.
-func (*Jwt_Param) Descriptor() ([]byte, []int) {
-	return file_conf_conf_proto_rawDescGZIP(), []int{6, 0}
-}
-
-func (x *Jwt_Param) GetSecret() string {
-	if x != nil {
-		return x.Secret
-	}
-	return ""
-}
-
-func (x *Jwt_Param) GetExpire() int32 {
-	if x != nil {
-		return x.Expire
-	}
-	return 0
-}
-
-var File_conf_conf_proto protoreflect.FileDescriptor
-
-const file_conf_conf_proto_rawDesc = "" +
+const file_conf_conf_local_proto_rawDesc = "" +
 	"\n" +
-	"\x0fconf/conf.proto\x12\n" +
-	"kratos.api\"\xfb\x01\n" +
+	"\x15conf/conf-local.proto\x12\n" +
+	"kratos.api\"\xa3\x01\n" +
 	"\tBootstrap\x12!\n" +
 	"\x03env\x18\x01 \x01(\v2\x0f.kratos.api.EnvR\x03env\x12*\n" +
 	"\x06server\x18\x02 \x01(\v2\x12.kratos.api.ServerR\x06server\x12$\n" +
 	"\x04data\x18\x03 \x01(\v2\x10.kratos.api.DataR\x04data\x12!\n" +
-	"\x03log\x18\x04 \x01(\v2\x0f.kratos.api.LogR\x03log\x123\n" +
-	"\tsnowflake\x18\x05 \x01(\v2\x15.kratos.api.SnowflakeR\tsnowflake\x12!\n" +
-	"\x03jwt\x18\x06 \x01(\v2\x0f.kratos.api.JwtR\x03jwt\"\x1d\n" +
+	"\x03log\x18\x04 \x01(\v2\x0f.kratos.api.LogR\x03log\"\x1d\n" +
 	"\x03Env\x12\x16\n" +
 	"\x06active\x18\x01 \x01(\tR\x06active\"\x82\x02\n" +
 	"\x06Server\x12+\n" +
@@ -889,90 +667,68 @@ const file_conf_conf_proto_rawDesc = "" +
 	"\n" +
 	"maxBackups\x18\x05 \x01(\x05R\n" +
 	"maxBackups\x12\x16\n" +
-	"\x06stdout\x18\x06 \x01(\bR\x06stdout\"\xa9\x02\n" +
-	"\tSnowflake\x12\x1a\n" +
-	"\bBaseTime\x18\x01 \x01(\x03R\bBaseTime\x12,\n" +
-	"\x11WorkerIdBitLength\x18\x02 \x01(\x05R\x11WorkerIdBitLength\x12\"\n" +
-	"\fSeqBitLength\x18\x03 \x01(\x05R\fSeqBitLength\x12\"\n" +
-	"\fMaxSeqNumber\x18\x04 \x01(\x05R\fMaxSeqNumber\x12\"\n" +
-	"\fMinSeqNumber\x18\x05 \x01(\x05R\fMinSeqNumber\x12\x18\n" +
-	"\aLockKey\x18\x06 \x01(\tR\aLockKey\x12 \n" +
-	"\vWorkerIdKey\x18\a \x01(\tR\vWorkerIdKey\x12*\n" +
-	"\x10WorkerIdIndexKey\x18\b \x01(\tR\x10WorkerIdIndexKey\"\x9c\x01\n" +
-	"\x03Jwt\x12-\n" +
-	"\x06system\x18\x01 \x01(\v2\x15.kratos.api.Jwt.ParamR\x06system\x12-\n" +
-	"\x06client\x18\x02 \x01(\v2\x15.kratos.api.Jwt.ParamR\x06client\x1a7\n" +
-	"\x05Param\x12\x16\n" +
-	"\x06secret\x18\x01 \x01(\tR\x06secret\x12\x16\n" +
-	"\x06expire\x18\x02 \x01(\x05R\x06expireB Z\x1equest-admin/internal/conf;confb\x06proto3"
+	"\x06stdout\x18\x06 \x01(\bR\x06stdoutB Z\x1equest-admin/internal/conf;confb\x06proto3"
 
 var (
-	file_conf_conf_proto_rawDescOnce sync.Once
-	file_conf_conf_proto_rawDescData []byte
+	file_conf_conf_local_proto_rawDescOnce sync.Once
+	file_conf_conf_local_proto_rawDescData []byte
 )
 
-func file_conf_conf_proto_rawDescGZIP() []byte {
-	file_conf_conf_proto_rawDescOnce.Do(func() {
-		file_conf_conf_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_conf_conf_proto_rawDesc), len(file_conf_conf_proto_rawDesc)))
+func file_conf_conf_local_proto_rawDescGZIP() []byte {
+	file_conf_conf_local_proto_rawDescOnce.Do(func() {
+		file_conf_conf_local_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_conf_conf_local_proto_rawDesc), len(file_conf_conf_local_proto_rawDesc)))
 	})
-	return file_conf_conf_proto_rawDescData
+	return file_conf_conf_local_proto_rawDescData
 }
 
-var file_conf_conf_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
-var file_conf_conf_proto_goTypes = []any{
+var file_conf_conf_local_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_conf_conf_local_proto_goTypes = []any{
 	(*Bootstrap)(nil),     // 0: kratos.api.Bootstrap
 	(*Env)(nil),           // 1: kratos.api.Env
 	(*Server)(nil),        // 2: kratos.api.Server
 	(*Data)(nil),          // 3: kratos.api.Data
 	(*Log)(nil),           // 4: kratos.api.Log
-	(*Snowflake)(nil),     // 5: kratos.api.Snowflake
-	(*Jwt)(nil),           // 6: kratos.api.Jwt
-	(*Server_HTTP)(nil),   // 7: kratos.api.Server.HTTP
-	(*Server_GRPC)(nil),   // 8: kratos.api.Server.GRPC
-	(*Data_Database)(nil), // 9: kratos.api.Data.Database
-	(*Data_Redis)(nil),    // 10: kratos.api.Data.Redis
-	(*Jwt_Param)(nil),     // 11: kratos.api.Jwt.Param
+	(*Server_HTTP)(nil),   // 5: kratos.api.Server.HTTP
+	(*Server_GRPC)(nil),   // 6: kratos.api.Server.GRPC
+	(*Data_Database)(nil), // 7: kratos.api.Data.Database
+	(*Data_Redis)(nil),    // 8: kratos.api.Data.Redis
 }
-var file_conf_conf_proto_depIdxs = []int32{
-	1,  // 0: kratos.api.Bootstrap.env:type_name -> kratos.api.Env
-	2,  // 1: kratos.api.Bootstrap.server:type_name -> kratos.api.Server
-	3,  // 2: kratos.api.Bootstrap.data:type_name -> kratos.api.Data
-	4,  // 3: kratos.api.Bootstrap.log:type_name -> kratos.api.Log
-	5,  // 4: kratos.api.Bootstrap.snowflake:type_name -> kratos.api.Snowflake
-	6,  // 5: kratos.api.Bootstrap.jwt:type_name -> kratos.api.Jwt
-	7,  // 6: kratos.api.Server.http:type_name -> kratos.api.Server.HTTP
-	8,  // 7: kratos.api.Server.grpc:type_name -> kratos.api.Server.GRPC
-	9,  // 8: kratos.api.Data.database:type_name -> kratos.api.Data.Database
-	10, // 9: kratos.api.Data.redis:type_name -> kratos.api.Data.Redis
-	11, // 10: kratos.api.Jwt.system:type_name -> kratos.api.Jwt.Param
-	11, // 11: kratos.api.Jwt.client:type_name -> kratos.api.Jwt.Param
-	12, // [12:12] is the sub-list for method output_type
-	12, // [12:12] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+var file_conf_conf_local_proto_depIdxs = []int32{
+	1, // 0: kratos.api.Bootstrap.env:type_name -> kratos.api.Env
+	2, // 1: kratos.api.Bootstrap.server:type_name -> kratos.api.Server
+	3, // 2: kratos.api.Bootstrap.data:type_name -> kratos.api.Data
+	4, // 3: kratos.api.Bootstrap.log:type_name -> kratos.api.Log
+	5, // 4: kratos.api.Server.http:type_name -> kratos.api.Server.HTTP
+	6, // 5: kratos.api.Server.grpc:type_name -> kratos.api.Server.GRPC
+	7, // 6: kratos.api.Data.database:type_name -> kratos.api.Data.Database
+	8, // 7: kratos.api.Data.redis:type_name -> kratos.api.Data.Redis
+	8, // [8:8] is the sub-list for method output_type
+	8, // [8:8] is the sub-list for method input_type
+	8, // [8:8] is the sub-list for extension type_name
+	8, // [8:8] is the sub-list for extension extendee
+	0, // [0:8] is the sub-list for field type_name
 }
 
-func init() { file_conf_conf_proto_init() }
-func file_conf_conf_proto_init() {
-	if File_conf_conf_proto != nil {
+func init() { file_conf_conf_local_proto_init() }
+func file_conf_conf_local_proto_init() {
+	if File_conf_conf_local_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conf_conf_proto_rawDesc), len(file_conf_conf_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conf_conf_local_proto_rawDesc), len(file_conf_conf_local_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_conf_conf_proto_goTypes,
-		DependencyIndexes: file_conf_conf_proto_depIdxs,
-		MessageInfos:      file_conf_conf_proto_msgTypes,
+		GoTypes:           file_conf_conf_local_proto_goTypes,
+		DependencyIndexes: file_conf_conf_local_proto_depIdxs,
+		MessageInfos:      file_conf_conf_local_proto_msgTypes,
 	}.Build()
-	File_conf_conf_proto = out.File
-	file_conf_conf_proto_goTypes = nil
-	file_conf_conf_proto_depIdxs = nil
+	File_conf_conf_local_proto = out.File
+	file_conf_conf_local_proto_goTypes = nil
+	file_conf_conf_local_proto_depIdxs = nil
 }
