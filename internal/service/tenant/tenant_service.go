@@ -39,7 +39,7 @@ func (s *TenantService) CreateTenant(ctx context.Context, in *v1.CreateTenantReq
 		Status:        1,
 	}
 
-	_, err := s.tc.CreateTenant(ctx, tenant)
+	err := s.tc.CreateTenant(ctx, tenant)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +104,7 @@ func (s *TenantService) UpdateTenant(ctx context.Context, in *v1.UpdateTenantReq
 		AccountCount:  in.GetAccountCount(),
 	}
 
-	_, err := s.tc.UpdateTenant(ctx, tenant)
+	err := s.tc.UpdateTenant(ctx, tenant)
 	if err != nil {
 		return nil, err
 	}
@@ -114,91 +114,6 @@ func (s *TenantService) UpdateTenant(ctx context.Context, in *v1.UpdateTenantReq
 
 func (s *TenantService) DeleteTenant(ctx context.Context, in *v1.DeleteTenantRequest) (*emptypb.Empty, error) {
 	err := s.tc.DeleteTenant(ctx, in.GetId())
-	if err != nil {
-		return nil, err
-	}
-
-	return &emptypb.Empty{}, nil
-}
-
-func (s *TenantService) CreateTenantPackage(ctx context.Context, in *v1.CreateTenantPackageRequest) (*emptypb.Empty, error) {
-	pkg := &biz.TenantPackage{
-		Name:    in.GetName(),
-		Remark:  in.GetRemark(),
-		MenuIDs: in.GetMenuIds(),
-		Status:  1,
-	}
-
-	_, err := s.tpc.CreateTenantPackage(ctx, pkg)
-	if err != nil {
-		return nil, err
-	}
-
-	return &emptypb.Empty{}, nil
-}
-
-func (s *TenantService) GetTenantPackage(ctx context.Context, in *v1.GetTenantPackageRequest) (*v1.GetTenantPackageReply, error) {
-	pkg, err := s.tpc.GetTenantPackage(ctx, in.GetId())
-	if err != nil {
-		return nil, err
-	}
-
-	return &v1.GetTenantPackageReply{
-		Package: s.toProtoPackage(pkg),
-	}, nil
-}
-
-func (s *TenantService) ListTenantPackages(ctx context.Context, in *v1.ListTenantPackagesRequest) (*v1.ListTenantPackagesReply, error) {
-	query := &biz.ListPackagesQuery{
-		Page:      in.GetPage(),
-		PageSize:  in.GetPageSize(),
-		Keyword:   in.GetKeyword(),
-		SortField: in.GetSortField(),
-		SortOrder: in.GetSortOrder(),
-	}
-
-	if in.Status != nil {
-		query.Status = in.Status
-	}
-
-	result, err := s.tpc.ListTenantPackages(ctx, query)
-	if err != nil {
-		return nil, err
-	}
-
-	packages := make([]*v1.TenantPackageInfo, 0, len(result.Packages))
-	for _, pkg := range result.Packages {
-		packages = append(packages, s.toProtoPackage(pkg))
-	}
-
-	return &v1.ListTenantPackagesReply{
-		Packages:   packages,
-		Total:      result.Total,
-		Page:       result.Page,
-		PageSize:   result.PageSize,
-		TotalPages: result.TotalPages,
-	}, nil
-}
-
-func (s *TenantService) UpdateTenantPackage(ctx context.Context, in *v1.UpdateTenantPackageRequest) (*emptypb.Empty, error) {
-	pkg := &biz.TenantPackage{
-		ID:      in.GetId(),
-		Name:    in.GetName(),
-		Status:  in.GetStatus(),
-		Remark:  in.GetRemark(),
-		MenuIDs: in.GetMenuIds(),
-	}
-
-	_, err := s.tpc.UpdateTenantPackage(ctx, pkg)
-	if err != nil {
-		return nil, err
-	}
-
-	return &emptypb.Empty{}, nil
-}
-
-func (s *TenantService) DeleteTenantPackage(ctx context.Context, in *v1.DeleteTenantPackageRequest) (*emptypb.Empty, error) {
-	err := s.tpc.DeleteTenantPackage(ctx, in.GetId())
 	if err != nil {
 		return nil, err
 	}

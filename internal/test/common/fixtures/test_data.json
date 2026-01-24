@@ -1,0 +1,62 @@
+{
+  "test_user": {
+    "id": "test_user_001",
+    "username": "testuser",
+    "password": "hashed_password",
+    "nickname": "Test User",
+    "email": "test@example.com",
+    "mobile": "13800138000",
+    "sex": 1,
+    "status": 1,
+    "remark": "Test user for unit testing",
+    "tenant_id": "test_tenant_001"
+  },
+  "test_role": {
+    "id": "test_role_001",
+    "name": "Test Role",
+    "code": "TEST_ROLE",
+    "sort": 1,
+    "data_scope": 1,
+    "status": 1,
+    "type": 1,
+    "tenant_id": "test_tenant_001"
+  },
+  "test_menu": {
+    "id": "test_menu_001",
+    "name": "Test Menu",
+    "permission": "test:permission",
+    "type": 1,
+    "sort": 1,
+    "path": "/test",
+    "icon": "test-icon",
+    "component": "TestComponent",
+    "component_name": "test-component",
+    "status": 1,
+    "visible": true,
+    "keep_alive": true,
+    "always_show": true
+  },
+  "test_department": {
+    "id": "test_dept_001",
+    "name": "Test Department",
+    "sort": 1,
+    "status": 1,
+    "tenant_id": "test_tenant_001"
+  },
+  "test_post": {
+    "id": "test_post_001",
+    "name": "Test Post",
+    "code": "TEST_POST",
+    "sort": 1,
+    "status": 1,
+    "tenant_id": "test_tenant_001"
+  },
+  "test_tenant": {
+    "id": "test_tenant_001",
+    "name": "Test Company",
+    "contact_name": "John Doe",
+    "contact_mobile": "13800138000",
+    "status": 1,
+    "account_count": 100
+  }
+}

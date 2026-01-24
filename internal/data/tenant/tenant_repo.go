@@ -46,7 +46,7 @@ func NewTenantRepo(data *data.Data, logger log.Logger) biz.TenantRepo {
 	}
 }
 
-func (r *tenantRepo) Create(ctx context.Context, tenant *biz.Tenant) (*biz.Tenant, error) {
+func (r *tenantRepo) Create(ctx context.Context, tenant *biz.Tenant) error {
 	now := time.Now()
 	dbTenant := &Tenant{
 		ID:            idgen.GenerateID(),
@@ -67,10 +67,10 @@ func (r *tenantRepo) Create(ctx context.Context, tenant *biz.Tenant) (*biz.Tenan
 
 	_, err := r.data.DB(ctx).NewInsert().Model(dbTenant).Exec(ctx)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return r.toBizTenant(dbTenant), nil
+	return nil
 }
 
 func (r *tenantRepo) FindByID(ctx context.Context, id string) (*biz.Tenant, error) {
@@ -151,7 +151,7 @@ func (r *tenantRepo) List(ctx context.Context, query *biz.ListTenantsQuery) (*bi
 	}, nil
 }
 
-func (r *tenantRepo) Update(ctx context.Context, tenant *biz.Tenant) (*biz.Tenant, error) {
+func (r *tenantRepo) Update(ctx context.Context, tenant *biz.Tenant) error {
 	dbTenant := &Tenant{
 		ID:            tenant.ID,
 		Name:          tenant.Name,
@@ -168,10 +168,10 @@ func (r *tenantRepo) Update(ctx context.Context, tenant *biz.Tenant) (*biz.Tenan
 
 	_, err := r.data.DB(ctx).NewUpdate().Model(dbTenant).WherePK().OmitZero().Exec(ctx)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return r.FindByID(ctx, tenant.ID)
+	return nil
 }
 
 func (r *tenantRepo) Delete(ctx context.Context, id string) error {
@@ -180,18 +180,6 @@ func (r *tenantRepo) Delete(ctx context.Context, id string) error {
 		Where("id = ?", id).
 		Exec(ctx)
 	return err
-}
-
-func (r *tenantRepo) HasUsers(ctx context.Context, id string) (bool, error) {
-	count, err := r.data.DB(ctx).NewSelect().
-		Model((*Tenant)(nil)).
-		TableExpr("qa_user").
-		Where("tenant_id = ?", id).
-		Count(ctx)
-	if err != nil {
-		return false, err
-	}
-	return count > 0, nil
 }
 
 func (r *tenantRepo) toBizTenant(dbTenant *Tenant) *biz.Tenant {

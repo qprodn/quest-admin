@@ -80,9 +80,14 @@ all:
 	make wire;
 	@echo '==============success=============='
 
-.PHONY: wire
+ .PHONY: wire
 wire:
 	wire ./...
+
+.PHONY: test
+# run all tests
+test:
+	go test -v ./internal/test/...
 
 # show help
 help:

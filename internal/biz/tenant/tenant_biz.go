@@ -2,19 +2,19 @@ package tenant
 
 import (
 	"context"
-	"errors"
+	"quest-admin/pkg/errorx"
+	"quest-admin/types/errkey"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
 
 type TenantRepo interface {
-	Create(ctx context.Context, tenant *Tenant) (*Tenant, error)
+	Create(ctx context.Context, tenant *Tenant) error
 	FindByID(ctx context.Context, id string) (*Tenant, error)
 	FindByName(ctx context.Context, name string) (*Tenant, error)
 	List(ctx context.Context, query *ListTenantsQuery) (*ListTenantsResult, error)
-	Update(ctx context.Context, tenant *Tenant) (*Tenant, error)
+	Update(ctx context.Context, tenant *Tenant) error
 	Delete(ctx context.Context, id string) error
-	HasUsers(ctx context.Context, id string) (bool, error)
 }
 
 type TenantUsecase struct {
@@ -29,56 +29,39 @@ func NewTenantUsecase(repo TenantRepo, logger log.Logger) *TenantUsecase {
 	}
 }
 
-func (uc *TenantUsecase) CreateTenant(ctx context.Context, tenant *Tenant) (*Tenant, error) {
-	uc.log.WithContext(ctx).Infof("CreateTenant: name=%s, packageID=%s", tenant.Name, tenant.PackageID)
-
+func (uc *TenantUsecase) CreateTenant(ctx context.Context, tenant *Tenant) error {
 	existing, err := uc.repo.FindByName(ctx, tenant.Name)
-	if err != nil && !errors.Is(err, ErrTenantNotFound) {
-		return nil, err
+	if err != nil {
+		return err
 	}
 	if existing != nil {
-		return nil, ErrTenantNameExists
+		return errorx.Err(errkey.ErrTenantNameExists)
 	}
 
 	return uc.repo.Create(ctx, tenant)
 }
 
 func (uc *TenantUsecase) GetTenant(ctx context.Context, id string) (*Tenant, error) {
-	uc.log.WithContext(ctx).Infof("GetTenant: id=%s", id)
 	return uc.repo.FindByID(ctx, id)
 }
 
 func (uc *TenantUsecase) ListTenants(ctx context.Context, query *ListTenantsQuery) (*ListTenantsResult, error) {
-	uc.log.WithContext(ctx).Infof("ListTenants: page=%d, pageSize=%d, keyword=%s", query.Page, query.PageSize, query.Keyword)
 	return uc.repo.List(ctx, query)
 }
 
-func (uc *TenantUsecase) UpdateTenant(ctx context.Context, tenant *Tenant) (*Tenant, error) {
-	uc.log.WithContext(ctx).Infof("UpdateTenant: id=%s, name=%s", tenant.ID, tenant.Name)
-
+func (uc *TenantUsecase) UpdateTenant(ctx context.Context, tenant *Tenant) error {
 	_, err := uc.repo.FindByID(ctx, tenant.ID)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	return uc.repo.Update(ctx, tenant)
 }
 
 func (uc *TenantUsecase) DeleteTenant(ctx context.Context, id string) error {
-	uc.log.WithContext(ctx).Infof("DeleteTenant: id=%s", id)
-
 	_, err := uc.repo.FindByID(ctx, id)
 	if err != nil {
 		return err
 	}
-
-	hasUsers, err := uc.repo.HasUsers(ctx, id)
-	if err != nil {
-		return err
-	}
-	if hasUsers {
-		return ErrTenantHasUsers
-	}
-
 	return uc.repo.Delete(ctx, id)
 }
