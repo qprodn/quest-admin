@@ -129,8 +129,7 @@ func (m *MockTransactionManager) Tx(ctx context.Context, fn func(context.Context
 	return args.Error(0)
 }
 
-func TestRoleUsecase_CreateRole(t *testing.T) {
-	ctx := context.Background()
+func newTestRoleUsecase(t *testing.T) (*permission.RoleUsecase, *MockRoleRepo, *MockRoleMenuRepo) {
 	mockRepo := new(MockRoleRepo)
 	mockRoleMenuRepo := new(MockRoleMenuRepo)
 	mockTm := new(MockTransactionManager)
@@ -138,184 +137,432 @@ func TestRoleUsecase_CreateRole(t *testing.T) {
 	logger := log.DefaultLogger
 
 	uc := permission.NewRoleUsecase(mockTm, idg, mockRepo, mockRoleMenuRepo, logger)
-
-	role := &permission.Role{
-		Name:   "Admin",
-		Code:   "admin",
-		Status: 1,
-	}
-
-	mockRepo.On("FindByName", ctx, "Admin").Return(nil, nil)
-	mockRepo.On("FindByCode", ctx, "admin").Return(nil, nil)
-	mockRepo.On("Create", ctx, mock.AnythingOfType("*permission.Role")).Return(role, nil)
-
-	result, err := uc.CreateRole(ctx, role)
-
-	assert.NoError(t, err)
-	assert.NotNil(t, result)
-	mockRepo.AssertExpectations(t)
+	return uc, mockRepo, mockRoleMenuRepo
 }
 
-func TestRoleUsecase_CreateRole_DuplicateName(t *testing.T) {
+func TestRoleUsecase_CreateRole(t *testing.T) {
 	ctx := context.Background()
-	mockRepo := new(MockRoleRepo)
-	mockRoleMenuRepo := new(MockRoleMenuRepo)
-	mockTm := new(MockTransactionManager)
-	idg := idgen.NewIDGenerator()
-	logger := log.DefaultLogger
-
-	uc := permission.NewRoleUsecase(mockTm, idg, mockRepo, mockRoleMenuRepo, logger)
-
-	role := &permission.Role{
-		Name: "Admin",
-		Code: "admin",
+	tests := []struct {
+		name        string
+		setupMock   func(*MockRoleRepo, *MockRoleMenuRepo)
+		inputRole   *permission.Role
+		expectError bool
+	}{
+		{
+			name: "success",
+			setupMock: func(m *MockRoleRepo, r *MockRoleMenuRepo) {
+				role := &permission.Role{
+					Name:   "Admin",
+					Code:   "admin",
+					Status: 1,
+				}
+				m.On("FindByName", ctx, "Admin").Return(nil, nil)
+				m.On("FindByCode", ctx, "admin").Return(nil, nil)
+				m.On("Create", ctx, mock.AnythingOfType("*permission.Role")).Return(role, nil)
+			},
+			inputRole: &permission.Role{
+				Name:   "Admin",
+				Code:   "admin",
+				Status: 1,
+			},
+			expectError: false,
+		},
+		{
+			name: "repo error when finding by name",
+			setupMock: func(m *MockRoleRepo, r *MockRoleMenuRepo) {
+				m.On("FindByName", ctx, "Admin").Return(nil, assert.AnError)
+			},
+			inputRole: &permission.Role{
+				Name:   "Admin",
+				Code:   "admin",
+				Status: 1,
+			},
+			expectError: true,
+		},
+		{
+			name: "duplicate name",
+			setupMock: func(m *MockRoleRepo, r *MockRoleMenuRepo) {
+				existing := &permission.Role{ID: "role-1", Name: "Admin"}
+				m.On("FindByName", ctx, "Admin").Return(existing, nil)
+			},
+			inputRole: &permission.Role{
+				Name: "Admin",
+				Code: "admin",
+			},
+			expectError: true,
+		},
+		{
+			name: "duplicate code",
+			setupMock: func(m *MockRoleRepo, r *MockRoleMenuRepo) {
+				m.On("FindByName", ctx, "Admin").Return(nil, nil)
+				existing := &permission.Role{ID: "role-1", Code: "admin"}
+				m.On("FindByCode", ctx, "admin").Return(existing, nil)
+			},
+			inputRole: &permission.Role{
+				Name:   "Admin",
+				Code:   "admin",
+				Status: 1,
+			},
+			expectError: true,
+		},
+		{
+			name: "create error",
+			setupMock: func(m *MockRoleRepo, r *MockRoleMenuRepo) {
+				m.On("FindByName", ctx, "Admin").Return(nil, nil)
+				m.On("FindByCode", ctx, "admin").Return(nil, nil)
+				m.On("Create", ctx, mock.AnythingOfType("*permission.Role")).Return(nil, assert.AnError)
+			},
+			inputRole: &permission.Role{
+				Name:   "Admin",
+				Code:   "admin",
+				Status: 1,
+			},
+			expectError: true,
+		},
 	}
 
-	existing := &permission.Role{ID: "role-1", Name: "Admin"}
-	mockRepo.On("FindByName", ctx, "Admin").Return(existing, nil)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			uc, mockRepo, mockRoleMenuRepo := newTestRoleUsecase(t)
+			tt.setupMock(mockRepo, mockRoleMenuRepo)
 
-	_, err := uc.CreateRole(ctx, role)
+			result, err := uc.CreateRole(ctx, tt.inputRole)
 
-	assert.Error(t, err)
-	mockRepo.AssertExpectations(t)
+			if tt.expectError {
+				assert.Error(t, err)
+				assert.Nil(t, result)
+			} else {
+				assert.NoError(t, err)
+				assert.NotNil(t, result)
+			}
+
+			mockRepo.AssertExpectations(t)
+		})
+	}
 }
 
 func TestRoleUsecase_GetRole(t *testing.T) {
 	ctx := context.Background()
-	mockRepo := new(MockRoleRepo)
-	mockRoleMenuRepo := new(MockRoleMenuRepo)
-	mockTm := new(MockTransactionManager)
-	idg := idgen.NewIDGenerator()
-	logger := log.DefaultLogger
-
-	uc := permission.NewRoleUsecase(mockTm, idg, mockRepo, mockRoleMenuRepo, logger)
-
-	expected := &permission.Role{
-		ID:   "role-1",
-		Name: "Admin",
+	tests := []struct {
+		name        string
+		setupMock   func(*MockRoleRepo, *MockRoleMenuRepo)
+		inputID     string
+		expectError bool
+		expectID    string
+	}{
+		{
+			name: "success",
+			setupMock: func(m *MockRoleRepo, r *MockRoleMenuRepo) {
+				expected := &permission.Role{
+					ID:   "role-1",
+					Name: "Admin",
+				}
+				m.On("FindByID", ctx, "role-1").Return(expected, nil)
+			},
+			inputID:     "role-1",
+			expectError: false,
+			expectID:    "role-1",
+		},
+		{
+			name: "not found",
+			setupMock: func(m *MockRoleRepo, r *MockRoleMenuRepo) {
+				m.On("FindByID", ctx, "role-1").Return(nil, assert.AnError)
+			},
+			inputID:     "role-1",
+			expectError: true,
+			expectID:    "",
+		},
 	}
 
-	mockRepo.On("FindByID", ctx, "role-1").Return(expected, nil)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			uc, mockRepo, mockRoleMenuRepo := newTestRoleUsecase(t)
+			tt.setupMock(mockRepo, mockRoleMenuRepo)
 
-	result, err := uc.GetRole(ctx, "role-1")
+			result, err := uc.GetRole(ctx, tt.inputID)
 
-	assert.NoError(t, err)
-	assert.Equal(t, "role-1", result.ID)
-	mockRepo.AssertExpectations(t)
+			if tt.expectError {
+				assert.Error(t, err)
+				assert.Nil(t, result)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.expectID, result.ID)
+			}
+
+			mockRepo.AssertExpectations(t)
+		})
+	}
 }
 
 func TestRoleUsecase_UpdateRole(t *testing.T) {
 	ctx := context.Background()
-	mockRepo := new(MockRoleRepo)
-	mockRoleMenuRepo := new(MockRoleMenuRepo)
-	mockTm := new(MockTransactionManager)
-	idg := idgen.NewIDGenerator()
-	logger := log.DefaultLogger
-
-	uc := permission.NewRoleUsecase(mockTm, idg, mockRepo, mockRoleMenuRepo, logger)
-
-	role := &permission.Role{
-		ID:     "role-1",
-		Name:   "Admin Updated",
-		Status: 1,
+	tests := []struct {
+		name        string
+		setupMock   func(*MockRoleRepo, *MockRoleMenuRepo)
+		inputRole   *permission.Role
+		expectError bool
+	}{
+		{
+			name: "success",
+			setupMock: func(m *MockRoleRepo, r *MockRoleMenuRepo) {
+				role := &permission.Role{
+					ID:     "role-1",
+					Name:   "Admin Updated",
+					Status: 1,
+				}
+				m.On("FindByID", ctx, "role-1").Return(role, nil)
+				m.On("Update", ctx, mock.AnythingOfType("*permission.Role")).Return(role, nil)
+			},
+			inputRole: &permission.Role{
+				ID:     "role-1",
+				Name:   "Admin Updated",
+				Status: 1,
+			},
+			expectError: false,
+		},
+		{
+			name: "not found",
+			setupMock: func(m *MockRoleRepo, r *MockRoleMenuRepo) {
+				m.On("FindByID", ctx, "role-1").Return(nil, assert.AnError)
+			},
+			inputRole: &permission.Role{
+				ID:     "role-1",
+				Name:   "Admin Updated",
+				Status: 1,
+			},
+			expectError: true,
+		},
+		{
+			name: "update error",
+			setupMock: func(m *MockRoleRepo, r *MockRoleMenuRepo) {
+				role := &permission.Role{
+					ID:     "role-1",
+					Name:   "Admin Updated",
+					Status: 1,
+				}
+				m.On("FindByID", ctx, "role-1").Return(role, nil)
+				m.On("Update", ctx, mock.AnythingOfType("*permission.Role")).Return(nil, assert.AnError)
+			},
+			inputRole: &permission.Role{
+				ID:     "role-1",
+				Name:   "Admin Updated",
+				Status: 1,
+			},
+			expectError: true,
+		},
 	}
 
-	mockRepo.On("FindByID", ctx, "role-1").Return(role, nil)
-	mockRepo.On("Update", ctx, mock.AnythingOfType("*permission.Role")).Return(role, nil)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			uc, mockRepo, mockRoleMenuRepo := newTestRoleUsecase(t)
+			tt.setupMock(mockRepo, mockRoleMenuRepo)
 
-	result, err := uc.UpdateRole(ctx, role)
+			result, err := uc.UpdateRole(ctx, tt.inputRole)
 
-	assert.NoError(t, err)
-	assert.Equal(t, "Admin Updated", result.Name)
-	mockRepo.AssertExpectations(t)
+			if tt.expectError {
+				assert.Error(t, err)
+				assert.Nil(t, result)
+			} else {
+				assert.NoError(t, err)
+				assert.NotNil(t, result)
+			}
+
+			mockRepo.AssertExpectations(t)
+		})
+	}
 }
 
 func TestRoleUsecase_DeleteRole(t *testing.T) {
 	ctx := context.Background()
-	mockRepo := new(MockRoleRepo)
-	mockRoleMenuRepo := new(MockRoleMenuRepo)
-	mockTm := new(MockTransactionManager)
-	idg := idgen.NewIDGenerator()
-	logger := log.DefaultLogger
+	tests := []struct {
+		name        string
+		setupMock   func(*MockRoleRepo, *MockRoleMenuRepo)
+		inputID     string
+		expectError bool
+	}{
+		{
+			name: "success",
+			setupMock: func(m *MockRoleRepo, r *MockRoleMenuRepo) {
+				role := &permission.Role{ID: "role-1"}
+				m.On("FindByID", ctx, "role-1").Return(role, nil)
+				m.On("HasUsers", ctx, "role-1").Return(false, nil)
+				m.On("Delete", ctx, "role-1").Return(nil)
+			},
+			inputID:     "role-1",
+			expectError: false,
+		},
+		{
+			name: "not found",
+			setupMock: func(m *MockRoleRepo, r *MockRoleMenuRepo) {
+				m.On("FindByID", ctx, "role-1").Return(nil, assert.AnError)
+			},
+			inputID:     "role-1",
+			expectError: true,
+		},
+		{
+			name: "has users",
+			setupMock: func(m *MockRoleRepo, r *MockRoleMenuRepo) {
+				role := &permission.Role{ID: "role-1"}
+				m.On("FindByID", ctx, "role-1").Return(role, nil)
+				m.On("HasUsers", ctx, "role-1").Return(true, nil)
+			},
+			inputID:     "role-1",
+			expectError: true,
+		},
+		{
+			name: "has users error",
+			setupMock: func(m *MockRoleRepo, r *MockRoleMenuRepo) {
+				role := &permission.Role{ID: "role-1"}
+				m.On("FindByID", ctx, "role-1").Return(role, nil)
+				m.On("HasUsers", ctx, "role-1").Return(false, assert.AnError)
+			},
+			inputID:     "role-1",
+			expectError: true,
+		},
+		{
+			name: "delete error",
+			setupMock: func(m *MockRoleRepo, r *MockRoleMenuRepo) {
+				role := &permission.Role{ID: "role-1"}
+				m.On("FindByID", ctx, "role-1").Return(role, nil)
+				m.On("HasUsers", ctx, "role-1").Return(false, nil)
+				m.On("Delete", ctx, "role-1").Return(assert.AnError)
+			},
+			inputID:     "role-1",
+			expectError: true,
+		},
+	}
 
-	uc := permission.NewRoleUsecase(mockTm, idg, mockRepo, mockRoleMenuRepo, logger)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			uc, mockRepo, mockRoleMenuRepo := newTestRoleUsecase(t)
+			tt.setupMock(mockRepo, mockRoleMenuRepo)
 
-	role := &permission.Role{ID: "role-1"}
+			err := uc.DeleteRole(ctx, tt.inputID)
 
-	mockRepo.On("FindByID", ctx, "role-1").Return(role, nil)
-	mockRepo.On("HasUsers", ctx, "role-1").Return(false, nil)
-	mockRepo.On("Delete", ctx, "role-1").Return(nil)
+			if tt.expectError {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
 
-	err := uc.DeleteRole(ctx, "role-1")
-
-	assert.NoError(t, err)
-	mockRepo.AssertExpectations(t)
-}
-
-func TestRoleUsecase_DeleteRole_HasUsers(t *testing.T) {
-	ctx := context.Background()
-	mockRepo := new(MockRoleRepo)
-	mockRoleMenuRepo := new(MockRoleMenuRepo)
-	mockTm := new(MockTransactionManager)
-	idg := idgen.NewIDGenerator()
-	logger := log.DefaultLogger
-
-	uc := permission.NewRoleUsecase(mockTm, idg, mockRepo, mockRoleMenuRepo, logger)
-
-	role := &permission.Role{ID: "role-1"}
-
-	mockRepo.On("FindByID", ctx, "role-1").Return(role, nil)
-	mockRepo.On("HasUsers", ctx, "role-1").Return(true, nil)
-
-	err := uc.DeleteRole(ctx, "role-1")
-
-	assert.Error(t, err)
-	mockRepo.AssertExpectations(t)
+			mockRepo.AssertExpectations(t)
+		})
+	}
 }
 
 func TestRoleUsecase_GetRoleMenus(t *testing.T) {
 	ctx := context.Background()
-	mockRepo := new(MockRoleRepo)
-	mockRoleMenuRepo := new(MockRoleMenuRepo)
-	mockTm := new(MockTransactionManager)
-	idg := idgen.NewIDGenerator()
-	logger := log.DefaultLogger
+	tests := []struct {
+		name         string
+		setupMock    func(*MockRoleRepo, *MockRoleMenuRepo)
+		inputRoleID  string
+		expectError  bool
+		expectLength int
+	}{
+		{
+			name: "success",
+			setupMock: func(m *MockRoleRepo, r *MockRoleMenuRepo) {
+				role := &permission.Role{ID: "role-1"}
+				menuIDs := []string{"menu-1", "menu-2"}
+				m.On("FindByID", ctx, "role-1").Return(role, nil)
+				r.On("GetMenuIDs", ctx, "role-1").Return(menuIDs, nil)
+			},
+			inputRoleID:  "role-1",
+			expectError:  false,
+			expectLength: 2,
+		},
+		{
+			name: "not found",
+			setupMock: func(m *MockRoleRepo, r *MockRoleMenuRepo) {
+				m.On("FindByID", ctx, "role-1").Return(nil, assert.AnError)
+			},
+			inputRoleID:  "role-1",
+			expectError:  true,
+			expectLength: 0,
+		},
+		{
+			name: "get menu IDs error",
+			setupMock: func(m *MockRoleRepo, r *MockRoleMenuRepo) {
+				role := &permission.Role{ID: "role-1"}
+				m.On("FindByID", ctx, "role-1").Return(role, nil)
+				r.On("GetMenuIDs", ctx, "role-1").Return(nil, assert.AnError)
+			},
+			inputRoleID:  "role-1",
+			expectError:  true,
+			expectLength: 0,
+		},
+	}
 
-	uc := permission.NewRoleUsecase(mockTm, idg, mockRepo, mockRoleMenuRepo, logger)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			uc, mockRepo, mockRoleMenuRepo := newTestRoleUsecase(t)
+			tt.setupMock(mockRepo, mockRoleMenuRepo)
 
-	role := &permission.Role{ID: "role-1"}
-	menuIDs := []string{"menu-1", "menu-2"}
+			result, err := uc.GetRoleMenus(ctx, tt.inputRoleID)
 
-	mockRepo.On("FindByID", ctx, "role-1").Return(role, nil)
-	mockRoleMenuRepo.On("GetMenuIDs", ctx, "role-1").Return(menuIDs, nil)
+			if tt.expectError {
+				assert.Error(t, err)
+				assert.Nil(t, result)
+			} else {
+				assert.NoError(t, err)
+				assert.Len(t, result, tt.expectLength)
+			}
 
-	result, err := uc.GetRoleMenus(ctx, "role-1")
-
-	assert.NoError(t, err)
-	assert.Len(t, result, 2)
-	mockRepo.AssertExpectations(t)
+			mockRepo.AssertExpectations(t)
+			mockRoleMenuRepo.AssertExpectations(t)
+		})
+	}
 }
 
 func TestRoleUsecase_ListByRoleIDs(t *testing.T) {
 	ctx := context.Background()
-	mockRepo := new(MockRoleRepo)
-	mockRoleMenuRepo := new(MockRoleMenuRepo)
-	mockTm := new(MockTransactionManager)
-	idg := idgen.NewIDGenerator()
-	logger := log.DefaultLogger
-
-	uc := permission.NewRoleUsecase(mockTm, idg, mockRepo, mockRoleMenuRepo, logger)
-
-	roles := []*permission.Role{
-		{ID: "role-1", Name: "Admin"},
-		{ID: "role-2", Name: "User"},
+	tests := []struct {
+		name         string
+		setupMock    func(*MockRoleRepo, *MockRoleMenuRepo)
+		inputRoleIDs []string
+		expectError  bool
+		expectLength int
+	}{
+		{
+			name: "success",
+			setupMock: func(m *MockRoleRepo, r *MockRoleMenuRepo) {
+				roles := []*permission.Role{
+					{ID: "role-1", Name: "Admin"},
+					{ID: "role-2", Name: "User"},
+				}
+				m.On("FindListByIDs", ctx, []string{"role-1", "role-2"}).Return(roles, nil)
+			},
+			inputRoleIDs: []string{"role-1", "role-2"},
+			expectError:  false,
+			expectLength: 2,
+		},
+		{
+			name: "error",
+			setupMock: func(m *MockRoleRepo, r *MockRoleMenuRepo) {
+				m.On("FindListByIDs", ctx, []string{"role-1", "role-2"}).Return(nil, assert.AnError)
+			},
+			inputRoleIDs: []string{"role-1", "role-2"},
+			expectError:  true,
+			expectLength: 0,
+		},
 	}
 
-	mockRepo.On("FindListByIDs", ctx, []string{"role-1", "role-2"}).Return(roles, nil)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			uc, mockRepo, mockRoleMenuRepo := newTestRoleUsecase(t)
+			tt.setupMock(mockRepo, mockRoleMenuRepo)
 
-	result, err := uc.ListByRoleIDs(ctx, []string{"role-1", "role-2"})
+			result, err := uc.ListByRoleIDs(ctx, tt.inputRoleIDs)
 
-	assert.NoError(t, err)
-	assert.Len(t, result, 2)
-	mockRepo.AssertExpectations(t)
+			if tt.expectError {
+				assert.Error(t, err)
+				assert.Nil(t, result)
+			} else {
+				assert.NoError(t, err)
+				assert.Len(t, result, tt.expectLength)
+			}
+
+			mockRepo.AssertExpectations(t)
+		})
+	}
 }
