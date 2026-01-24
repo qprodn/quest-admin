@@ -509,6 +509,20 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /qs/v1/tenant/all:
+        get:
+            tags:
+                - TenantService
+            summary: 获取全量租户列表
+            description: 获取所有租户的简化信息列表，仅包含ID和名称
+            operationId: TenantService_GetAllTenants
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.tenant.v1.GetAllTenantsReply'
     /qs/v1/tenant/create:
         post:
             tags:
@@ -1817,6 +1831,15 @@ components:
                     description: 账号数量
                     format: int32
             description: 创建租户请求体
+        system.tenant.v1.GetAllTenantsReply:
+            type: object
+            properties:
+                tenants:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/system.tenant.v1.TenantSimpleInfo'
+                    description: 租户列表
+            description: 获取全量租户列表响应体
         system.tenant.v1.GetTenantPackageReply:
             type: object
             properties:
@@ -2033,6 +2056,18 @@ components:
                     description: 更新时间
                     format: date-time
             description: 租户套餐的基本信息
+        system.tenant.v1.TenantSimpleInfo:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 租户唯一标识符
+                name:
+                    example: 示例公司
+                    type: string
+                    description: 租户名称
+            description: 租户简化信息
         system.tenant.v1.UpdateTenantPackageRequest:
             type: object
             properties:

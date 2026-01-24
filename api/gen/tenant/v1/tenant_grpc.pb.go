@@ -20,11 +20,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	TenantService_CreateTenant_FullMethodName = "/system.tenant.v1.TenantService/CreateTenant"
-	TenantService_GetTenant_FullMethodName    = "/system.tenant.v1.TenantService/GetTenant"
-	TenantService_ListTenants_FullMethodName  = "/system.tenant.v1.TenantService/ListTenants"
-	TenantService_UpdateTenant_FullMethodName = "/system.tenant.v1.TenantService/UpdateTenant"
-	TenantService_DeleteTenant_FullMethodName = "/system.tenant.v1.TenantService/DeleteTenant"
+	TenantService_CreateTenant_FullMethodName  = "/system.tenant.v1.TenantService/CreateTenant"
+	TenantService_GetTenant_FullMethodName     = "/system.tenant.v1.TenantService/GetTenant"
+	TenantService_ListTenants_FullMethodName   = "/system.tenant.v1.TenantService/ListTenants"
+	TenantService_UpdateTenant_FullMethodName  = "/system.tenant.v1.TenantService/UpdateTenant"
+	TenantService_DeleteTenant_FullMethodName  = "/system.tenant.v1.TenantService/DeleteTenant"
+	TenantService_GetAllTenants_FullMethodName = "/system.tenant.v1.TenantService/GetAllTenants"
 )
 
 // TenantServiceClient is the client API for TenantService service.
@@ -41,6 +42,8 @@ type TenantServiceClient interface {
 	UpdateTenant(ctx context.Context, in *UpdateTenantRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 删除租户
 	DeleteTenant(ctx context.Context, in *DeleteTenantRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// 获取全量租户列表
+	GetAllTenants(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetAllTenantsReply, error)
 }
 
 type tenantServiceClient struct {
@@ -101,6 +104,16 @@ func (c *tenantServiceClient) DeleteTenant(ctx context.Context, in *DeleteTenant
 	return out, nil
 }
 
+func (c *tenantServiceClient) GetAllTenants(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetAllTenantsReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAllTenantsReply)
+	err := c.cc.Invoke(ctx, TenantService_GetAllTenants_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TenantServiceServer is the server API for TenantService service.
 // All implementations must embed UnimplementedTenantServiceServer
 // for forward compatibility.
@@ -115,6 +128,8 @@ type TenantServiceServer interface {
 	UpdateTenant(context.Context, *UpdateTenantRequest) (*emptypb.Empty, error)
 	// 删除租户
 	DeleteTenant(context.Context, *DeleteTenantRequest) (*emptypb.Empty, error)
+	// 获取全量租户列表
+	GetAllTenants(context.Context, *emptypb.Empty) (*GetAllTenantsReply, error)
 	mustEmbedUnimplementedTenantServiceServer()
 }
 
@@ -139,6 +154,9 @@ func (UnimplementedTenantServiceServer) UpdateTenant(context.Context, *UpdateTen
 }
 func (UnimplementedTenantServiceServer) DeleteTenant(context.Context, *DeleteTenantRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteTenant not implemented")
+}
+func (UnimplementedTenantServiceServer) GetAllTenants(context.Context, *emptypb.Empty) (*GetAllTenantsReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetAllTenants not implemented")
 }
 func (UnimplementedTenantServiceServer) mustEmbedUnimplementedTenantServiceServer() {}
 func (UnimplementedTenantServiceServer) testEmbeddedByValue()                       {}
@@ -251,6 +269,24 @@ func _TenantService_DeleteTenant_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TenantService_GetAllTenants_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TenantServiceServer).GetAllTenants(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TenantService_GetAllTenants_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TenantServiceServer).GetAllTenants(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TenantService_ServiceDesc is the grpc.ServiceDesc for TenantService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -277,6 +313,10 @@ var TenantService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteTenant",
 			Handler:    _TenantService_DeleteTenant_Handler,
+		},
+		{
+			MethodName: "GetAllTenants",
+			Handler:    _TenantService_GetAllTenants_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

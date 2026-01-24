@@ -64,3 +64,8 @@ type ListPackagesResult struct {
 	PageSize   int32
 	TotalPages int32
 }
+
+type TenantSimple struct {
+	ID   string
+	Name string
+}

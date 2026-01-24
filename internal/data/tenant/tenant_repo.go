@@ -182,6 +182,32 @@ func (r *tenantRepo) Delete(ctx context.Context, id string) error {
 	return err
 }
 
+func (r *tenantRepo) FindIDAndNameList(ctx context.Context) ([]*biz.TenantSimple, error) {
+	var dbTenants []struct {
+		ID   string `bun:"id"`
+		Name string `bun:"name"`
+	}
+
+	err := r.data.DB(ctx).NewSelect().
+		Model(&dbTenants).
+		Column("id", "name").
+		Order("name ASC").
+		Scan(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	tenants := make([]*biz.TenantSimple, 0, len(dbTenants))
+	for _, dbTenant := range dbTenants {
+		tenants = append(tenants, &biz.TenantSimple{
+			ID:   dbTenant.ID,
+			Name: dbTenant.Name,
+		})
+	}
+
+	return tenants, nil
+}
+
 func (r *tenantRepo) toBizTenant(dbTenant *Tenant) *biz.Tenant {
 	return &biz.Tenant{
 		ID:            dbTenant.ID,

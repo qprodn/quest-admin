@@ -13,6 +13,7 @@ type TenantRepo interface {
 	FindByID(ctx context.Context, id string) (*Tenant, error)
 	FindByName(ctx context.Context, name string) (*Tenant, error)
 	List(ctx context.Context, query *ListTenantsQuery) (*ListTenantsResult, error)
+	FindIDAndNameList(ctx context.Context) ([]*TenantSimple, error)
 	Update(ctx context.Context, tenant *Tenant) error
 	Delete(ctx context.Context, id string) error
 }
@@ -64,4 +65,8 @@ func (uc *TenantUsecase) DeleteTenant(ctx context.Context, id string) error {
 		return err
 	}
 	return uc.repo.Delete(ctx, id)
+}
+
+func (uc *TenantUsecase) GetAllTenants(ctx context.Context) ([]*TenantSimple, error) {
+	return uc.repo.FindIDAndNameList(ctx)
 }

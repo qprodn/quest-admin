@@ -665,6 +665,102 @@ func (x *DeleteTenantRequest) GetId() string {
 	return ""
 }
 
+type TenantSimpleInfo struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TenantSimpleInfo) Reset() {
+	*x = TenantSimpleInfo{}
+	mi := &file_tenant_v1_tenant_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TenantSimpleInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TenantSimpleInfo) ProtoMessage() {}
+
+func (x *TenantSimpleInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_tenant_v1_tenant_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TenantSimpleInfo.ProtoReflect.Descriptor instead.
+func (*TenantSimpleInfo) Descriptor() ([]byte, []int) {
+	return file_tenant_v1_tenant_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *TenantSimpleInfo) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *TenantSimpleInfo) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+type GetAllTenantsReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tenants       []*TenantSimpleInfo    `protobuf:"bytes,1,rep,name=tenants,proto3" json:"tenants,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAllTenantsReply) Reset() {
+	*x = GetAllTenantsReply{}
+	mi := &file_tenant_v1_tenant_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAllTenantsReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAllTenantsReply) ProtoMessage() {}
+
+func (x *GetAllTenantsReply) ProtoReflect() protoreflect.Message {
+	mi := &file_tenant_v1_tenant_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAllTenantsReply.ProtoReflect.Descriptor instead.
+func (*GetAllTenantsReply) Descriptor() ([]byte, []int) {
+	return file_tenant_v1_tenant_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *GetAllTenantsReply) GetTenants() []*TenantSimpleInfo {
+	if x != nil {
+		return x.Tenants
+	}
+	return nil
+}
+
 var File_tenant_v1_tenant_proto protoreflect.FileDescriptor
 
 const file_tenant_v1_tenant_proto_rawDesc = "" +
@@ -763,13 +859,19 @@ const file_tenant_v1_tenant_proto_rawDesc = "" +
 	"\x0e_account_count\"k\n" +
 	"\x13DeleteTenantRequest\x120\n" +
 	"\x02id\x18\x01 \x01(\tB\x1b\xbaG\x18:\v\x12\t123456789\x92\x02\b租户IDH\x00R\x02id\x88\x01\x01:\x1b\xbaG\x18\x92\x02\x15删除租户请求体B\x05\n" +
-	"\x03_id2\xd3\x06\n" +
+	"\x03_id\"\x9e\x01\n" +
+	"\x10TenantSimpleInfo\x128\n" +
+	"\x02id\x18\x01 \x01(\tB(\xbaG%:\v\x12\t123456789\x92\x02\x15租户唯一标识符R\x02id\x126\n" +
+	"\x04name\x18\x02 \x01(\tB\"\xbaG\x1f:\x0e\x12\f示例公司\x92\x02\f租户名称R\x04name:\x18\xbaG\x15\x92\x02\x12租户简化信息\"\x8f\x01\n" +
+	"\x12GetAllTenantsReply\x12P\n" +
+	"\atenants\x18\x01 \x03(\v2\".system.tenant.v1.TenantSimpleInfoB\x12\xbaG\x0f\x92\x02\f租户列表R\atenants:'\xbaG$\x92\x02!获取全量租户列表响应体2\x9b\b\n" +
 	"\rTenantService\x12\x99\x01\n" +
 	"\fCreateTenant\x12%.system.tenant.v1.CreateTenantRequest\x1a\x16.google.protobuf.Empty\"J\xbaG(\x12\f创建租户\x1a\x18创建一个新的租户\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/qs/v1/tenant/create\x12\xb4\x01\n" +
 	"\tGetTenant\x12\".system.tenant.v1.GetTenantRequest\x1a .system.tenant.v1.GetTenantReply\"a\xbaGE\x12\x18获取租户详细信息\x1a)根据租户ID获取租户的详细信息\x82\xd3\xe4\x93\x02\x13\x12\x11/qs/v1/tenant/get\x12\xa7\x01\n" +
 	"\vListTenants\x12$.system.tenant.v1.ListTenantsRequest\x1a\".system.tenant.v1.ListTenantsReply\"N\xbaG.\x12\x12获取租户列表\x1a\x18分页查询租户列表\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/qs/v1/tenant/list\x12\xa2\x01\n" +
 	"\fUpdateTenant\x12%.system.tenant.v1.UpdateTenantRequest\x1a\x16.google.protobuf.Empty\"S\xbaG1\x12\x12更新租户信息\x1a\x1b更新租户的基本信息\x82\xd3\xe4\x93\x02\x19:\x01*\x1a\x14/qs/v1/tenant/update\x12\x9f\x01\n" +
-	"\fDeleteTenant\x12%.system.tenant.v1.DeleteTenantRequest\x1a\x16.google.protobuf.Empty\"P\xbaG1\x12\f删除租户\x1a!删除租户，此操作不可逆\x82\xd3\xe4\x93\x02\x16*\x14/qs/v1/tenant/deleteBF\xbaG%:#\n" +
+	"\fDeleteTenant\x12%.system.tenant.v1.DeleteTenantRequest\x1a\x16.google.protobuf.Empty\"P\xbaG1\x12\f删除租户\x1a!删除租户，此操作不可逆\x82\xd3\xe4\x93\x02\x16*\x14/qs/v1/tenant/delete\x12\xc5\x01\n" +
+	"\rGetAllTenants\x12\x16.google.protobuf.Empty\x1a$.system.tenant.v1.GetAllTenantsReply\"v\xbaGZ\x12\x18获取全量租户列表\x1a>获取所有租户的简化信息列表，仅包含ID和名称\x82\xd3\xe4\x93\x02\x13\x12\x11/qs/v1/tenant/allBF\xbaG%:#\n" +
 	"\rTenantService\x12\x12租户相关操作Z\x1cquest-admin/api/tenant/v1;v1b\x06proto3"
 
 var (
@@ -784,7 +886,7 @@ func file_tenant_v1_tenant_proto_rawDescGZIP() []byte {
 	return file_tenant_v1_tenant_proto_rawDescData
 }
 
-var file_tenant_v1_tenant_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_tenant_v1_tenant_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_tenant_v1_tenant_proto_goTypes = []any{
 	(*TenantInfo)(nil),            // 0: system.tenant.v1.TenantInfo
 	(*CreateTenantRequest)(nil),   // 1: system.tenant.v1.CreateTenantRequest
@@ -794,32 +896,37 @@ var file_tenant_v1_tenant_proto_goTypes = []any{
 	(*ListTenantsReply)(nil),      // 5: system.tenant.v1.ListTenantsReply
 	(*UpdateTenantRequest)(nil),   // 6: system.tenant.v1.UpdateTenantRequest
 	(*DeleteTenantRequest)(nil),   // 7: system.tenant.v1.DeleteTenantRequest
-	(*timestamppb.Timestamp)(nil), // 8: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),         // 9: google.protobuf.Empty
+	(*TenantSimpleInfo)(nil),      // 8: system.tenant.v1.TenantSimpleInfo
+	(*GetAllTenantsReply)(nil),    // 9: system.tenant.v1.GetAllTenantsReply
+	(*timestamppb.Timestamp)(nil), // 10: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),         // 11: google.protobuf.Empty
 }
 var file_tenant_v1_tenant_proto_depIdxs = []int32{
-	8,  // 0: system.tenant.v1.TenantInfo.expire_time:type_name -> google.protobuf.Timestamp
-	8,  // 1: system.tenant.v1.TenantInfo.create_at:type_name -> google.protobuf.Timestamp
-	8,  // 2: system.tenant.v1.TenantInfo.update_at:type_name -> google.protobuf.Timestamp
-	8,  // 3: system.tenant.v1.CreateTenantRequest.expire_time:type_name -> google.protobuf.Timestamp
+	10, // 0: system.tenant.v1.TenantInfo.expire_time:type_name -> google.protobuf.Timestamp
+	10, // 1: system.tenant.v1.TenantInfo.create_at:type_name -> google.protobuf.Timestamp
+	10, // 2: system.tenant.v1.TenantInfo.update_at:type_name -> google.protobuf.Timestamp
+	10, // 3: system.tenant.v1.CreateTenantRequest.expire_time:type_name -> google.protobuf.Timestamp
 	0,  // 4: system.tenant.v1.GetTenantReply.tenant:type_name -> system.tenant.v1.TenantInfo
 	0,  // 5: system.tenant.v1.ListTenantsReply.tenants:type_name -> system.tenant.v1.TenantInfo
-	8,  // 6: system.tenant.v1.UpdateTenantRequest.expire_time:type_name -> google.protobuf.Timestamp
-	1,  // 7: system.tenant.v1.TenantService.CreateTenant:input_type -> system.tenant.v1.CreateTenantRequest
-	2,  // 8: system.tenant.v1.TenantService.GetTenant:input_type -> system.tenant.v1.GetTenantRequest
-	4,  // 9: system.tenant.v1.TenantService.ListTenants:input_type -> system.tenant.v1.ListTenantsRequest
-	6,  // 10: system.tenant.v1.TenantService.UpdateTenant:input_type -> system.tenant.v1.UpdateTenantRequest
-	7,  // 11: system.tenant.v1.TenantService.DeleteTenant:input_type -> system.tenant.v1.DeleteTenantRequest
-	9,  // 12: system.tenant.v1.TenantService.CreateTenant:output_type -> google.protobuf.Empty
-	3,  // 13: system.tenant.v1.TenantService.GetTenant:output_type -> system.tenant.v1.GetTenantReply
-	5,  // 14: system.tenant.v1.TenantService.ListTenants:output_type -> system.tenant.v1.ListTenantsReply
-	9,  // 15: system.tenant.v1.TenantService.UpdateTenant:output_type -> google.protobuf.Empty
-	9,  // 16: system.tenant.v1.TenantService.DeleteTenant:output_type -> google.protobuf.Empty
-	12, // [12:17] is the sub-list for method output_type
-	7,  // [7:12] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	10, // 6: system.tenant.v1.UpdateTenantRequest.expire_time:type_name -> google.protobuf.Timestamp
+	8,  // 7: system.tenant.v1.GetAllTenantsReply.tenants:type_name -> system.tenant.v1.TenantSimpleInfo
+	1,  // 8: system.tenant.v1.TenantService.CreateTenant:input_type -> system.tenant.v1.CreateTenantRequest
+	2,  // 9: system.tenant.v1.TenantService.GetTenant:input_type -> system.tenant.v1.GetTenantRequest
+	4,  // 10: system.tenant.v1.TenantService.ListTenants:input_type -> system.tenant.v1.ListTenantsRequest
+	6,  // 11: system.tenant.v1.TenantService.UpdateTenant:input_type -> system.tenant.v1.UpdateTenantRequest
+	7,  // 12: system.tenant.v1.TenantService.DeleteTenant:input_type -> system.tenant.v1.DeleteTenantRequest
+	11, // 13: system.tenant.v1.TenantService.GetAllTenants:input_type -> google.protobuf.Empty
+	11, // 14: system.tenant.v1.TenantService.CreateTenant:output_type -> google.protobuf.Empty
+	3,  // 15: system.tenant.v1.TenantService.GetTenant:output_type -> system.tenant.v1.GetTenantReply
+	5,  // 16: system.tenant.v1.TenantService.ListTenants:output_type -> system.tenant.v1.ListTenantsReply
+	11, // 17: system.tenant.v1.TenantService.UpdateTenant:output_type -> google.protobuf.Empty
+	11, // 18: system.tenant.v1.TenantService.DeleteTenant:output_type -> google.protobuf.Empty
+	9,  // 19: system.tenant.v1.TenantService.GetAllTenants:output_type -> system.tenant.v1.GetAllTenantsReply
+	14, // [14:20] is the sub-list for method output_type
+	8,  // [8:14] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_tenant_v1_tenant_proto_init() }
@@ -838,7 +945,7 @@ func file_tenant_v1_tenant_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_tenant_v1_tenant_proto_rawDesc), len(file_tenant_v1_tenant_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

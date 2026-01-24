@@ -77,6 +77,17 @@ service TenantService {
       description: "删除租户，此操作不可逆";
     };
   }
+
+  // 获取全量租户列表
+  rpc GetAllTenants (google.protobuf.Empty) returns (GetAllTenantsReply) {
+    option (google.api.http) = {
+      get: "/qs/v1/tenant/all"
+    };
+    option (openapi.v3.operation) = {
+      summary: "获取全量租户列表";
+      description: "获取所有租户的简化信息列表，仅包含ID和名称";
+    };
+  }
 }
 
 message TenantInfo {
@@ -169,4 +180,19 @@ message DeleteTenantRequest {
     description: "删除租户请求体";
   };
   optional string id = 1 [(openapi.v3.property) = {description: "租户ID"; example: {yaml: "123456789"};}];
+}
+
+message TenantSimpleInfo {
+  option (openapi.v3.schema) = {
+    description: "租户简化信息";
+  };
+  string id = 1 [(openapi.v3.property) = {description: "租户唯一标识符"; example: {yaml: "123456789"};}];
+  string name = 2 [(openapi.v3.property) = {description: "租户名称"; example: {yaml: "示例公司"};}];
+}
+
+message GetAllTenantsReply {
+  option (openapi.v3.schema) = {
+    description: "获取全量租户列表响应体";
+  };
+  repeated TenantSimpleInfo tenants = 1 [(openapi.v3.property) = {description: "租户列表";}];
 }

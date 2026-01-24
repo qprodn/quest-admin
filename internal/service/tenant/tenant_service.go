@@ -121,6 +121,25 @@ func (s *TenantService) DeleteTenant(ctx context.Context, in *v1.DeleteTenantReq
 	return &emptypb.Empty{}, nil
 }
 
+func (s *TenantService) GetAllTenants(ctx context.Context, in *emptypb.Empty) (*v1.GetAllTenantsReply, error) {
+	tenants, err := s.tc.GetAllTenants(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	tenantInfos := make([]*v1.TenantSimpleInfo, 0, len(tenants))
+	for _, tenant := range tenants {
+		tenantInfos = append(tenantInfos, &v1.TenantSimpleInfo{
+			Id:   tenant.ID,
+			Name: tenant.Name,
+		})
+	}
+
+	return &v1.GetAllTenantsReply{
+		Tenants: tenantInfos,
+	}, nil
+}
+
 func (s *TenantService) toProtoTenant(tenant *biz.Tenant) *v1.TenantInfo {
 	return &v1.TenantInfo{
 		Id:            tenant.ID,

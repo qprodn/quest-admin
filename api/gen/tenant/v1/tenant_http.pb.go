@@ -22,6 +22,7 @@ const _ = http.SupportPackageIsVersion1
 
 const OperationTenantServiceCreateTenant = "/system.tenant.v1.TenantService/CreateTenant"
 const OperationTenantServiceDeleteTenant = "/system.tenant.v1.TenantService/DeleteTenant"
+const OperationTenantServiceGetAllTenants = "/system.tenant.v1.TenantService/GetAllTenants"
 const OperationTenantServiceGetTenant = "/system.tenant.v1.TenantService/GetTenant"
 const OperationTenantServiceListTenants = "/system.tenant.v1.TenantService/ListTenants"
 const OperationTenantServiceUpdateTenant = "/system.tenant.v1.TenantService/UpdateTenant"
@@ -31,6 +32,8 @@ type TenantServiceHTTPServer interface {
 	CreateTenant(context.Context, *CreateTenantRequest) (*emptypb.Empty, error)
 	// DeleteTenant 删除租户
 	DeleteTenant(context.Context, *DeleteTenantRequest) (*emptypb.Empty, error)
+	// GetAllTenants 获取全量租户列表
+	GetAllTenants(context.Context, *emptypb.Empty) (*GetAllTenantsReply, error)
 	// GetTenant 获取租户信息
 	GetTenant(context.Context, *GetTenantRequest) (*GetTenantReply, error)
 	// ListTenants 获取租户列表
@@ -46,6 +49,7 @@ func RegisterTenantServiceHTTPServer(s *http.Server, srv TenantServiceHTTPServer
 	r.POST("/qs/v1/tenant/list", _TenantService_ListTenants0_HTTP_Handler(srv))
 	r.PUT("/qs/v1/tenant/update", _TenantService_UpdateTenant0_HTTP_Handler(srv))
 	r.DELETE("/qs/v1/tenant/delete", _TenantService_DeleteTenant0_HTTP_Handler(srv))
+	r.GET("/qs/v1/tenant/all", _TenantService_GetAllTenants0_HTTP_Handler(srv))
 }
 
 func _TenantService_CreateTenant0_HTTP_Handler(srv TenantServiceHTTPServer) func(ctx http.Context) error {
@@ -152,11 +156,32 @@ func _TenantService_DeleteTenant0_HTTP_Handler(srv TenantServiceHTTPServer) func
 	}
 }
 
+func _TenantService_GetAllTenants0_HTTP_Handler(srv TenantServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in emptypb.Empty
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationTenantServiceGetAllTenants)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetAllTenants(ctx, req.(*emptypb.Empty))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetAllTenantsReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type TenantServiceHTTPClient interface {
 	// CreateTenant 创建租户
 	CreateTenant(ctx context.Context, req *CreateTenantRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// DeleteTenant 删除租户
 	DeleteTenant(ctx context.Context, req *DeleteTenantRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	// GetAllTenants 获取全量租户列表
+	GetAllTenants(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *GetAllTenantsReply, err error)
 	// GetTenant 获取租户信息
 	GetTenant(ctx context.Context, req *GetTenantRequest, opts ...http.CallOption) (rsp *GetTenantReply, err error)
 	// ListTenants 获取租户列表
@@ -195,6 +220,20 @@ func (c *TenantServiceHTTPClientImpl) DeleteTenant(ctx context.Context, in *Dele
 	opts = append(opts, http.Operation(OperationTenantServiceDeleteTenant))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "DELETE", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// GetAllTenants 获取全量租户列表
+func (c *TenantServiceHTTPClientImpl) GetAllTenants(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*GetAllTenantsReply, error) {
+	var out GetAllTenantsReply
+	pattern := "/qs/v1/tenant/all"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationTenantServiceGetAllTenants))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
 		return nil, err
 	}
