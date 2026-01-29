@@ -191,6 +191,184 @@ paths:
                 "200":
                     description: OK
                     content: {}
+    /qs/v1/dict/data/create:
+        post:
+            tags:
+                - DictDataService
+            summary: 创建字典数据
+            description: 创建一个新的字典数据
+            operationId: DictDataService_CreateDictData
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.dict.v1.CreateDictDataRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /qs/v1/dict/data/delete:
+        delete:
+            tags:
+                - DictDataService
+            summary: 删除字典数据
+            description: 删除字典数据，此操作不可逆
+            operationId: DictDataService_DeleteDictData
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /qs/v1/dict/data/get:
+        get:
+            tags:
+                - DictDataService
+            summary: 获取字典数据详细信息
+            description: 根据字典数据ID获取字典数据的详细信息
+            operationId: DictDataService_GetDictData
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.dict.v1.GetDictDataReply'
+    /qs/v1/dict/data/list:
+        post:
+            tags:
+                - DictDataService
+            summary: 获取字典数据列表
+            description: 分页查询字典数据列表
+            operationId: DictDataService_ListDictData
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.dict.v1.ListDictDataRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.dict.v1.ListDictDataReply'
+    /qs/v1/dict/data/update:
+        put:
+            tags:
+                - DictDataService
+            summary: 更新字典数据信息
+            description: 更新字典数据的基本信息
+            operationId: DictDataService_UpdateDictData
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.dict.v1.UpdateDictDataRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /qs/v1/dict/type/create:
+        post:
+            tags:
+                - DictTypeService
+            summary: 创建字典类型
+            description: 创建一个新的字典类型
+            operationId: DictTypeService_CreateDictType
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.dict.v1.CreateDictTypeRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /qs/v1/dict/type/delete:
+        delete:
+            tags:
+                - DictTypeService
+            summary: 删除字典类型
+            description: 删除字典类型，此操作不可逆
+            operationId: DictTypeService_DeleteDictType
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /qs/v1/dict/type/get:
+        get:
+            tags:
+                - DictTypeService
+            summary: 获取字典类型详细信息
+            description: 根据字典类型ID获取字典类型的详细信息
+            operationId: DictTypeService_GetDictType
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.dict.v1.GetDictTypeReply'
+    /qs/v1/dict/type/list:
+        post:
+            tags:
+                - DictTypeService
+            summary: 获取字典类型列表
+            description: 分页查询字典类型列表
+            operationId: DictTypeService_ListDictTypes
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.dict.v1.ListDictTypesRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.dict.v1.ListDictTypesReply'
+    /qs/v1/dict/type/update:
+        put:
+            tags:
+                - DictTypeService
+            summary: 更新字典类型信息
+            description: 更新字典类型的基本信息
+            operationId: DictTypeService_UpdateDictType
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.dict.v1.UpdateDictTypeRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
     /qs/v1/organizations/department/create:
         post:
             tags:
@@ -1336,6 +1514,351 @@ components:
                     type: string
                     description: 配置值
             description: 更新配置信息请求体
+        system.dict.v1.CreateDictDataRequest:
+            type: object
+            properties:
+                dictTypeId:
+                    example: 987654321
+                    type: string
+                    description: 字典类型ID
+                label:
+                    example: Male
+                    type: string
+                    description: 字典标签
+                value:
+                    example: 1
+                    type: string
+                    description: 字典值
+                sort:
+                    example: 1
+                    type: integer
+                    description: 排序号
+                    format: int32
+                cssClass:
+                    type: string
+                    description: CSS类名
+                isDefault:
+                    example: false
+                    type: boolean
+                    description: 是否默认
+                remark:
+                    type: string
+                    description: 备注信息
+            description: 创建字典数据请求体
+        system.dict.v1.CreateDictTypeRequest:
+            type: object
+            properties:
+                name:
+                    example: user_gender
+                    type: string
+                    description: 字典类型名称
+                code:
+                    example: user_gender
+                    type: string
+                    description: 字典类型编码
+                sort:
+                    example: 1
+                    type: integer
+                    description: 排序号
+                    format: int32
+                remark:
+                    type: string
+                    description: 备注信息
+            description: 创建字典类型请求体
+        system.dict.v1.DictDataInfo:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 字典数据ID
+                dictTypeId:
+                    example: 987654321
+                    type: string
+                    description: 字典类型ID
+                label:
+                    example: Male
+                    type: string
+                    description: 字典标签
+                value:
+                    example: 1
+                    type: string
+                    description: 字典值
+                sort:
+                    example: 1
+                    type: integer
+                    description: 排序号
+                    format: int32
+                status:
+                    example: 1
+                    type: integer
+                    description: '状态: 0-停用, 1-正常'
+                    format: int32
+                cssClass:
+                    type: string
+                    description: CSS类名
+                isDefault:
+                    example: false
+                    type: boolean
+                    description: 是否默认
+                remark:
+                    type: string
+                    description: 备注信息
+                createAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updateAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+                tenantId:
+                    type: string
+                    description: 租户ID
+            description: 字典数据的基本信息
+        system.dict.v1.DictTypeInfo:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 字典类型ID
+                name:
+                    example: user_gender
+                    type: string
+                    description: 字典类型名称
+                code:
+                    example: user_gender
+                    type: string
+                    description: 字典类型编码
+                status:
+                    example: 1
+                    type: integer
+                    description: '状态: 0-停用, 1-正常'
+                    format: int32
+                sort:
+                    example: 1
+                    type: integer
+                    description: 排序号
+                    format: int32
+                remark:
+                    type: string
+                    description: 备注信息
+                createAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updateAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+                tenantId:
+                    type: string
+                    description: 租户ID
+            description: 字典类型的基本信息
+        system.dict.v1.GetDictDataReply:
+            type: object
+            properties:
+                dictData:
+                    $ref: '#/components/schemas/system.dict.v1.DictDataInfo'
+            description: 获取字典数据信息响应体
+        system.dict.v1.GetDictTypeReply:
+            type: object
+            properties:
+                dictType:
+                    $ref: '#/components/schemas/system.dict.v1.DictTypeInfo'
+            description: 获取字典类型信息响应体
+        system.dict.v1.ListDictDataReply:
+            type: object
+            properties:
+                dictDataList:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/system.dict.v1.DictDataInfo'
+                    description: 字典数据列表
+                total:
+                    example: 100
+                    type: string
+                    description: 总记录数
+                page:
+                    example: 1
+                    type: integer
+                    description: 当前页码
+                    format: int32
+                pageSize:
+                    example: 10
+                    type: integer
+                    description: 每页数量
+                    format: int32
+                totalPages:
+                    example: 10
+                    type: integer
+                    description: 总页数
+                    format: int32
+            description: 查询字典数据列表响应体
+        system.dict.v1.ListDictDataRequest:
+            type: object
+            properties:
+                page:
+                    example: 1
+                    type: integer
+                    description: 页码，从1开始
+                    format: int32
+                pageSize:
+                    example: 10
+                    type: integer
+                    description: 每页数量，默认10
+                    format: int32
+                dictTypeId:
+                    example: 987654321
+                    type: string
+                    description: 字典类型ID
+                keyword:
+                    example: Male
+                    type: string
+                    description: 搜索关键字
+                status:
+                    example: 1
+                    type: integer
+                    description: '状态筛选: 0-停用, 1-正常'
+                    format: int32
+                sortField:
+                    example: sort
+                    type: string
+                    description: 排序字段
+                sortOrder:
+                    example: asc
+                    type: string
+                    description: '排序方式: asc, desc'
+            description: 查询字典数据列表请求体
+        system.dict.v1.ListDictTypesReply:
+            type: object
+            properties:
+                dictTypes:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/system.dict.v1.DictTypeInfo'
+                    description: 字典类型列表
+                total:
+                    example: 100
+                    type: string
+                    description: 总记录数
+                page:
+                    example: 1
+                    type: integer
+                    description: 当前页码
+                    format: int32
+                pageSize:
+                    example: 10
+                    type: integer
+                    description: 每页数量
+                    format: int32
+                totalPages:
+                    example: 10
+                    type: integer
+                    description: 总页数
+                    format: int32
+            description: 查询字典类型列表响应体
+        system.dict.v1.ListDictTypesRequest:
+            type: object
+            properties:
+                page:
+                    example: 1
+                    type: integer
+                    description: 页码，从1开始
+                    format: int32
+                pageSize:
+                    example: 10
+                    type: integer
+                    description: 每页数量，默认10
+                    format: int32
+                keyword:
+                    example: gender
+                    type: string
+                    description: 搜索关键字
+                status:
+                    example: 1
+                    type: integer
+                    description: '状态筛选: 0-停用, 1-正常'
+                    format: int32
+                sortField:
+                    example: sort
+                    type: string
+                    description: 排序字段
+                sortOrder:
+                    example: asc
+                    type: string
+                    description: '排序方式: asc, desc'
+            description: 查询字典类型列表请求体
+        system.dict.v1.UpdateDictDataRequest:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 字典数据ID
+                dictTypeId:
+                    example: 987654321
+                    type: string
+                    description: 字典类型ID
+                label:
+                    example: Male
+                    type: string
+                    description: 字典标签
+                value:
+                    example: 1
+                    type: string
+                    description: 字典值
+                sort:
+                    example: 1
+                    type: integer
+                    description: 排序号
+                    format: int32
+                status:
+                    example: 1
+                    type: integer
+                    description: '状态: 0-停用, 1-正常'
+                    format: int32
+                cssClass:
+                    type: string
+                    description: CSS类名
+                isDefault:
+                    example: false
+                    type: boolean
+                    description: 是否默认
+                remark:
+                    type: string
+                    description: 备注信息
+            description: 更新字典数据信息请求体
+        system.dict.v1.UpdateDictTypeRequest:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 字典类型ID
+                name:
+                    example: user_gender
+                    type: string
+                    description: 字典类型名称
+                code:
+                    example: user_gender
+                    type: string
+                    description: 字典类型编码
+                sort:
+                    example: 1
+                    type: integer
+                    description: 排序号
+                    format: int32
+                status:
+                    example: 1
+                    type: integer
+                    description: '状态: 0-停用, 1-正常'
+                    format: int32
+                remark:
+                    type: string
+                    description: 备注信息
+            description: 更新字典类型信息请求体
         system.organization.v1.CreateDepartmentRequest:
             type: object
             properties:
@@ -2720,12 +3243,18 @@ tags:
     - name: DepartmentService
       description: 部门相关操作
     - name: DepartmentService
+    - name: DictDataService
+      description: 字典数据相关操作
+    - name: DictDataService
+    - name: DictTypeService
+      description: 字典类型相关操作
+    - name: DictTypeService
     - name: MenuService
       description: 菜单管理相关操作
     - name: MenuService
     - name: PostService
-    - name: PostService
       description: 岗位相关操作
+    - name: PostService
     - name: RoleService
     - name: RoleService
       description: 角色管理相关操作

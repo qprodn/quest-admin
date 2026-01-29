@@ -3,6 +3,7 @@ package service
 import (
 	"quest-admin/internal/service/auth"
 	"quest-admin/internal/service/config"
+	"quest-admin/internal/service/dict"
 	"quest-admin/internal/service/organization"
 	"quest-admin/internal/service/permission"
 	"quest-admin/internal/service/tenant"
@@ -22,4 +23,6 @@ var ProviderSet = wire.NewSet(
 	organization.NewPostService,
 	config.NewConfigService,
 	auth.NewAuthService,
+	dict.NewDictTypeService,
+	dict.NewDictDataService,
 )

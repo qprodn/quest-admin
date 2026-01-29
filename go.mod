@@ -1,6 +1,6 @@
 module quest-admin
 
-go 1.24.6
+go 1.25.5
 
 require (
 	github.com/click33/sa-token-go/core v0.1.7

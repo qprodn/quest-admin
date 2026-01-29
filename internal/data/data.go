@@ -4,6 +4,7 @@ import (
 	"quest-admin/internal/data/auth"
 	"quest-admin/internal/data/config"
 	"quest-admin/internal/data/data"
+	"quest-admin/internal/data/dict"
 	"quest-admin/internal/data/idgen"
 	"quest-admin/internal/data/organization"
 	"quest-admin/internal/data/permission"
@@ -37,4 +38,6 @@ var ProviderSet = wire.NewSet(
 	permission.NewRoleMenuRepo,
 	config.NewConfigRepo,
 	auth.NewAuthManager,
+	dict.NewDictTypeRepo,
+	dict.NewDictDataRepo,
 )

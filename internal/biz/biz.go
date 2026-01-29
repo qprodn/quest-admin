@@ -3,6 +3,7 @@ package biz
 import (
 	"quest-admin/internal/biz/auth"
 	"quest-admin/internal/biz/config"
+	"quest-admin/internal/biz/dict"
 	"quest-admin/internal/biz/organization"
 	"quest-admin/internal/biz/permission"
 	"quest-admin/internal/biz/tenant"
@@ -22,4 +23,6 @@ var ProviderSet = wire.NewSet(
 	permission.NewRoleUsecase,
 	config.NewConfigUsecase,
 	auth.NewAuthUsecase,
+	dict.NewDictTypeUsecase,
+	dict.NewDictDataUsecase,
 )
