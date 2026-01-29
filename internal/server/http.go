@@ -2,6 +2,7 @@ package server
 
 import (
 	authv1 "quest-admin/api/gen/auth/v1"
+	configv1 "quest-admin/api/gen/config/v1"
 	orgv1 "quest-admin/api/gen/organization/v1"
 	permissionv1 "quest-admin/api/gen/permission/v1"
 	tenantv1 "quest-admin/api/gen/tenant/v1"
@@ -9,6 +10,7 @@ import (
 	"quest-admin/internal/conf"
 	authManager "quest-admin/internal/data/auth"
 	"quest-admin/internal/service/auth"
+	"quest-admin/internal/service/config"
 	"quest-admin/internal/service/organization"
 	"quest-admin/internal/service/permission"
 	"quest-admin/internal/service/tenant"
@@ -37,6 +39,7 @@ func NewHTTPServer(
 	menuService *permission.MenuService,
 	departmentService *organization.DepartmentService,
 	postService *organization.PostService,
+	configService *config.ConfigService,
 	authService *auth.AuthService,
 ) *http.Server {
 	var opts = []http.ServerOption{
@@ -71,6 +74,7 @@ func NewHTTPServer(
 	orgv1.RegisterPostServiceHTTPServer(srv, postService)
 	permissionv1.RegisterMenuServiceHTTPServer(srv, menuService)
 	permissionv1.RegisterRoleServiceHTTPServer(srv, roleService)
+	configv1.RegisterConfigServiceHTTPServer(srv, configService)
 	authv1.RegisterAuthServiceHTTPServer(srv, authService)
 
 	return srv

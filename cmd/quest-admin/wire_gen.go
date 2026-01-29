@@ -10,12 +10,14 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	auth2 "quest-admin/internal/biz/auth"
+	config2 "quest-admin/internal/biz/config"
 	organization2 "quest-admin/internal/biz/organization"
 	permission2 "quest-admin/internal/biz/permission"
 	tenant2 "quest-admin/internal/biz/tenant"
 	user2 "quest-admin/internal/biz/user"
 	"quest-admin/internal/conf"
 	"quest-admin/internal/data/auth"
+	"quest-admin/internal/data/config"
 	"quest-admin/internal/data/data"
 	"quest-admin/internal/data/idgen"
 	"quest-admin/internal/data/organization"
@@ -27,6 +29,7 @@ import (
 	"quest-admin/internal/data/user"
 	"quest-admin/internal/server"
 	auth3 "quest-admin/internal/service/auth"
+	config3 "quest-admin/internal/service/config"
 	organization3 "quest-admin/internal/service/organization"
 	permission3 "quest-admin/internal/service/permission"
 	tenant3 "quest-admin/internal/service/tenant"
@@ -72,9 +75,12 @@ func wireApp(bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(),
 	menuService := permission3.NewMenuService(menuUsecase, logger)
 	departmentService := organization3.NewDepartmentService(departmentUsecase, logger)
 	postService := organization3.NewPostService(postUsecase, logger)
+	configRepo := config.NewConfigRepo(dataData, logger)
+	configUsecase := config2.NewConfigUsecase(logger, configRepo, idGenerator)
+	configService := config3.NewConfigService(configUsecase, logger)
 	authUsecase := auth2.NewAuthUsecase(authManager, logger, userUsecase, roleUsecase, menuUsecase)
 	authService := auth3.NewAuthService(logger, authUsecase, userUsecase, roleUsecase, menuUsecase)
-	httpServer := server.NewHTTPServer(bootstrap, logger, authManager, userService, tenantService, roleService, menuService, departmentService, postService, authService)
+	httpServer := server.NewHTTPServer(bootstrap, logger, authManager, userService, tenantService, roleService, menuService, departmentService, postService, configService, authService)
 	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
 	}, nil

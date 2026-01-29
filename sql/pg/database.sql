@@ -359,3 +359,38 @@ COMMENT ON COLUMN qa_tenant_package.create_at IS '创建时间';
 COMMENT ON COLUMN qa_tenant_package.update_by IS '更新者';
 COMMENT ON COLUMN qa_tenant_package.update_at IS '更新时间';
 COMMENT ON COLUMN qa_tenant_package.delete_at IS '删除时间';
+
+DROP TABLE IF EXISTS qa_config CASCADE;
+CREATE TABLE qa_config
+(
+    id         varchar(32) PRIMARY KEY,
+    name       varchar(128)                           NOT NULL,
+    key        varchar(128)                           NOT NULL,
+    value      text,
+    status     smallint     DEFAULT 1                 NOT NULL,
+    create_by  varchar(64)  DEFAULT '',
+    create_at  timestamp    DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    update_by  varchar(64)  DEFAULT '',
+    update_at  timestamp    DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    delete_at  timestamp,
+    tenant_id  varchar(32)  DEFAULT ''                NOT NULL
+);
+
+COMMENT ON TABLE qa_config IS '系统配置表';
+COMMENT ON COLUMN qa_config.id IS '配置ID';
+COMMENT ON COLUMN qa_config.name IS '配置名称';
+COMMENT ON COLUMN qa_config.key IS '配置键';
+COMMENT ON COLUMN qa_config.value IS '配置值';
+COMMENT ON COLUMN qa_config.status IS '状态（0停用 1正常）';
+COMMENT ON COLUMN qa_config.create_by IS '创建者';
+COMMENT ON COLUMN qa_config.create_at IS '创建时间';
+COMMENT ON COLUMN qa_config.update_by IS '更新者';
+COMMENT ON COLUMN qa_config.update_at IS '更新时间';
+COMMENT ON COLUMN qa_config.delete_at IS '删除时间';
+COMMENT ON COLUMN qa_config.tenant_id IS '租户编号';
+
+DROP INDEX IF EXISTS idx_config_key;
+CREATE UNIQUE INDEX idx_config_key ON qa_config (key, tenant_id);
+
+DROP INDEX IF EXISTS idx_config_name;
+CREATE INDEX idx_config_name ON qa_config (name, tenant_id);

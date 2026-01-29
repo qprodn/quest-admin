@@ -1,0 +1,208 @@
+syntax = "proto3";
+
+package system.config.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "openapi/v3/annotations.proto";
+
+option go_package = "quest-admin/api/gen/config/v1;v1";
+
+option (openapi.v3.document) = {
+  tags: [
+    {
+      name: "ConfigService";
+      description: "配置管理相关操作";
+    }
+  ];
+};
+
+service ConfigService {
+  // 创建配置
+  rpc CreateConfig (CreateConfigRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/qs/v1/config/create"
+      body: "*"
+    };
+    option (openapi.v3.operation) = {
+      summary: "创建配置";
+      description: "创建一个新的系统配置项";
+    };
+  }
+
+  // 获取配置信息
+  rpc GetConfig (GetConfigRequest) returns (GetConfigReply) {
+    option (google.api.http) = {
+      get: "/qs/v1/config/get"
+    };
+    option (openapi.v3.operation) = {
+      summary: "获取配置信息";
+      description: "根据配置ID获取配置的详细信息";
+    };
+  }
+
+  // 根据key获取配置值
+  rpc GetConfigByKey (GetConfigByKeyRequest) returns (GetConfigByKeyReply) {
+    option (google.api.http) = {
+      get: "/qs/v1/config/key"
+    };
+    option (openapi.v3.operation) = {
+      summary: "根据key获取配置值";
+      description: "根据配置键获取配置的值";
+    };
+  }
+
+  // 获取配置列表
+  rpc ListConfigs (ListConfigsRequest) returns (ListConfigsReply) {
+    option (google.api.http) = {
+      get: "/qs/v1/config/list"
+    };
+    option (openapi.v3.operation) = {
+      summary: "获取配置列表";
+      description: "分页查询配置列表，支持关键字搜索、状态筛选等";
+    };
+  }
+
+  // 更新配置信息
+  rpc UpdateConfig (UpdateConfigRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/qs/v1/config/update"
+      body: "*"
+    };
+    option (openapi.v3.operation) = {
+      summary: "更新配置信息";
+      description: "更新配置的基本信息，如名称、键、值等";
+    };
+  }
+
+  // 变更配置状态
+  rpc ChangeConfigStatus (ChangeConfigStatusRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/qs/v1/config/update-status"
+      body: "*"
+    };
+    option (openapi.v3.operation) = {
+      summary: "变更配置状态";
+      description: "启用或禁用配置";
+    };
+  }
+
+  // 删除配置
+  rpc DeleteConfig (DeleteConfigRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/qs/v1/config/delete"
+    };
+    option (openapi.v3.operation) = {
+      summary: "删除配置";
+      description: "删除配置，此操作不可逆";
+    };
+  }
+}
+
+// 配置基本信息
+message ConfigInfo {
+  option (openapi.v3.schema) = {
+    description: "配置的基本信息";
+    example: {
+      yaml: "{\"id\": \"123456789\", \"name\": \"系统名称\", \"key\": \"system.name\", \"value\": \"Quest Admin\", \"status\": 1}";
+    };
+  };
+  string id = 1 [(openapi.v3.property) = {description: "配置唯一标识（含序号）"; example: {yaml: "123456789"};}];
+  string name = 2 [(openapi.v3.property) = {description: "配置名称"; example: {yaml: "系统名称"};}];
+  string key = 3 [(openapi.v3.property) = {description: "配置键"; example: {yaml: "system.name"};}];
+  string value = 4 [(openapi.v3.property) = {description: "配置值"; example: {yaml: "Quest Admin"};}];
+  int32 status = 5 [(openapi.v3.property) = {description: "配置状态: 0-禁用, 1-正常"; example: {yaml: "1"};}];
+  google.protobuf.Timestamp create_at = 6 [(openapi.v3.property) = {description: "创建时间";}];
+  google.protobuf.Timestamp update_at = 7 [(openapi.v3.property) = {description: "更新时间";}];
+  string tenant_id = 8 [(openapi.v3.property) = {description: "租户ID";}];
+}
+
+message CreateConfigRequest {
+  option (openapi.v3.schema) = {
+    description: "创建配置请求体";
+    example: {
+      yaml: "{\"name\": \"系统名称\", \"key\": \"system.name\", \"value\": \"Quest Admin\"}";
+    };
+  };
+  optional string name = 1 [(openapi.v3.property) = {description: "配置名称"; example: {yaml: "系统名称"};}];
+  optional string key = 2 [(openapi.v3.property) = {description: "配置键，同一租户下必须唯一"; example: {yaml: "system.name"};}];
+  optional string value = 3 [(openapi.v3.property) = {description: "配置值"; example: {yaml: "Quest Admin"};}];
+}
+
+message GetConfigRequest {
+  option (openapi.v3.schema) = {
+    description: "获取配置信息请求体";
+  };
+  optional string id = 1 [(openapi.v3.property) = {description: "配置ID"; example: {yaml: "123456789"};}];
+}
+
+message GetConfigReply {
+  option (openapi.v3.schema) = {
+    description: "获取配置信息响应体";
+  };
+  ConfigInfo config = 1 [(openapi.v3.property) = {description: "配置详细信息";}];
+}
+
+message GetConfigByKeyRequest {
+  option (openapi.v3.schema) = {
+    description: "根据key获取配置值请求体";
+  };
+  optional string key = 1 [(openapi.v3.property) = {description: "配置键"; example: {yaml: "system.name"};}];
+}
+
+message GetConfigByKeyReply {
+  option (openapi.v3.schema) = {
+    description: "根据key获取配置值响应体";
+  };
+  string value = 1 [(openapi.v3.property) = {description: "配置值"; example: {yaml: "Quest Admin"};}];
+}
+
+message ListConfigsRequest {
+  option (openapi.v3.schema) = {
+    description: "查询配置列表请求体";
+  };
+  optional int32 page = 1 [(openapi.v3.property) = {description: "页码，从1开始"; example: {yaml: "1"};}];
+  optional int32 page_size = 2 [(openapi.v3.property) = {description: "每页数量，默认10"; example: {yaml: "10"};}];
+  optional string name = 3 [(openapi.v3.property) = {description: "模糊查询 配置名称"; example: {yaml: "系统"};}];
+  optional string key = 4 [(openapi.v3.property) = {description: "模糊查询 配置键"; example: {yaml: "system"};}];
+  optional int32 status = 5 [(openapi.v3.property) = {description: "配置状态筛选: 0-禁用, 1-正常"; example: {yaml: "1"};}];
+  optional string sort_field = 6 [(openapi.v3.property) = {description: "排序字段"; example: {yaml: "create_at"};}];
+  optional string sort_order = 7 [(openapi.v3.property) = {description: "排序方式: asc, desc"; example: {yaml: "desc"};}];
+}
+
+message ListConfigsReply {
+  option (openapi.v3.schema) = {
+    description: "查询配置列表响应体";
+  };
+  repeated ConfigInfo configs = 1 [(openapi.v3.property) = {description: "配置列表";}];
+  int64 total = 2 [(openapi.v3.property) = {description: "总记录数"; example: {yaml: "100"};}];
+  int32 page = 3 [(openapi.v3.property) = {description: "当前页码"; example: {yaml: "1"};}];
+  int32 page_size = 4 [(openapi.v3.property) = {description: "每页数量"; example: {yaml: "10"};}];
+  int32 total_pages = 5 [(openapi.v3.property) = {description: "总页数"; example: {yaml: "10"};}];
+}
+
+message UpdateConfigRequest {
+  option (openapi.v3.schema) = {
+    description: "更新配置信息请求体";
+  };
+  optional string id = 1 [(openapi.v3.property) = {description: "配置ID"; example: {yaml: "123456789"};}];
+  optional string name = 2 [(openapi.v3.property) = {description: "配置名称"; example: {yaml: "系统名称"};}];
+  optional string key = 3 [(openapi.v3.property) = {description: "配置键"; example: {yaml: "system.name"};}];
+  optional string value = 4 [(openapi.v3.property) = {description: "配置值"; example: {yaml: "Quest Admin"};}];
+}
+
+message ChangeConfigStatusRequest {
+  option (openapi.v3.schema) = {
+    description: "变更配置状态请求体";
+  };
+  optional string id = 1 [(openapi.v3.property) = {description: "配置ID"; example: {yaml: "123456789"};}];
+  optional int32 status = 2 [(openapi.v3.property) = {description: "目标状态: 0-禁用，1-正常"; example: {yaml: "1"};}];
+}
+
+message DeleteConfigRequest {
+  option (openapi.v3.schema) = {
+    description: "删除配置请求请求体";
+  };
+  optional string id = 1 [(openapi.v3.property) = {description: "配置ID"; example: {yaml: "123456789"};}];
+}

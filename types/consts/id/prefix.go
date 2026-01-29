@@ -8,6 +8,7 @@ const (
 	DEPT           = "DEPT"
 	POST           = "POST"
 	DICT           = "DICT"
+	CONFIG         = "CONF"
 	TENANT         = "TENA"
 	TENANT_PACKAGE = "TPAC"
 )

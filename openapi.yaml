@@ -40,6 +40,157 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/system.auth.v1.GetPermissionInfoReply'
+    /qs/v1/config/create:
+        post:
+            tags:
+                - ConfigService
+            summary: 创建配置
+            description: 创建一个新的系统配置项
+            operationId: ConfigService_CreateConfig
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.config.v1.CreateConfigRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /qs/v1/config/delete:
+        delete:
+            tags:
+                - ConfigService
+            summary: 删除配置
+            description: 删除配置，此操作不可逆
+            operationId: ConfigService_DeleteConfig
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /qs/v1/config/get:
+        get:
+            tags:
+                - ConfigService
+            summary: 获取配置信息
+            description: 根据配置ID获取配置的详细信息
+            operationId: ConfigService_GetConfig
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.config.v1.GetConfigReply'
+    /qs/v1/config/key:
+        get:
+            tags:
+                - ConfigService
+            summary: 根据key获取配置值
+            description: 根据配置键获取配置的值
+            operationId: ConfigService_GetConfigByKey
+            parameters:
+                - name: key
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.config.v1.GetConfigByKeyReply'
+    /qs/v1/config/list:
+        get:
+            tags:
+                - ConfigService
+            summary: 获取配置列表
+            description: 分页查询配置列表，支持关键字搜索、状态筛选等
+            operationId: ConfigService_ListConfigs
+            parameters:
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: name
+                  in: query
+                  schema:
+                    type: string
+                - name: key
+                  in: query
+                  schema:
+                    type: string
+                - name: status
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: sortField
+                  in: query
+                  schema:
+                    type: string
+                - name: sortOrder
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.config.v1.ListConfigsReply'
+    /qs/v1/config/update:
+        put:
+            tags:
+                - ConfigService
+            summary: 更新配置信息
+            description: 更新配置的基本信息，如名称、键、值等
+            operationId: ConfigService_UpdateConfig
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.config.v1.UpdateConfigRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /qs/v1/config/update-status:
+        put:
+            tags:
+                - ConfigService
+            summary: 变更配置状态
+            description: 启用或禁用配置
+            operationId: ConfigService_ChangeConfigStatus
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.config.v1.ChangeConfigStatusRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
     /qs/v1/organizations/department/create:
         post:
             tags:
@@ -1056,6 +1207,135 @@ components:
                     description: 创建时间
                     format: date-time
             description: 用户基本信息
+        system.config.v1.ChangeConfigStatusRequest:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 配置ID
+                status:
+                    example: 1
+                    type: integer
+                    description: '目标状态: 0-禁用，1-正常'
+                    format: int32
+            description: 变更配置状态请求体
+        system.config.v1.ConfigInfo:
+            example: {"id": "123456789", "name": "系统名称", "key": "system.name", "value": "Quest Admin", "status": 1}
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 配置唯一标识（含序号）
+                name:
+                    example: 系统名称
+                    type: string
+                    description: 配置名称
+                key:
+                    example: system.name
+                    type: string
+                    description: 配置键
+                value:
+                    example: Quest Admin
+                    type: string
+                    description: 配置值
+                status:
+                    example: 1
+                    type: integer
+                    description: '配置状态: 0-禁用, 1-正常'
+                    format: int32
+                createAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updateAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+                tenantId:
+                    type: string
+                    description: 租户ID
+            description: 配置的基本信息
+        system.config.v1.CreateConfigRequest:
+            example: {"name": "系统名称", "key": "system.name", "value": "Quest Admin"}
+            type: object
+            properties:
+                name:
+                    example: 系统名称
+                    type: string
+                    description: 配置名称
+                key:
+                    example: system.name
+                    type: string
+                    description: 配置键，同一租户下必须唯一
+                value:
+                    example: Quest Admin
+                    type: string
+                    description: 配置值
+            description: 创建配置请求体
+        system.config.v1.GetConfigByKeyReply:
+            type: object
+            properties:
+                value:
+                    example: Quest Admin
+                    type: string
+                    description: 配置值
+            description: 根据key获取配置值响应体
+        system.config.v1.GetConfigReply:
+            type: object
+            properties:
+                config:
+                    $ref: '#/components/schemas/system.config.v1.ConfigInfo'
+            description: 获取配置信息响应体
+        system.config.v1.ListConfigsReply:
+            type: object
+            properties:
+                configs:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/system.config.v1.ConfigInfo'
+                    description: 配置列表
+                total:
+                    example: 100
+                    type: string
+                    description: 总记录数
+                page:
+                    example: 1
+                    type: integer
+                    description: 当前页码
+                    format: int32
+                pageSize:
+                    example: 10
+                    type: integer
+                    description: 每页数量
+                    format: int32
+                totalPages:
+                    example: 10
+                    type: integer
+                    description: 总页数
+                    format: int32
+            description: 查询配置列表响应体
+        system.config.v1.UpdateConfigRequest:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 配置ID
+                name:
+                    example: 系统名称
+                    type: string
+                    description: 配置名称
+                key:
+                    example: system.name
+                    type: string
+                    description: 配置键
+                value:
+                    example: Quest Admin
+                    type: string
+                    description: 配置值
+            description: 更新配置信息请求体
         system.organization.v1.CreateDepartmentRequest:
             type: object
             properties:
@@ -2432,17 +2712,20 @@ components:
             description: 用户的基本信息，包含用户的所有属性
 tags:
     - name: AuthService
-      description: 认证相关操作
     - name: AuthService
-    - name: DepartmentService
+      description: 认证相关操作
+    - name: ConfigService
+    - name: ConfigService
+      description: 配置管理相关操作
     - name: DepartmentService
       description: 部门相关操作
+    - name: DepartmentService
     - name: MenuService
       description: 菜单管理相关操作
     - name: MenuService
     - name: PostService
-      description: 岗位相关操作
     - name: PostService
+      description: 岗位相关操作
     - name: RoleService
     - name: RoleService
       description: 角色管理相关操作
