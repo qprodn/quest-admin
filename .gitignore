@@ -39,3 +39,4 @@ bin/
 *.log
 .trae/
 /configs/config-private.yaml
+.tree/
