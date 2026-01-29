@@ -2453,5 +2453,5 @@ tags:
       description: 租户相关操作
     - name: TenantService
     - name: UserService
-    - name: UserService
       description: 用户相关操作
+    - name: UserService

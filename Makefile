@@ -76,13 +76,12 @@ generate:
 all:
 	make api;
 	make config;
-	make generate;
 	make wire;
 	@echo '==============success=============='
 
  .PHONY: wire
 wire:
-	wire ./...
+	wire ./cmd/... ./internal/biz/... ./internal/data/... ./internal/service/...
 
 .PHONY: test
 # run all tests
