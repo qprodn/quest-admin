@@ -6,64 +6,30 @@ info:
     title: ""
     version: 0.0.1
 paths:
-    /qs/v1/auth/admin/login:
+    /qs/v1/dict/data/create:
         post:
             tags:
-                - AuthService
-            summary: 用户登录
-            description: 根据用户名和密码进行登录，返回访问令牌
-            operationId: AuthService_Login
+                - DictDataService
+            summary: 创建字典数据
+            description: 创建一个新的字典数据
+            operationId: DictDataService_CreateDictData
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/system.auth.v1.LoginRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.auth.v1.LoginReply'
-    /qs/v1/auth/admin/permission-info:
-        get:
-            tags:
-                - AuthService
-            summary: 获取用户权限信息
-            description: 获取当前登录用户的详细信息、角色、权限和菜单
-            operationId: AuthService_GetPermissionInfo
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.auth.v1.GetPermissionInfoReply'
-    /qs/v1/organizations/department/create:
-        post:
-            tags:
-                - DepartmentService
-            summary: 创建部门
-            description: 创建一个新的部门
-            operationId: DepartmentService_CreateDepartment
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.organization.v1.CreateDepartmentRequest'
+                            $ref: '#/components/schemas/system.dict.v1.CreateDictDataRequest'
                 required: true
             responses:
                 "200":
                     description: OK
                     content: {}
-    /qs/v1/organizations/department/delete:
+    /qs/v1/dict/data/delete:
         delete:
             tags:
-                - DepartmentService
-            summary: 删除部门
-            description: 删除部门，此操作不可逆
-            operationId: DepartmentService_DeleteDepartment
+                - DictDataService
+            summary: 删除字典数据
+            description: 删除字典数据，此操作不可逆
+            operationId: DictDataService_DeleteDictData
             parameters:
                 - name: id
                   in: query
@@ -73,13 +39,13 @@ paths:
                 "200":
                     description: OK
                     content: {}
-    /qs/v1/organizations/department/get:
+    /qs/v1/dict/data/get:
         get:
             tags:
-                - DepartmentService
-            summary: 获取部门详细信息
-            description: 根据部门ID获取部门的详细信息
-            operationId: DepartmentService_GetDepartment
+                - DictDataService
+            summary: 获取字典数据详细信息
+            description: 根据字典数据ID获取字典数据的详细信息
+            operationId: DictDataService_GetDictData
             parameters:
                 - name: id
                   in: query
@@ -91,62 +57,68 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/system.organization.v1.GetDepartmentReply'
-    /qs/v1/organizations/department/tree:
-        get:
-            tags:
-                - DepartmentService
-            summary: 获取部门树
-            description: 获取完整的部门树结构
-            operationId: DepartmentService_GetDepartmentTree
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.organization.v1.GetDepartmentTreeReply'
-    /qs/v1/organizations/department/update:
-        put:
-            tags:
-                - DepartmentService
-            summary: 更新部门信息
-            description: 更新部门的基本信息
-            operationId: DepartmentService_UpdateDepartment
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.organization.v1.UpdateDepartmentRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/organizations/post/create:
+                                $ref: '#/components/schemas/system.dict.v1.GetDictDataReply'
+    /qs/v1/dict/data/list:
         post:
             tags:
-                - PostService
-            summary: 创建岗位
-            description: 创建一个新的岗位
-            operationId: PostService_CreatePost
+                - DictDataService
+            summary: 获取字典数据列表
+            description: 分页查询字典数据列表
+            operationId: DictDataService_ListDictData
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/system.organization.v1.CreatePostRequest'
+                            $ref: '#/components/schemas/system.dict.v1.ListDictDataRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/system.dict.v1.ListDictDataReply'
+    /qs/v1/dict/data/update:
+        put:
+            tags:
+                - DictDataService
+            summary: 更新字典数据信息
+            description: 更新字典数据的基本信息
+            operationId: DictDataService_UpdateDictData
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.dict.v1.UpdateDictDataRequest'
                 required: true
             responses:
                 "200":
                     description: OK
                     content: {}
-    /qs/v1/organizations/post/delete:
+    /qs/v1/dict/type/create:
+        post:
+            tags:
+                - DictTypeService
+            summary: 创建字典类型
+            description: 创建一个新的字典类型
+            operationId: DictTypeService_CreateDictType
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/system.dict.v1.CreateDictTypeRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /qs/v1/dict/type/delete:
         delete:
             tags:
-                - PostService
-            summary: 删除岗位
-            description: 删除岗位，此操作不可逆
-            operationId: PostService_DeletePost
+                - DictTypeService
+            summary: 删除字典类型
+            description: 删除字典类型，此操作不可逆
+            operationId: DictTypeService_DeleteDictType
             parameters:
                 - name: id
                   in: query
@@ -156,13 +128,13 @@ paths:
                 "200":
                     description: OK
                     content: {}
-    /qs/v1/organizations/post/get:
+    /qs/v1/dict/type/get:
         get:
             tags:
-                - PostService
-            summary: 获取岗位详细信息
-            description: 根据岗位ID获取岗位的详细信息
-            operationId: PostService_GetPost
+                - DictTypeService
+            summary: 获取字典类型详细信息
+            description: 根据字典类型ID获取字典类型的详细信息
+            operationId: DictTypeService_GetDictType
             parameters:
                 - name: id
                   in: query
@@ -174,19 +146,19 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/system.organization.v1.GetPostReply'
-    /qs/v1/organizations/post/list:
+                                $ref: '#/components/schemas/system.dict.v1.GetDictTypeReply'
+    /qs/v1/dict/type/list:
         post:
             tags:
-                - PostService
-            summary: 获取岗位列表
-            description: 分页查询岗位列表
-            operationId: PostService_ListPosts
+                - DictTypeService
+            summary: 获取字典类型列表
+            description: 分页查询字典类型列表
+            operationId: DictTypeService_ListDictTypes
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/system.organization.v1.ListPostsRequest'
+                            $ref: '#/components/schemas/system.dict.v1.ListDictTypesRequest'
                 required: true
             responses:
                 "200":
@@ -194,908 +166,68 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/system.organization.v1.ListPostsReply'
-    /qs/v1/organizations/post/update:
+                                $ref: '#/components/schemas/system.dict.v1.ListDictTypesReply'
+    /qs/v1/dict/type/update:
         put:
             tags:
-                - PostService
-            summary: 更新岗位信息
-            description: 更新岗位的基本信息
-            operationId: PostService_UpdatePost
+                - DictTypeService
+            summary: 更新字典类型信息
+            description: 更新字典类型的基本信息
+            operationId: DictTypeService_UpdateDictType
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/system.organization.v1.UpdatePostRequest'
+                            $ref: '#/components/schemas/system.dict.v1.UpdateDictTypeRequest'
                 required: true
             responses:
                 "200":
                     description: OK
                     content: {}
-    /qs/v1/permission/role/assign-menu:
-        post:
-            tags:
-                - RoleService
-            summary: 分配角色菜单权限
-            description: 为角色分配菜单权限
-            operationId: RoleService_AssignRoleMenu
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.permission.v1.AssignRoleMenuRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/permission/role/create:
-        post:
-            tags:
-                - RoleService
-            summary: 创建角色
-            description: 创建一个新的角色
-            operationId: RoleService_CreateRole
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.permission.v1.CreateRoleRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/permission/role/delete:
-        delete:
-            tags:
-                - RoleService
-            summary: 删除角色
-            description: 删除角色，此操作不可逆
-            operationId: RoleService_DeleteRole
-            parameters:
-                - name: id
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/permission/role/get:
-        get:
-            tags:
-                - RoleService
-            summary: 获取角色详细信息
-            description: 根据角色ID获取角色的详细信息
-            operationId: RoleService_GetRole
-            parameters:
-                - name: id
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.permission.v1.GetRoleReply'
-    /qs/v1/permission/role/list:
-        post:
-            tags:
-                - RoleService
-            summary: 获取角色列表
-            description: 分页查询角色列表
-            operationId: RoleService_ListRoles
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.permission.v1.ListRolesRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.permission.v1.ListRolesReply'
-    /qs/v1/permission/role/list-menus:
-        get:
-            tags:
-                - RoleService
-            summary: 获取角色菜单权限
-            description: 获取角色已分配的菜单权限列表
-            operationId: RoleService_GetRoleMenus
-            parameters:
-                - name: id
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.permission.v1.GetRoleMenusReply'
-    /qs/v1/permission/role/update:
-        put:
-            tags:
-                - RoleService
-            summary: 更新角色信息
-            description: 更新角色的基本信息
-            operationId: RoleService_UpdateRole
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.permission.v1.UpdateRoleRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/permissions/menu/create:
-        post:
-            tags:
-                - MenuService
-            summary: 创建菜单
-            description: 创建一个新的菜单
-            operationId: MenuService_CreateMenu
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.permission.v1.CreateMenuRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/permissions/menu/delete:
-        delete:
-            tags:
-                - MenuService
-            summary: 删除菜单
-            description: 删除菜单，此操作不可逆
-            operationId: MenuService_DeleteMenu
-            parameters:
-                - name: id
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/permissions/menu/get:
-        get:
-            tags:
-                - MenuService
-            summary: 获取菜单详细信息
-            description: 根据菜单ID获取菜单的详细信息
-            operationId: MenuService_GetMenu
-            parameters:
-                - name: id
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.permission.v1.GetMenuReply'
-    /qs/v1/permissions/menu/tree:
-        get:
-            tags:
-                - MenuService
-            summary: 获取菜单树
-            description: 获取完整的菜单树结构
-            operationId: MenuService_GetMenuTree
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.permission.v1.GetMenuTreeReply'
-    /qs/v1/permissions/menu/update:
-        put:
-            tags:
-                - MenuService
-            summary: 更新菜单信息
-            description: 更新菜单的基本信息
-            operationId: MenuService_UpdateMenu
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.permission.v1.UpdateMenuRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/tenant-package/create:
-        post:
-            tags:
-                - TenantPackageService
-            summary: 创建租户套餐
-            description: 创建一个新的租户套餐
-            operationId: TenantPackageService_CreateTenantPackage
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.tenant.v1.CreateTenantPackageRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/tenant-package/delete:
-        delete:
-            tags:
-                - TenantPackageService
-            summary: 删除租户套餐
-            description: 删除租户套餐，此操作不可逆
-            operationId: TenantPackageService_DeleteTenantPackage
-            parameters:
-                - name: id
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/tenant-package/get:
-        get:
-            tags:
-                - TenantPackageService
-            summary: 获取租户套餐详细信息
-            description: 根据套餐ID获取套餐的详细信息
-            operationId: TenantPackageService_GetTenantPackage
-            parameters:
-                - name: id
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.tenant.v1.GetTenantPackageReply'
-    /qs/v1/tenant-package/list:
-        post:
-            tags:
-                - TenantPackageService
-            summary: 获取租户套餐列表
-            description: 分页查询租户套餐列表
-            operationId: TenantPackageService_ListTenantPackages
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.tenant.v1.ListTenantPackagesRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.tenant.v1.ListTenantPackagesReply'
-    /qs/v1/tenant-package/update:
-        put:
-            tags:
-                - TenantPackageService
-            summary: 更新租户套餐信息
-            description: 更新租户套餐的基本信息
-            operationId: TenantPackageService_UpdateTenantPackage
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.tenant.v1.UpdateTenantPackageRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/tenant/all:
-        get:
-            tags:
-                - TenantService
-            summary: 获取全量租户列表
-            description: 获取所有租户的简化信息列表，仅包含ID和名称
-            operationId: TenantService_GetAllTenants
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.tenant.v1.GetAllTenantsReply'
-    /qs/v1/tenant/create:
-        post:
-            tags:
-                - TenantService
-            summary: 创建租户
-            description: 创建一个新的租户
-            operationId: TenantService_CreateTenant
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.tenant.v1.CreateTenantRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/tenant/delete:
-        delete:
-            tags:
-                - TenantService
-            summary: 删除租户
-            description: 删除租户，此操作不可逆
-            operationId: TenantService_DeleteTenant
-            parameters:
-                - name: id
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/tenant/get:
-        get:
-            tags:
-                - TenantService
-            summary: 获取租户详细信息
-            description: 根据租户ID获取租户的详细信息
-            operationId: TenantService_GetTenant
-            parameters:
-                - name: id
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.tenant.v1.GetTenantReply'
-    /qs/v1/tenant/list:
-        post:
-            tags:
-                - TenantService
-            summary: 获取租户列表
-            description: 分页查询租户列表
-            operationId: TenantService_ListTenants
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.tenant.v1.ListTenantsRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.tenant.v1.ListTenantsReply'
-    /qs/v1/tenant/update:
-        put:
-            tags:
-                - TenantService
-            summary: 更新租户信息
-            description: 更新租户的基本信息
-            operationId: TenantService_UpdateTenant
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.tenant.v1.UpdateTenantRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/user/assign-dept:
-        put:
-            tags:
-                - UserService
-            summary: 分配用户部门
-            description: 为用户分配或移除部门
-            operationId: UserService_AssignUserDept
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.user.v1.AssignUserDeptRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/user/assign-post:
-        put:
-            tags:
-                - UserService
-            summary: 分配用户岗位
-            description: 为用户分配或移除岗位
-            operationId: UserService_AssignUserPost
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.user.v1.AssignUserPostRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/user/change-password:
-        put:
-            tags:
-                - UserService
-            summary: 修改用户密码
-            description: 用户主动修改自己的登录密码，需要验证原密码
-            operationId: UserService_ChangePassword
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.user.v1.ChangePasswordRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/user/create:
-        post:
-            tags:
-                - UserService
-            summary: 创建新用户
-            description: 创建一个新的用户，需要提供用户名、密码等基本信息
-            operationId: UserService_CreateUser
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.user.v1.CreateUserRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/user/delete:
-        delete:
-            tags:
-                - UserService
-            summary: 删除用户
-            description: 删除用户，此操作不可逆
-            operationId: UserService_DeleteUser
-            parameters:
-                - name: id
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/user/get:
-        get:
-            tags:
-                - UserService
-            summary: 获取用户详细信息
-            description: 根据用户ID获取用户的详细信息
-            operationId: UserService_GetUser
-            parameters:
-                - name: id
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.user.v1.GetUserReply'
-    /qs/v1/user/list:
-        get:
-            tags:
-                - UserService
-            summary: 获取用户列表
-            description: 分页查询用户列表，支持关键字搜索、状态筛选等
-            operationId: UserService_ListUsers
-            parameters:
-                - name: page
-                  in: query
-                  schema:
-                    type: integer
-                    format: int32
-                - name: pageSize
-                  in: query
-                  schema:
-                    type: integer
-                    format: int32
-                - name: username
-                  in: query
-                  schema:
-                    type: string
-                - name: mobile
-                  in: query
-                  schema:
-                    type: string
-                - name: nikeName
-                  in: query
-                  schema:
-                    type: string
-                - name: status
-                  in: query
-                  schema:
-                    type: integer
-                    format: int32
-                - name: sex
-                  in: query
-                  schema:
-                    type: integer
-                    format: int32
-                - name: sortField
-                  in: query
-                  schema:
-                    type: string
-                - name: sortOrder
-                  in: query
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.user.v1.ListUsersReply'
-    /qs/v1/user/set-avatar:
-        put:
-            tags:
-                - UserService
-            summary: 设置用户头像
-            description: 设置用户的头像图片URL地址
-            operationId: UserService_SetAvatar
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.user.v1.SetAvatarRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/user/update:
-        put:
-            tags:
-                - UserService
-            summary: 更新用户信息
-            description: 更新用户的基本信息，如昵称、邮箱、手机号等
-            operationId: UserService_UpdateUser
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.user.v1.UpdateUserRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/user/update-status:
-        put:
-            tags:
-                - UserService
-            summary: 变更用户状态
-            description: 启用或禁用用户，管理用户的使用权限
-            operationId: UserService_ChangeUserStatus
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.user.v1.ChangeUserStatusRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/users/assign-role:
-        put:
-            tags:
-                - UserService
-            summary: 分配用户角色
-            description: 为用户分配或移除角色
-            operationId: UserService_AssignUserRoles
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/system.user.v1.AssignUserRolesRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content: {}
-    /qs/v1/users/depts/{id}:
-        get:
-            tags:
-                - UserService
-            summary: 获取用户部门列表
-            description: 获取用户已分配的部门列表
-            operationId: UserService_GetUserDepts
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.user.v1.GetUserDeptsReply'
-    /qs/v1/users/posts/{id}:
-        get:
-            tags:
-                - UserService
-            summary: 获取用户岗位列表
-            description: 获取用户已分配的岗位列表
-            operationId: UserService_GetUserPosts
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.user.v1.GetUserPostsReply'
-    /qs/v1/users/roles/{id}:
-        get:
-            tags:
-                - UserService
-            summary: 获取用户角色列表
-            description: 获取用户已分配的角色列表
-            operationId: UserService_GetUserRoles
-            parameters:
-                - name: id
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/system.user.v1.GetUserRolesReply'
 components:
     schemas:
-        system.auth.v1.GetPermissionInfoReply:
+        system.dict.v1.CreateDictDataRequest:
             type: object
             properties:
-                user:
-                    $ref: '#/components/schemas/system.auth.v1.UserInfo'
-                roles:
-                    example: ["admin", "user"]
-                    type: array
-                    items:
-                        type: string
-                    description: 角色代码列表
-                permissions:
-                    example: ["system:user:list", "system:user:create"]
-                    type: array
-                    items:
-                        type: string
-                    description: 权限标识列表
-                menus:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/system.auth.v1.MenuInfo'
-                    description: 菜单树结构
-            description: 获取权限信息响应体
-        system.auth.v1.LoginReply:
-            type: object
-            properties:
-                token:
-                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                dictTypeId:
+                    example: 987654321
                     type: string
-                    description: 访问令牌
-            description: 登录响应体
-        system.auth.v1.LoginRequest:
-            example: {"username": "admin", "password": "123456"}
-            type: object
-            properties:
-                username:
-                    example: admin
+                    description: 字典类型ID
+                label:
+                    example: Male
                     type: string
-                    description: 用户名
-                password:
-                    example: 123456
-                    type: string
-                    description: 密码
-                device:
-                    example: pc
-                    type: string
-                    description: 设备
-            description: 登录请求体
-        system.auth.v1.MenuInfo:
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 菜单唯一标识符
-                name:
-                    example: 系统管理
-                    type: string
-                    description: 菜单名称
-                permission:
-                    example: system:user:list
-                    type: string
-                    description: 权限标识
-                type:
+                    description: 字典标签
+                value:
                     example: 1
-                    type: integer
-                    description: 菜单类型
-                    format: int32
-                sort:
-                    example: 1
-                    type: integer
-                    description: 显示顺序
-                    format: int32
-                parentId:
-                    example: 0
                     type: string
-                    description: 父菜单ID，根菜单为0
-                path:
-                    example: /system/user
-                    type: string
-                    description: 路由地址
-                icon:
-                    example: user
-                    type: string
-                    description: 菜单图标
-                component:
-                    example: system/user/index
-                    type: string
-                    description: 组件路径
-                componentName:
-                    example: User
-                    type: string
-                    description: 组件名
-                status:
-                    example: 1
-                    type: integer
-                    description: '菜单状态: 0-禁用, 1-正常'
-                    format: int32
-                visible:
-                    example: true
-                    type: boolean
-                    description: 是否可见
-                keepAlive:
-                    example: true
-                    type: boolean
-                    description: 是否缓存
-                alwaysShow:
-                    example: true
-                    type: boolean
-                    description: 是否总是显示
-            description: 菜单信息
-        system.auth.v1.UserInfo:
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 用户唯一标识符
-                username:
-                    example: admin
-                    type: string
-                    description: 用户名
-                nickname:
-                    example: 管理员
-                    type: string
-                    description: 用户昵称
-                email:
-                    example: admin@example.com
-                    type: string
-                    description: 邮箱地址
-                mobile:
-                    example: 13800138000
-                    type: string
-                    description: 手机号码
-                sex:
-                    example: 1
-                    type: integer
-                    description: '性别: 0-未知, 1-男, 2-女'
-                    format: int32
-                avatar:
-                    example: https://example.com/avatar.jpg
-                    type: string
-                    description: 用户头像URL
-                status:
-                    example: 1
-                    type: integer
-                    description: '用户状态: 0-禁用, 1-正常'
-                    format: int32
-                remark:
-                    type: string
-                    description: 备注信息
-                createAt:
-                    type: string
-                    description: 创建时间
-                    format: date-time
-            description: 用户基本信息
-        system.organization.v1.CreateDepartmentRequest:
-            type: object
-            properties:
-                name:
-                    example: 技术部
-                    type: string
-                    description: 部门名称
-                parentId:
-                    example: 0
-                    type: string
-                    description: 父部门ID
+                    description: 字典值
                 sort:
                     example: 1
                     type: integer
                     description: 排序号
                     format: int32
-                leaderUserId:
-                    example: user123
+                cssClass:
                     type: string
-                    description: 部门负责人用户ID
-                phone:
-                    example: 13800138000
+                    description: CSS类名
+                isDefault:
+                    example: false
+                    type: boolean
+                    description: 是否默认
+                remark:
                     type: string
-                    description: 联系电话
-                email:
-                    example: tech@example.com
-                    type: string
-                    description: 联系邮箱
-            description: 创建部门请求体
-        system.organization.v1.CreatePostRequest:
+                    description: 备注信息
+            description: 创建字典数据请求体
+        system.dict.v1.CreateDictTypeRequest:
             type: object
             properties:
                 name:
-                    example: 软件工程师
+                    example: user_gender
                     type: string
-                    description: 岗位名称
+                    description: 字典类型名称
                 code:
-                    example: SE001
+                    example: user_gender
                     type: string
-                    description: 岗位编码
+                    description: 字典类型编码
                 sort:
                     example: 1
                     type: integer
@@ -1104,44 +236,46 @@ components:
                 remark:
                     type: string
                     description: 备注信息
-            description: 创建岗位请求体
-        system.organization.v1.DepartmentInfo:
+            description: 创建字典类型请求体
+        system.dict.v1.DictDataInfo:
             type: object
             properties:
                 id:
                     example: 123456789
                     type: string
-                    description: 部门唯一标识符
-                name:
-                    example: 技术部
+                    description: 字典数据ID
+                dictTypeId:
+                    example: 987654321
                     type: string
-                    description: 部门名称
-                parentId:
-                    example: 0
+                    description: 字典类型ID
+                label:
+                    example: Male
                     type: string
-                    description: 父部门ID，根部门为空
+                    description: 字典标签
+                value:
+                    example: 1
+                    type: string
+                    description: 字典值
                 sort:
                     example: 1
                     type: integer
                     description: 排序号
                     format: int32
-                leaderUserId:
-                    example: user123
-                    type: string
-                    description: 部门负责人用户ID
-                phone:
-                    example: 13800138000
-                    type: string
-                    description: 联系电话
-                email:
-                    example: tech@example.com
-                    type: string
-                    description: 联系邮箱
                 status:
                     example: 1
                     type: integer
-                    description: '部门状态: 0-禁用, 1-正常'
+                    description: '状态: 0-停用, 1-正常'
                     format: int32
+                cssClass:
+                    type: string
+                    description: CSS类名
+                isDefault:
+                    example: false
+                    type: boolean
+                    description: 是否默认
+                remark:
+                    type: string
+                    description: 备注信息
                 createAt:
                     type: string
                     description: 创建时间
@@ -1153,41 +287,67 @@ components:
                 tenantId:
                     type: string
                     description: 租户ID
-                children:
+            description: 字典数据的基本信息
+        system.dict.v1.DictTypeInfo:
+            type: object
+            properties:
+                id:
+                    example: 123456789
+                    type: string
+                    description: 字典类型ID
+                name:
+                    example: user_gender
+                    type: string
+                    description: 字典类型名称
+                code:
+                    example: user_gender
+                    type: string
+                    description: 字典类型编码
+                status:
+                    example: 1
+                    type: integer
+                    description: '状态: 0-停用, 1-正常'
+                    format: int32
+                sort:
+                    example: 1
+                    type: integer
+                    description: 排序号
+                    format: int32
+                remark:
+                    type: string
+                    description: 备注信息
+                createAt:
+                    type: string
+                    description: 创建时间
+                    format: date-time
+                updateAt:
+                    type: string
+                    description: 更新时间
+                    format: date-time
+                tenantId:
+                    type: string
+                    description: 租户ID
+            description: 字典类型的基本信息
+        system.dict.v1.GetDictDataReply:
+            type: object
+            properties:
+                dictData:
+                    $ref: '#/components/schemas/system.dict.v1.DictDataInfo'
+            description: 获取字典数据信息响应体
+        system.dict.v1.GetDictTypeReply:
+            type: object
+            properties:
+                dictType:
+                    $ref: '#/components/schemas/system.dict.v1.DictTypeInfo'
+            description: 获取字典类型信息响应体
+        system.dict.v1.ListDictDataReply:
+            type: object
+            properties:
+                dictDataList:
                     type: array
                     items:
-                        $ref: '#/components/schemas/system.organization.v1.DepartmentInfo'
-                    description: 子部门列表
-            description: 部门的基本信息
-        system.organization.v1.GetDepartmentReply:
-            type: object
-            properties:
-                department:
-                    $ref: '#/components/schemas/system.organization.v1.DepartmentInfo'
-            description: 获取部门信息响应体
-        system.organization.v1.GetDepartmentTreeReply:
-            type: object
-            properties:
-                departments:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/system.organization.v1.DepartmentInfo'
-                    description: 部门树结构
-            description: 获取部门树响应体
-        system.organization.v1.GetPostReply:
-            type: object
-            properties:
-                post:
-                    $ref: '#/components/schemas/system.organization.v1.PostInfo'
-            description: 获取岗位信息响应体
-        system.organization.v1.ListPostsReply:
-            type: object
-            properties:
-                posts:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/system.organization.v1.PostInfo'
-                    description: 岗位列表
+                        $ref: '#/components/schemas/system.dict.v1.DictDataInfo'
+                    description: 字典数据列表
                 total:
                     example: 100
                     type: string
@@ -1207,8 +367,8 @@ components:
                     type: integer
                     description: 总页数
                     format: int32
-            description: 查询岗位列表响应体
-        system.organization.v1.ListPostsRequest:
+            description: 查询字典数据列表响应体
+        system.dict.v1.ListDictDataRequest:
             type: object
             properties:
                 page:
@@ -1221,14 +381,18 @@ components:
                     type: integer
                     description: 每页数量，默认10
                     format: int32
+                dictTypeId:
+                    example: 987654321
+                    type: string
+                    description: 字典类型ID
                 keyword:
-                    example: 软件
+                    example: Male
                     type: string
                     description: 搜索关键字
                 status:
                     example: 1
                     type: integer
-                    description: '岗位状态筛选: 0-禁用, 1-正常'
+                    description: '状态筛选: 0-停用, 1-正常'
                     format: int32
                 sortField:
                     example: sort
@@ -1238,262 +402,15 @@ components:
                     example: asc
                     type: string
                     description: '排序方式: asc, desc'
-            description: 查询岗位列表请求体
-        system.organization.v1.PostInfo:
+            description: 查询字典数据列表请求体
+        system.dict.v1.ListDictTypesReply:
             type: object
             properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 岗位唯一标识符
-                name:
-                    example: 软件工程师
-                    type: string
-                    description: 岗位名称
-                code:
-                    example: SE001
-                    type: string
-                    description: 岗位编码
-                sort:
-                    example: 1
-                    type: integer
-                    description: 排序号
-                    format: int32
-                status:
-                    example: 1
-                    type: integer
-                    description: '岗位状态: 0-禁用, 1-正常'
-                    format: int32
-                remark:
-                    type: string
-                    description: 备注信息
-                createAt:
-                    type: string
-                    description: 创建时间
-                    format: date-time
-                updateAt:
-                    type: string
-                    description: 更新时间
-                    format: date-time
-                tenantId:
-                    type: string
-                    description: 租户ID
-            description: 岗位的基本信息
-        system.organization.v1.UpdateDepartmentRequest:
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 部门ID
-                name:
-                    example: 技术部
-                    type: string
-                    description: 部门名称
-                parentId:
-                    example: 0
-                    type: string
-                    description: 父部门ID
-                sort:
-                    example: 1
-                    type: integer
-                    description: 排序号
-                    format: int32
-                leaderUserId:
-                    example: user123
-                    type: string
-                    description: 部门负责人用户ID
-                phone:
-                    example: 13800138000
-                    type: string
-                    description: 联系电话
-                email:
-                    example: tech@example.com
-                    type: string
-                    description: 联系邮箱
-                status:
-                    example: 1
-                    type: integer
-                    description: '部门状态: 0-禁用, 1-正常'
-                    format: int32
-            description: 更新部门信息请求体
-        system.organization.v1.UpdatePostRequest:
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 岗位ID
-                name:
-                    example: 软件工程师
-                    type: string
-                    description: 岗位名称
-                code:
-                    example: SE001
-                    type: string
-                    description: 岗位编码
-                sort:
-                    example: 1
-                    type: integer
-                    description: 排序号
-                    format: int32
-                status:
-                    example: 1
-                    type: integer
-                    description: '岗位状态: 0-禁用, 1-正常'
-                    format: int32
-                remark:
-                    type: string
-                    description: 备注信息
-            description: 更新岗位信息请求体
-        system.permission.v1.AssignRoleMenuRequest:
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 角色ID
-                menuIds:
+                dictTypes:
                     type: array
                     items:
-                        type: string
-                    description: 菜单ID列表
-            description: 分配角色菜单权限请求体
-        system.permission.v1.CreateMenuRequest:
-            type: object
-            properties:
-                name:
-                    example: 系统管理
-                    type: string
-                    description: 菜单名称
-                permission:
-                    example: system:user:list
-                    type: string
-                    description: 权限标识
-                type:
-                    example: 1
-                    type: integer
-                    description: 菜单类型
-                    format: int32
-                sort:
-                    example: 1
-                    type: integer
-                    description: 显示顺序
-                    format: int32
-                parentId:
-                    example: 0
-                    type: string
-                    description: 父菜单ID，根菜单为0
-                path:
-                    example: /system/user
-                    type: string
-                    description: 路由地址
-                icon:
-                    example: user
-                    type: string
-                    description: 菜单图标
-                component:
-                    example: system/user/index
-                    type: string
-                    description: 组件路径
-                componentName:
-                    example: User
-                    type: string
-                    description: 组件名
-                status:
-                    example: 1
-                    type: integer
-                    description: '菜单状态: 0-禁用, 1-正常'
-                    format: int32
-                visible:
-                    example: true
-                    type: boolean
-                    description: 是否可见
-                keepAlive:
-                    example: true
-                    type: boolean
-                    description: 是否缓存
-                alwaysShow:
-                    example: true
-                    type: boolean
-                    description: 是否总是显示
-            description: 创建菜单请求体
-        system.permission.v1.CreateRoleRequest:
-            type: object
-            properties:
-                name:
-                    example: 管理员
-                    type: string
-                    description: 角色名称
-                code:
-                    example: admin
-                    type: string
-                    description: 角色权限字符串
-                sort:
-                    example: 1
-                    type: integer
-                    description: 显示顺序
-                    format: int32
-                dataScope:
-                    example: 1
-                    type: integer
-                    description: 数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）
-                    format: int32
-                dataScopeDeptIds:
-                    type: string
-                    description: 数据范围(指定部门数组)
-                status:
-                    example: 1
-                    type: integer
-                    description: '角色状态: 0-禁用, 1-正常'
-                    format: int32
-                type:
-                    example: 1
-                    type: integer
-                    description: 角色类型
-                    format: int32
-                remark:
-                    type: string
-                    description: 备注信息
-            description: 创建角色请求体
-        system.permission.v1.GetMenuReply:
-            type: object
-            properties:
-                menu:
-                    $ref: '#/components/schemas/system.permission.v1.MenuInfo'
-            description: 获取菜单信息响应体
-        system.permission.v1.GetMenuTreeReply:
-            type: object
-            properties:
-                menus:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/system.permission.v1.MenuInfo'
-                    description: 菜单树结构
-            description: 获取菜单树响应体
-        system.permission.v1.GetRoleMenusReply:
-            type: object
-            properties:
-                menuIds:
-                    type: array
-                    items:
-                        type: string
-                    description: 菜单ID列表
-            description: 获取角色菜单权限响应体
-        system.permission.v1.GetRoleReply:
-            type: object
-            properties:
-                role:
-                    $ref: '#/components/schemas/system.permission.v1.RoleInfo'
-            description: 获取角色信息响应体
-        system.permission.v1.ListRolesReply:
-            type: object
-            properties:
-                roles:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/system.permission.v1.RoleInfo'
-                    description: 角色列表
+                        $ref: '#/components/schemas/system.dict.v1.DictTypeInfo'
+                    description: 字典类型列表
                 total:
                     example: 100
                     type: string
@@ -1513,8 +430,8 @@ components:
                     type: integer
                     description: 总页数
                     format: int32
-            description: 查询角色列表响应体
-        system.permission.v1.ListRolesRequest:
+            description: 查询字典类型列表响应体
+        system.dict.v1.ListDictTypesRequest:
             type: object
             properties:
                 page:
@@ -1528,13 +445,13 @@ components:
                     description: 每页数量，默认10
                     format: int32
                 keyword:
-                    example: 管理
+                    example: gender
                     type: string
                     description: 搜索关键字
                 status:
                     example: 1
                     type: integer
-                    description: '角色状态筛选: 0-禁用, 1-正常'
+                    description: '状态筛选: 0-停用, 1-正常'
                     format: int32
                 sortField:
                     example: sort
@@ -1544,914 +461,80 @@ components:
                     example: asc
                     type: string
                     description: '排序方式: asc, desc'
-            description: 查询角色列表请求体
-        system.permission.v1.MenuInfo:
+            description: 查询字典类型列表请求体
+        system.dict.v1.UpdateDictDataRequest:
             type: object
             properties:
                 id:
                     example: 123456789
                     type: string
-                    description: 菜单唯一标识符
-                name:
-                    example: 系统管理
+                    description: 字典数据ID
+                dictTypeId:
+                    example: 987654321
                     type: string
-                    description: 菜单名称
-                permission:
-                    example: system:user:list
+                    description: 字典类型ID
+                label:
+                    example: Male
                     type: string
-                    description: 权限标识
-                type:
+                    description: 字典标签
+                value:
                     example: 1
-                    type: integer
-                    description: 菜单类型
-                    format: int32
+                    type: string
+                    description: 字典值
                 sort:
                     example: 1
                     type: integer
-                    description: 显示顺序
+                    description: 排序号
                     format: int32
-                parentId:
-                    example: 0
-                    type: string
-                    description: 父菜单ID，根菜单为0
-                path:
-                    example: /system/user
-                    type: string
-                    description: 路由地址
-                icon:
-                    example: user
-                    type: string
-                    description: 菜单图标
-                component:
-                    example: system/user/index
-                    type: string
-                    description: 组件路径
-                componentName:
-                    example: User
-                    type: string
-                    description: 组件名
                 status:
                     example: 1
                     type: integer
-                    description: '菜单状态: 0-禁用, 1-正常'
+                    description: '状态: 0-停用, 1-正常'
                     format: int32
-                visible:
-                    example: true
-                    type: boolean
-                    description: 是否可见
-                keepAlive:
-                    example: true
-                    type: boolean
-                    description: 是否缓存
-                alwaysShow:
-                    example: true
-                    type: boolean
-                    description: 是否总是显示
-                createAt:
+                cssClass:
                     type: string
-                    description: 创建时间
-                    format: date-time
-                updateAt:
+                    description: CSS类名
+                isDefault:
+                    example: false
+                    type: boolean
+                    description: 是否默认
+                remark:
                     type: string
-                    description: 更新时间
-                    format: date-time
-                children:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/system.permission.v1.MenuInfo'
-                    description: 子菜单列表
-            description: 菜单的基本信息
-        system.permission.v1.RoleInfo:
+                    description: 备注信息
+            description: 更新字典数据信息请求体
+        system.dict.v1.UpdateDictTypeRequest:
             type: object
             properties:
                 id:
                     example: 123456789
                     type: string
-                    description: 角色唯一标识符
+                    description: 字典类型ID
                 name:
-                    example: 管理员
+                    example: user_gender
                     type: string
-                    description: 角色名称
+                    description: 字典类型名称
                 code:
-                    example: admin
+                    example: user_gender
                     type: string
-                    description: 角色权限字符串
+                    description: 字典类型编码
                 sort:
                     example: 1
                     type: integer
-                    description: 显示顺序
+                    description: 排序号
                     format: int32
-                dataScope:
-                    example: 1
-                    type: integer
-                    description: 数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）
-                    format: int32
-                dataScopeDeptIds:
-                    type: string
-                    description: 数据范围(指定部门数组)
                 status:
                     example: 1
                     type: integer
-                    description: '角色状态: 0-禁用, 1-正常'
-                    format: int32
-                type:
-                    example: 1
-                    type: integer
-                    description: 角色类型
+                    description: '状态: 0-停用, 1-正常'
                     format: int32
                 remark:
                     type: string
                     description: 备注信息
-                createAt:
-                    type: string
-                    description: 创建时间
-                    format: date-time
-                updateAt:
-                    type: string
-                    description: 更新时间
-                    format: date-time
-                tenantId:
-                    type: string
-                    description: 租户ID
-            description: 角色的基本信息
-        system.permission.v1.UpdateMenuRequest:
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 菜单ID
-                name:
-                    example: 系统管理
-                    type: string
-                    description: 菜单名称
-                permission:
-                    example: system:user:list
-                    type: string
-                    description: 权限标识
-                type:
-                    example: 1
-                    type: integer
-                    description: 菜单类型
-                    format: int32
-                sort:
-                    example: 1
-                    type: integer
-                    description: 显示顺序
-                    format: int32
-                parentId:
-                    example: 0
-                    type: string
-                    description: 父菜单ID，根菜单为0
-                path:
-                    example: /system/user
-                    type: string
-                    description: 路由地址
-                icon:
-                    example: user
-                    type: string
-                    description: 菜单图标
-                component:
-                    example: system/user/index
-                    type: string
-                    description: 组件路径
-                componentName:
-                    example: User
-                    type: string
-                    description: 组件名
-                status:
-                    example: 1
-                    type: integer
-                    description: '菜单状态: 0-禁用, 1-正常'
-                    format: int32
-                visible:
-                    example: true
-                    type: boolean
-                    description: 是否可见
-                keepAlive:
-                    example: true
-                    type: boolean
-                    description: 是否缓存
-                alwaysShow:
-                    example: true
-                    type: boolean
-                    description: 是否总是显示
-            description: 更新菜单信息请求体
-        system.permission.v1.UpdateRoleRequest:
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 角色ID
-                name:
-                    example: 管理员
-                    type: string
-                    description: 角色名称
-                code:
-                    example: admin
-                    type: string
-                    description: 角色权限字符串
-                sort:
-                    example: 1
-                    type: integer
-                    description: 显示顺序
-                    format: int32
-                dataScope:
-                    example: 1
-                    type: integer
-                    description: 数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）
-                    format: int32
-                dataScopeDeptIds:
-                    type: string
-                    description: 数据范围(指定部门数组)
-                status:
-                    example: 1
-                    type: integer
-                    description: '角色状态: 0-禁用, 1-正常'
-                    format: int32
-                type:
-                    example: 1
-                    type: integer
-                    description: 角色类型
-                    format: int32
-                remark:
-                    type: string
-                    description: 备注信息
-            description: 更新角色信息请求体
-        system.tenant.v1.CreateTenantPackageRequest:
-            type: object
-            properties:
-                name:
-                    example: 基础版
-                    type: string
-                    description: 套餐名称
-                remark:
-                    type: string
-                    description: 备注信息
-                menuIds:
-                    example: 1,2,3,4,5
-                    type: string
-                    description: 关联的菜单编号（逗号分隔）
-            description: 创建租户套餐请求体
-        system.tenant.v1.CreateTenantRequest:
-            type: object
-            properties:
-                name:
-                    example: 示例公司
-                    type: string
-                    description: 租户名称
-                contactUserId:
-                    example: user123
-                    type: string
-                    description: 联系人的用户编号
-                contactName:
-                    example: 张三
-                    type: string
-                    description: 联系人
-                contactMobile:
-                    example: 13800138000
-                    type: string
-                    description: 联系手机
-                website:
-                    example: example.com
-                    type: string
-                    description: 绑定域名
-                packageId:
-                    example: pkg001
-                    type: string
-                    description: 租户套餐编号
-                expireTime:
-                    type: string
-                    description: 过期时间
-                    format: date-time
-                accountCount:
-                    example: 100
-                    type: integer
-                    description: 账号数量
-                    format: int32
-            description: 创建租户请求体
-        system.tenant.v1.GetAllTenantsReply:
-            type: object
-            properties:
-                tenants:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/system.tenant.v1.TenantSimpleInfo'
-                    description: 租户列表
-            description: 获取全量租户列表响应体
-        system.tenant.v1.GetTenantPackageReply:
-            type: object
-            properties:
-                package:
-                    $ref: '#/components/schemas/system.tenant.v1.TenantPackageInfo'
-            description: 获取租户套餐信息响应体
-        system.tenant.v1.GetTenantReply:
-            type: object
-            properties:
-                tenant:
-                    $ref: '#/components/schemas/system.tenant.v1.TenantInfo'
-            description: 获取租户信息响应体
-        system.tenant.v1.ListTenantPackagesReply:
-            type: object
-            properties:
-                packages:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/system.tenant.v1.TenantPackageInfo'
-                    description: 套餐列表
-                total:
-                    example: 100
-                    type: string
-                    description: 总记录数
-                page:
-                    example: 1
-                    type: integer
-                    description: 当前页码
-                    format: int32
-                pageSize:
-                    example: 10
-                    type: integer
-                    description: 每页数量
-                    format: int32
-                totalPages:
-                    example: 10
-                    type: integer
-                    description: 总页数
-                    format: int32
-            description: 查询租户套餐列表响应体
-        system.tenant.v1.ListTenantPackagesRequest:
-            type: object
-            properties:
-                page:
-                    example: 1
-                    type: integer
-                    description: 页码，从1开始
-                    format: int32
-                pageSize:
-                    example: 10
-                    type: integer
-                    description: 每页数量，默认10
-                    format: int32
-                keyword:
-                    example: 基础
-                    type: string
-                    description: 搜索关键字
-                status:
-                    example: 1
-                    type: integer
-                    description: '套餐状态筛选: 0-停用, 1-正常'
-                    format: int32
-                sortField:
-                    example: create_at
-                    type: string
-                    description: 排序字段
-                sortOrder:
-                    example: desc
-                    type: string
-                    description: '排序方式: asc, desc'
-            description: 查询租户套餐列表请求体
-        system.tenant.v1.ListTenantsReply:
-            type: object
-            properties:
-                tenants:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/system.tenant.v1.TenantInfo'
-                    description: 租户列表
-                total:
-                    example: 100
-                    type: string
-                    description: 总记录数
-                page:
-                    example: 1
-                    type: integer
-                    description: 当前页码
-                    format: int32
-                pageSize:
-                    example: 10
-                    type: integer
-                    description: 每页数量
-                    format: int32
-                totalPages:
-                    example: 10
-                    type: integer
-                    description: 总页数
-                    format: int32
-            description: 查询租户列表响应体
-        system.tenant.v1.ListTenantsRequest:
-            type: object
-            properties:
-                page:
-                    example: 1
-                    type: integer
-                    description: 页码，从1开始
-                    format: int32
-                pageSize:
-                    example: 10
-                    type: integer
-                    description: 每页数量，默认10
-                    format: int32
-                keyword:
-                    example: 示例
-                    type: string
-                    description: 搜索关键字
-                status:
-                    example: 1
-                    type: integer
-                    description: '租户状态筛选: 0-停用, 1-正常'
-                    format: int32
-                sortField:
-                    example: create_at
-                    type: string
-                    description: 排序字段
-                sortOrder:
-                    example: desc
-                    type: string
-                    description: '排序方式: asc, desc'
-            description: 查询租户列表请求体
-        system.tenant.v1.TenantInfo:
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 租户唯一标识符
-                name:
-                    example: 示例公司
-                    type: string
-                    description: 租户名称
-                contactUserId:
-                    example: user123
-                    type: string
-                    description: 联系人的用户编号
-                contactName:
-                    example: 张三
-                    type: string
-                    description: 联系人
-                contactMobile:
-                    example: 13800138000
-                    type: string
-                    description: 联系手机
-                status:
-                    example: 1
-                    type: integer
-                    description: '租户状态: 0-停用, 1-正常'
-                    format: int32
-                website:
-                    example: example.com
-                    type: string
-                    description: 绑定域名
-                packageId:
-                    example: pkg001
-                    type: string
-                    description: 租户套餐编号
-                expireTime:
-                    type: string
-                    description: 过期时间
-                    format: date-time
-                accountCount:
-                    example: 100
-                    type: integer
-                    description: 账号数量
-                    format: int32
-                createAt:
-                    type: string
-                    description: 创建时间
-                    format: date-time
-                updateAt:
-                    type: string
-                    description: 更新时间
-                    format: date-time
-            description: 租户的基本信息
-        system.tenant.v1.TenantPackageInfo:
-            type: object
-            properties:
-                id:
-                    example: pkg001
-                    type: string
-                    description: 套餐唯一标识符
-                name:
-                    example: 基础版
-                    type: string
-                    description: 套餐名称
-                status:
-                    example: 1
-                    type: integer
-                    description: '套餐状态: 0-停用, 1-正常'
-                    format: int32
-                remark:
-                    type: string
-                    description: 备注信息
-                menuIds:
-                    example: 1,2,3,4,5
-                    type: string
-                    description: 关联的菜单编号（逗号分隔）
-                createAt:
-                    type: string
-                    description: 创建时间
-                    format: date-time
-                updateAt:
-                    type: string
-                    description: 更新时间
-                    format: date-time
-            description: 租户套餐的基本信息
-        system.tenant.v1.TenantSimpleInfo:
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 租户唯一标识符
-                name:
-                    example: 示例公司
-                    type: string
-                    description: 租户名称
-            description: 租户简化信息
-        system.tenant.v1.UpdateTenantPackageRequest:
-            type: object
-            properties:
-                id:
-                    example: pkg001
-                    type: string
-                    description: 套餐ID
-                name:
-                    example: 基础版
-                    type: string
-                    description: 套餐名称
-                status:
-                    example: 1
-                    type: integer
-                    description: '套餐状态: 0-停用, 1-正常'
-                    format: int32
-                remark:
-                    type: string
-                    description: 备注信息
-                menuIds:
-                    example: 1,2,3,4,5
-                    type: string
-                    description: 关联的菜单编号（逗号分隔）
-            description: 更新租户套餐信息请求体
-        system.tenant.v1.UpdateTenantRequest:
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 租户ID
-                name:
-                    example: 示例公司
-                    type: string
-                    description: 租户名称
-                contactUserId:
-                    example: user123
-                    type: string
-                    description: 联系人的用户编号
-                contactName:
-                    example: 张三
-                    type: string
-                    description: 联系人
-                contactMobile:
-                    example: 13800138000
-                    type: string
-                    description: 联系手机
-                status:
-                    example: 1
-                    type: integer
-                    description: '租户状态: 0-停用, 1-正常'
-                    format: int32
-                website:
-                    example: example.com
-                    type: string
-                    description: 绑定域名
-                packageId:
-                    example: pkg001
-                    type: string
-                    description: 租户套餐编号
-                expireTime:
-                    type: string
-                    description: 过期时间
-                    format: date-time
-                accountCount:
-                    example: 100
-                    type: integer
-                    description: 账号数量
-                    format: int32
-            description: 更新租户信息请求体
-        system.user.v1.AssignUserDeptRequest:
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 用户ID
-                deptIds:
-                    type: array
-                    items:
-                        type: string
-                    description: 部门ID列表
-                operation:
-                    example: add
-                    type: string
-                    description: '操作类型: add-添加, remove-移除, replace-替换'
-            description: 管理用户部门请求体
-        system.user.v1.AssignUserPostRequest:
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 用户ID
-                postIds:
-                    type: array
-                    items:
-                        type: string
-                    description: 岗位ID列表
-                operation:
-                    example: add
-                    type: string
-                    description: '操作类型: add-添加, remove-移除, replace-替换'
-            description: 管理用户岗位请求体
-        system.user.v1.AssignUserRolesRequest:
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 用户ID
-                roleIds:
-                    type: array
-                    items:
-                        type: string
-                    description: 角色ID列表
-            description: 管理用户角色请求体
-        system.user.v1.ChangePasswordRequest:
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 用户ID
-                oldPassword:
-                    example: oldpassword123
-                    type: string
-                    description: 原密码
-                newPassword:
-                    example: newpassword123
-                    type: string
-                    description: 新密码
-                confirmPassword:
-                    example: newpassword123
-                    type: string
-                    description: 确认新密码
-            description: 修改密码请求体
-        system.user.v1.ChangeUserStatusRequest:
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 用户ID
-                status:
-                    example: 1
-                    type: integer
-                    description: '目标状态: 0-禁用, 1-正常'
-                    format: int32
-            description: 变更用户状态请求体
-        system.user.v1.CreateUserRequest:
-            example: {"username": "newuser", "password": "password123", "nickname": "新用户", "email": "newuser@example.com", "mobile": "13900139000", "sex": 1}
-            type: object
-            properties:
-                username:
-                    example: newuser
-                    type: string
-                    description: 用户名，必须唯一
-                password:
-                    example: password123
-                    type: string
-                    description: 密码，长度不少于6位
-                nickname:
-                    example: 新用户
-                    type: string
-                    description: 用户昵称
-                email:
-                    example: newuser@example.com
-                    type: string
-                    description: 邮箱地址
-                mobile:
-                    example: 13900139000
-                    type: string
-                    description: 手机号码
-                sex:
-                    example: 1
-                    type: integer
-                    description: '性别: 0-未知, 1-男, 2-女'
-                    format: int32
-                avatar:
-                    example: https://example.com/avatar.jpg
-                    type: string
-                    description: 用户头像URL
-                remark:
-                    type: string
-                    description: 备注信息
-            description: 创建用户请求体
-        system.user.v1.GetUserDeptsReply:
-            type: object
-            properties:
-                deptIds:
-                    type: array
-                    items:
-                        type: string
-                    description: 部门ID列表
-            description: 获取用户部门列表响应体
-        system.user.v1.GetUserPostsReply:
-            type: object
-            properties:
-                postIds:
-                    type: array
-                    items:
-                        type: string
-                    description: 岗位ID列表
-            description: 获取用户岗位列表响应体
-        system.user.v1.GetUserReply:
-            type: object
-            properties:
-                user:
-                    $ref: '#/components/schemas/system.user.v1.UserInfo'
-            description: 获取用户信息响应体
-        system.user.v1.GetUserRolesReply:
-            type: object
-            properties:
-                roleIds:
-                    type: array
-                    items:
-                        type: string
-                    description: 角色ID列表
-            description: 获取用户角色列表响应体
-        system.user.v1.ListUsersReply:
-            type: object
-            properties:
-                users:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/system.user.v1.UserInfo'
-                    description: 用户列表
-                total:
-                    example: 100
-                    type: string
-                    description: 总记录数
-                page:
-                    example: 1
-                    type: integer
-                    description: 当前页码
-                    format: int32
-                pageSize:
-                    example: 10
-                    type: integer
-                    description: 每页数量
-                    format: int32
-                totalPages:
-                    example: 10
-                    type: integer
-                    description: 总页数
-                    format: int32
-            description: 查询用户列表响应体
-        system.user.v1.SetAvatarRequest:
-            example: {"id": "123456789", "avatar": "https://example.com/avatar.jpg"}
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 用户ID
-                avatar:
-                    example: https://example.com/avatar.jpg
-                    type: string
-                    description: 用户头像URL地址
-            description: 设置用户头像请求体
-        system.user.v1.UpdateUserRequest:
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 用户ID
-                username:
-                    example: newusername
-                    type: string
-                    description: 用户名
-                nickname:
-                    example: 新昵称
-                    type: string
-                    description: 用户昵称
-                mobile:
-                    example: 13900139000
-                    type: string
-                    description: 手机号码
-                email:
-                    example: newemail@example.com
-                    type: string
-                    description: 邮箱地址
-                avatar:
-                    example: https://example.com/newavatar.jpg
-                    type: string
-                    description: 用户头像URL
-                sex:
-                    example: 1
-                    type: integer
-                    description: '性别: 0-未知, 1-男, 2-女'
-                    format: int32
-                status:
-                    example: 1
-                    type: integer
-                    description: '用户状态: 0-禁用, 1-正常'
-                    format: int32
-                remark:
-                    type: string
-                    description: 备注信息
-            description: 更新用户信息请求体
-        system.user.v1.UserInfo:
-            example: {"id": "123456789", "username": "admin", "nickname": "管理员", "email": "admin@example.com", "mobile": "13800138000", "sex": 1, "status": 1}
-            type: object
-            properties:
-                id:
-                    example: 123456789
-                    type: string
-                    description: 用户唯一标识符
-                username:
-                    example: admin
-                    type: string
-                    description: 用户名，用于登录
-                nickname:
-                    example: 管理员
-                    type: string
-                    description: 用户昵称
-                email:
-                    example: admin@example.com
-                    type: string
-                    description: 邮箱地址
-                mobile:
-                    example: 13800138000
-                    type: string
-                    description: 手机号码
-                sex:
-                    example: 1
-                    type: integer
-                    description: '性别: 0-未知, 1-男, 2-女'
-                    format: int32
-                avatar:
-                    example: https://example.com/avatar.jpg
-                    type: string
-                    description: 用户头像URL
-                status:
-                    example: 1
-                    type: integer
-                    description: '用户状态: 0-禁用, 1-正常'
-                    format: int32
-                remark:
-                    type: string
-                    description: 备注信息
-                loginIp:
-                    type: string
-                    description: 最后登录IP地址
-                loginDate:
-                    type: string
-                    description: 最后登录时间
-                    format: date-time
-                createAt:
-                    type: string
-                    description: 创建时间
-                    format: date-time
-                updateAt:
-                    type: string
-                    description: 更新时间
-                    format: date-time
-                tenantId:
-                    type: string
-                    description: 租户ID
-            description: 用户的基本信息，包含用户的所有属性
+            description: 更新字典类型信息请求体
 tags:
-    - name: AuthService
-      description: 认证相关操作
-    - name: AuthService
-    - name: DepartmentService
-    - name: DepartmentService
-      description: 部门相关操作
-    - name: MenuService
-      description: 菜单管理相关操作
-    - name: MenuService
-    - name: PostService
-      description: 岗位相关操作
-    - name: PostService
-    - name: RoleService
-    - name: RoleService
-      description: 角色管理相关操作
-    - name: TenantPackageService
-      description: 租户套餐相关操作
-    - name: TenantPackageService
-    - name: TenantService
-      description: 租户相关操作
-    - name: TenantService
-    - name: UserService
-      description: 用户相关操作
-    - name: UserService
+    - name: DictDataService
+      description: 字典数据相关操作
+    - name: DictDataService
+    - name: DictTypeService
+      description: 字典类型相关操作
+    - name: DictTypeService
