@@ -23,6 +23,5 @@ var ProviderSet = wire.NewSet(
 	organization.NewPostService,
 	config.NewConfigService,
 	auth.NewAuthService,
-	dict.NewDictTypeService,
-	dict.NewDictDataService,
+	dict.NewDictService,
 )

@@ -80,6 +80,64 @@ service DictTypeService {
       description: "删除字典类型，此操作不可逆";
     };
   }
+
+  // 创建字典数据
+  rpc CreateDictData (CreateDictDataRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/qs/v1/dict/data/create"
+      body: "*"
+    };
+    option (openapi.v3.operation) = {
+      summary: "创建字典数据";
+      description: "创建一个新的字典数据";
+    };
+  }
+
+  // 获取字典数据信息
+  rpc GetDictData (GetDictDataRequest) returns (GetDictDataReply) {
+    option (google.api.http) = {
+      get: "/qs/v1/dict/data/get"
+    };
+    option (openapi.v3.operation) = {
+      summary: "获取字典数据详细信息";
+      description: "根据字典数据ID获取字典数据的详细信息";
+    };
+  }
+
+  // 获取字典数据列表
+  rpc ListDictData (ListDictDataRequest) returns (ListDictDataReply) {
+    option (google.api.http) = {
+      post: "/qs/v1/dict/data/list"
+      body: "*"
+    };
+    option (openapi.v3.operation) = {
+      summary: "获取字典数据列表";
+      description: "分页查询字典数据列表";
+    };
+  }
+
+  // 更新字典数据信息
+  rpc UpdateDictData (UpdateDictDataRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/qs/v1/dict/data/update"
+      body: "*"
+    };
+    option (openapi.v3.operation) = {
+      summary: "更新字典数据信息";
+      description: "更新字典数据的基本信息";
+    };
+  }
+
+  // 删除字典数据
+  rpc DeleteDictData (DeleteDictDataRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/qs/v1/dict/data/delete"
+    };
+    option (openapi.v3.operation) = {
+      summary: "删除字典数据";
+      description: "删除字典数据，此操作不可逆";
+    };
+  }
 }
 
 message DictTypeInfo {
@@ -163,65 +221,6 @@ message DeleteDictTypeRequest {
   optional string id = 1 [(openapi.v3.property) = {description: "字典类型ID"; example: {yaml: "123456789"}}];
 }
 
-service DictDataService {
-  // 创建字典数据
-  rpc CreateDictData (CreateDictDataRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      post: "/qs/v1/dict/data/create"
-      body: "*"
-    };
-    option (openapi.v3.operation) = {
-      summary: "创建字典数据";
-      description: "创建一个新的字典数据";
-    };
-  }
-
-  // 获取字典数据信息
-  rpc GetDictData (GetDictDataRequest) returns (GetDictDataReply) {
-    option (google.api.http) = {
-      get: "/qs/v1/dict/data/get"
-    };
-    option (openapi.v3.operation) = {
-      summary: "获取字典数据详细信息";
-      description: "根据字典数据ID获取字典数据的详细信息";
-    };
-  }
-
-  // 获取字典数据列表
-  rpc ListDictData (ListDictDataRequest) returns (ListDictDataReply) {
-    option (google.api.http) = {
-      post: "/qs/v1/dict/data/list"
-      body: "*"
-    };
-    option (openapi.v3.operation) = {
-      summary: "获取字典数据列表";
-      description: "分页查询字典数据列表";
-    };
-  }
-
-  // 更新字典数据信息
-  rpc UpdateDictData (UpdateDictDataRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      put: "/qs/v1/dict/data/update"
-      body: "*"
-    };
-    option (openapi.v3.operation) = {
-      summary: "更新字典数据信息";
-      description: "更新字典数据的基本信息";
-    };
-  }
-
-  // 删除字典数据
-  rpc DeleteDictData (DeleteDictDataRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      delete: "/qs/v1/dict/data/delete"
-    };
-    option (openapi.v3.operation) = {
-      summary: "删除字典数据";
-      description: "删除字典数据，此操作不可逆";
-    };
-  }
-}
 
 message DictDataInfo {
   option (openapi.v3.schema) = {

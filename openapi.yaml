@@ -194,10 +194,10 @@ paths:
     /qs/v1/dict/data/create:
         post:
             tags:
-                - DictDataService
+                - DictTypeService
             summary: 创建字典数据
             description: 创建一个新的字典数据
-            operationId: DictDataService_CreateDictData
+            operationId: DictTypeService_CreateDictData
             requestBody:
                 content:
                     application/json:
@@ -211,10 +211,10 @@ paths:
     /qs/v1/dict/data/delete:
         delete:
             tags:
-                - DictDataService
+                - DictTypeService
             summary: 删除字典数据
             description: 删除字典数据，此操作不可逆
-            operationId: DictDataService_DeleteDictData
+            operationId: DictTypeService_DeleteDictData
             parameters:
                 - name: id
                   in: query
@@ -227,10 +227,10 @@ paths:
     /qs/v1/dict/data/get:
         get:
             tags:
-                - DictDataService
+                - DictTypeService
             summary: 获取字典数据详细信息
             description: 根据字典数据ID获取字典数据的详细信息
-            operationId: DictDataService_GetDictData
+            operationId: DictTypeService_GetDictData
             parameters:
                 - name: id
                   in: query
@@ -246,10 +246,10 @@ paths:
     /qs/v1/dict/data/list:
         post:
             tags:
-                - DictDataService
+                - DictTypeService
             summary: 获取字典数据列表
             description: 分页查询字典数据列表
-            operationId: DictDataService_ListDictData
+            operationId: DictTypeService_ListDictData
             requestBody:
                 content:
                     application/json:
@@ -266,10 +266,10 @@ paths:
     /qs/v1/dict/data/update:
         put:
             tags:
-                - DictDataService
+                - DictTypeService
             summary: 更新字典数据信息
             description: 更新字典数据的基本信息
-            operationId: DictDataService_UpdateDictData
+            operationId: DictTypeService_UpdateDictData
             requestBody:
                 content:
                     application/json:
@@ -3238,32 +3238,31 @@ tags:
     - name: AuthService
       description: 认证相关操作
     - name: ConfigService
-    - name: ConfigService
       description: 配置管理相关操作
+    - name: ConfigService
     - name: DepartmentService
       description: 部门相关操作
     - name: DepartmentService
     - name: DictDataService
       description: 字典数据相关操作
-    - name: DictDataService
     - name: DictTypeService
       description: 字典类型相关操作
     - name: DictTypeService
     - name: MenuService
-      description: 菜单管理相关操作
     - name: MenuService
+      description: 菜单管理相关操作
+    - name: PostService
     - name: PostService
       description: 岗位相关操作
-    - name: PostService
-    - name: RoleService
     - name: RoleService
       description: 角色管理相关操作
+    - name: RoleService
+    - name: TenantPackageService
     - name: TenantPackageService
       description: 租户套餐相关操作
-    - name: TenantPackageService
+    - name: TenantService
     - name: TenantService
       description: 租户相关操作
-    - name: TenantService
     - name: UserService
       description: 用户相关操作
     - name: UserService

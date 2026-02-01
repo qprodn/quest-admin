@@ -11,20 +11,21 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-type DictTypeService struct {
+type DictService struct {
 	v1.UnimplementedDictTypeServiceServer
+	dduc *biz.DictDataUsecase
 	dtuc *biz.DictTypeUsecase
 	log  *log.Helper
 }
 
-func NewDictTypeService(dtuc *biz.DictTypeUsecase, logger log.Logger) *DictTypeService {
-	return &DictTypeService{
+func NewDictService(dtuc *biz.DictTypeUsecase, logger log.Logger) *DictService {
+	return &DictService{
 		dtuc: dtuc,
 		log:  log.NewHelper(log.With(logger, "module", "dict/service/dict_type")),
 	}
 }
 
-func (s *DictTypeService) CreateDictType(ctx context.Context, in *v1.CreateDictTypeRequest) (*emptypb.Empty, error) {
+func (s *DictService) CreateDictType(ctx context.Context, in *v1.CreateDictTypeRequest) (*emptypb.Empty, error) {
 	dictType := &biz.DictType{
 		Name:   in.GetName(),
 		Code:   in.GetCode(),
@@ -41,7 +42,7 @@ func (s *DictTypeService) CreateDictType(ctx context.Context, in *v1.CreateDictT
 	return &emptypb.Empty{}, nil
 }
 
-func (s *DictTypeService) GetDictType(ctx context.Context, in *v1.GetDictTypeRequest) (*v1.GetDictTypeReply, error) {
+func (s *DictService) GetDictType(ctx context.Context, in *v1.GetDictTypeRequest) (*v1.GetDictTypeReply, error) {
 	dictType, err := s.dtuc.GetDictType(ctx, in.GetId())
 	if err != nil {
 		return nil, err
@@ -52,7 +53,7 @@ func (s *DictTypeService) GetDictType(ctx context.Context, in *v1.GetDictTypeReq
 	}, nil
 }
 
-func (s *DictTypeService) ListDictTypes(ctx context.Context, in *v1.ListDictTypesRequest) (*v1.ListDictTypesReply, error) {
+func (s *DictService) ListDictTypes(ctx context.Context, in *v1.ListDictTypesRequest) (*v1.ListDictTypesReply, error) {
 	query := &biz.ListDictTypesQuery{
 		Page:      in.GetPage(),
 		PageSize:  in.GetPageSize(),
@@ -84,7 +85,7 @@ func (s *DictTypeService) ListDictTypes(ctx context.Context, in *v1.ListDictType
 	}, nil
 }
 
-func (s *DictTypeService) UpdateDictType(ctx context.Context, in *v1.UpdateDictTypeRequest) (*emptypb.Empty, error) {
+func (s *DictService) UpdateDictType(ctx context.Context, in *v1.UpdateDictTypeRequest) (*emptypb.Empty, error) {
 	dictType := &biz.DictType{
 		ID:     in.GetId(),
 		Name:   in.GetName(),
@@ -102,7 +103,7 @@ func (s *DictTypeService) UpdateDictType(ctx context.Context, in *v1.UpdateDictT
 	return &emptypb.Empty{}, nil
 }
 
-func (s *DictTypeService) DeleteDictType(ctx context.Context, in *v1.DeleteDictTypeRequest) (*emptypb.Empty, error) {
+func (s *DictService) DeleteDictType(ctx context.Context, in *v1.DeleteDictTypeRequest) (*emptypb.Empty, error) {
 	err := s.dtuc.DeleteDictType(ctx, in.GetId())
 	if err != nil {
 		return nil, err
@@ -111,7 +112,7 @@ func (s *DictTypeService) DeleteDictType(ctx context.Context, in *v1.DeleteDictT
 	return &emptypb.Empty{}, nil
 }
 
-func (s *DictTypeService) toProtoDictType(dictType *biz.DictType) *v1.DictTypeInfo {
+func (s *DictService) toProtoDictType(dictType *biz.DictType) *v1.DictTypeInfo {
 	return &v1.DictTypeInfo{
 		Id:       dictType.ID,
 		Name:     dictType.Name,
@@ -125,20 +126,7 @@ func (s *DictTypeService) toProtoDictType(dictType *biz.DictType) *v1.DictTypeIn
 	}
 }
 
-type DictDataService struct {
-	v1.UnimplementedDictDataServiceServer
-	dduc *biz.DictDataUsecase
-	log  *log.Helper
-}
-
-func NewDictDataService(dduc *biz.DictDataUsecase, logger log.Logger) *DictDataService {
-	return &DictDataService{
-		dduc: dduc,
-		log:  log.NewHelper(log.With(logger, "module", "dict/service/dict_data")),
-	}
-}
-
-func (s *DictDataService) CreateDictData(ctx context.Context, in *v1.CreateDictDataRequest) (*emptypb.Empty, error) {
+func (s *DictService) CreateDictData(ctx context.Context, in *v1.CreateDictDataRequest) (*emptypb.Empty, error) {
 	dictData := &biz.DictData{
 		DictTypeID: in.GetDictTypeId(),
 		Label:      in.GetLabel(),
@@ -158,7 +146,7 @@ func (s *DictDataService) CreateDictData(ctx context.Context, in *v1.CreateDictD
 	return &emptypb.Empty{}, nil
 }
 
-func (s *DictDataService) GetDictData(ctx context.Context, in *v1.GetDictDataRequest) (*v1.GetDictDataReply, error) {
+func (s *DictService) GetDictData(ctx context.Context, in *v1.GetDictDataRequest) (*v1.GetDictDataReply, error) {
 	dictData, err := s.dduc.GetDictData(ctx, in.GetId())
 	if err != nil {
 		return nil, err
@@ -169,7 +157,7 @@ func (s *DictDataService) GetDictData(ctx context.Context, in *v1.GetDictDataReq
 	}, nil
 }
 
-func (s *DictDataService) ListDictData(ctx context.Context, in *v1.ListDictDataRequest) (*v1.ListDictDataReply, error) {
+func (s *DictService) ListDictData(ctx context.Context, in *v1.ListDictDataRequest) (*v1.ListDictDataReply, error) {
 	query := &biz.ListDictDataQuery{
 		Page:       in.GetPage(),
 		PageSize:   in.GetPageSize(),
@@ -202,7 +190,7 @@ func (s *DictDataService) ListDictData(ctx context.Context, in *v1.ListDictDataR
 	}, nil
 }
 
-func (s *DictDataService) UpdateDictData(ctx context.Context, in *v1.UpdateDictDataRequest) (*emptypb.Empty, error) {
+func (s *DictService) UpdateDictData(ctx context.Context, in *v1.UpdateDictDataRequest) (*emptypb.Empty, error) {
 	dictData := &biz.DictData{
 		ID:         in.GetId(),
 		DictTypeID: in.GetDictTypeId(),
@@ -223,7 +211,7 @@ func (s *DictDataService) UpdateDictData(ctx context.Context, in *v1.UpdateDictD
 	return &emptypb.Empty{}, nil
 }
 
-func (s *DictDataService) DeleteDictData(ctx context.Context, in *v1.DeleteDictDataRequest) (*emptypb.Empty, error) {
+func (s *DictService) DeleteDictData(ctx context.Context, in *v1.DeleteDictDataRequest) (*emptypb.Empty, error) {
 	err := s.dduc.DeleteDictData(ctx, in.GetId())
 	if err != nil {
 		return nil, err
@@ -232,7 +220,7 @@ func (s *DictDataService) DeleteDictData(ctx context.Context, in *v1.DeleteDictD
 	return &emptypb.Empty{}, nil
 }
 
-func (s *DictDataService) toProtoDictData(dictData *biz.DictData) *v1.DictDataInfo {
+func (s *DictService) toProtoDictData(dictData *biz.DictData) *v1.DictDataInfo {
 	return &v1.DictDataInfo{
 		Id:         dictData.ID,
 		DictTypeId: dictData.DictTypeID,
