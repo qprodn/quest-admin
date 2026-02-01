@@ -2,9 +2,10 @@ package organization
 
 import (
 	"context"
-	"errors"
 	"quest-admin/internal/data/idgen"
+	"quest-admin/pkg/errorx"
 	"quest-admin/types/consts/id"
+	"quest-admin/types/errkey"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -40,11 +41,11 @@ func NewDepartmentUsecase(
 
 func (uc *DepartmentUsecase) CreateDepartment(ctx context.Context, dept *Department) (*Department, error) {
 	existing, err := uc.repo.FindByName(ctx, dept.Name)
-	if err != nil && !errors.Is(err, ErrDepartmentNotFound) {
+	if err != nil {
 		return nil, err
 	}
 	if existing != nil {
-		return nil, ErrDepartmentNameExists
+		return nil, errorx.Err(errkey.ErrDepartmentNameExists)
 	}
 	dept.ID = uc.idgen.NextID(id.DEPT)
 
@@ -99,7 +100,7 @@ func (uc *DepartmentUsecase) DeleteDepartment(ctx context.Context, id string) er
 		return err
 	}
 	if len(children) > 0 {
-		return ErrDepartmentHasChildren
+		return errorx.Err(errkey.ErrDepartmentHasChildren)
 	}
 
 	hasUsers, err := uc.repo.HasUsers(ctx, id)
@@ -107,7 +108,7 @@ func (uc *DepartmentUsecase) DeleteDepartment(ctx context.Context, id string) er
 		return err
 	}
 	if hasUsers {
-		return ErrDepartmentHasUsers
+		return errorx.Err(errkey.ErrDepartmentHasUsers)
 	}
 
 	return uc.repo.Delete(ctx, id)

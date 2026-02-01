@@ -3,6 +3,7 @@ package dict
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"quest-admin/internal/data/data"
 	"quest-admin/pkg/util/ctxs"
@@ -82,7 +83,7 @@ func (r *dictDataRepo) FindByID(ctx context.Context, id string) (*biz.DictData, 
 		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Scan(ctx)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
 		return nil, err
@@ -100,7 +101,7 @@ func (r *dictDataRepo) FindByValue(ctx context.Context, dictTypeID, value string
 		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Scan(ctx)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
 		return nil, err

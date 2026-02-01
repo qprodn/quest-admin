@@ -2,7 +2,8 @@ package tenant
 
 import (
 	"context"
-	"errors"
+	"quest-admin/pkg/errorx"
+	"quest-admin/types/errkey"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -33,11 +34,11 @@ func (uc *TenantPackageUsecase) CreateTenantPackage(ctx context.Context, pkg *Te
 	uc.log.WithContext(ctx).Infof("CreateTenantPackage: name=%s", pkg.Name)
 
 	existing, err := uc.repo.FindByName(ctx, pkg.Name)
-	if err != nil && !errors.Is(err, ErrTenantPackageNotFound) {
+	if err != nil {
 		return nil, err
 	}
 	if existing != nil {
-		return nil, ErrTenantPackageNameExists
+		return nil, errorx.Err(errkey.ErrTenantPackageNameExists)
 	}
 
 	return uc.repo.Create(ctx, pkg)
@@ -77,7 +78,7 @@ func (uc *TenantPackageUsecase) DeleteTenantPackage(ctx context.Context, id stri
 		return err
 	}
 	if inUse {
-		return ErrTenantPackageInUse
+		return errorx.Err(errkey.ErrTenantPackageInUse)
 	}
 
 	return uc.repo.Delete(ctx, id)

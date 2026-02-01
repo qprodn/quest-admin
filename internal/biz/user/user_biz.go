@@ -82,7 +82,7 @@ func (uc *UserUsecase) CreateUser(ctx context.Context, user *User) error {
 	}
 	if existing != nil {
 		uc.log.WithContext(ctx).Error("已存在相同用户名,username:%s", user.Username)
-		return ErrUserExists
+		return errorx.Err(errkey.ErrUserExists)
 	}
 	if user.Password == "" {
 		user.Password = "123456"
@@ -90,7 +90,7 @@ func (uc *UserUsecase) CreateUser(ctx context.Context, user *User) error {
 	password, err := pswd.HashPassword(user.Password)
 	if err != nil {
 		uc.log.WithContext(ctx).Errorf("密码加密出现错误,password:%s,error:%v", user.Password, err)
-		return ErrInternalServer
+		return errorx.Err(errkey.ErrInternalServer)
 	}
 	user.Password = password
 	user.ID = uc.idgen.NextID(id.ADMIN_USER)
@@ -166,12 +166,12 @@ func (uc *UserUsecase) ChangePassword(ctx context.Context, bo *UpdatePasswordBO)
 	}
 	if !ok {
 		uc.log.WithContext(ctx).Error("旧密码错误为匹配")
-		return ErrPasswordNotMatch
+		return errorx.Err(errkey.ErrPasswordNotMatch)
 	}
 	password, err := pswd.HashPassword(bo.NewPassword)
 	if err != nil {
 		uc.log.WithContext(ctx).Error("密码加密出现错误,password:%s,error:%v", bo.NewPassword, err)
-		return ErrInternalServer
+		return errorx.Err(errkey.ErrInternalServer)
 	}
 	bo.NewPassword = password
 

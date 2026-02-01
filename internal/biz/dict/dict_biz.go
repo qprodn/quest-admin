@@ -2,9 +2,10 @@ package dict
 
 import (
 	"context"
-	"errors"
 	"quest-admin/internal/data/idgen"
+	"quest-admin/pkg/errorx"
 	"quest-admin/types/consts/id"
+	"quest-admin/types/errkey"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -42,11 +43,11 @@ func (uc *DictTypeUsecase) CreateDictType(ctx context.Context, dictType *DictTyp
 	uc.log.WithContext(ctx).Infof("CreateDictType: name=%s, code=%s", dictType.Name, dictType.Code)
 
 	existing, err := uc.repo.FindByCode(ctx, dictType.Code)
-	if err != nil && !errors.Is(err, ErrDictTypeNotFound) {
+	if err != nil {
 		return nil, err
 	}
 	if existing != nil {
-		return nil, ErrDictTypeCodeExists
+		return nil, errorx.Err(errkey.ErrDictTypeCodeExists)
 	}
 
 	dictType.ID = uc.idgen.NextID(id.DICT)
@@ -88,7 +89,7 @@ func (uc *DictTypeUsecase) DeleteDictType(ctx context.Context, id string) error 
 		return err
 	}
 	if hasData {
-		return ErrDictTypeHasData
+		return errorx.Err(errkey.ErrDictTypeHasData)
 	}
 
 	return uc.repo.Delete(ctx, id)
@@ -139,11 +140,11 @@ func (uc *DictDataUsecase) CreateDictData(ctx context.Context, dictData *DictDat
 	uc.log.WithContext(ctx).Infof("CreateDictData: dictTypeID=%s, label=%s, value=%s", dictData.DictTypeID, dictData.Label, dictData.Value)
 
 	existing, err := uc.repo.FindByValue(ctx, dictData.DictTypeID, dictData.Value)
-	if err != nil && !errors.Is(err, ErrDictDataNotFound) {
+	if err != nil {
 		return nil, err
 	}
 	if existing != nil {
-		return nil, ErrDictDataValueExists
+		return nil, errorx.Err(errkey.ErrDictDataValueExists)
 	}
 
 	dictData.ID = uc.idgen.NextID(id.DICT)

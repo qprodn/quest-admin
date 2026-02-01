@@ -2,7 +2,6 @@ package permission
 
 import (
 	"context"
-	"errors"
 	"quest-admin/internal/data/idgen"
 	"quest-admin/internal/data/transaction"
 	"quest-admin/pkg/errorx"
@@ -55,19 +54,19 @@ func (uc *RoleUsecase) CreateRole(ctx context.Context, role *Role) (*Role, error
 	uc.log.WithContext(ctx).Infof("CreateRole: name=%s, code=%s", role.Name, role.Code)
 
 	existing, err := uc.repo.FindByName(ctx, role.Name)
-	if err != nil && !errors.Is(err, ErrRoleNotFound) {
+	if err != nil {
 		return nil, err
 	}
 	if existing != nil {
-		return nil, ErrRoleNameExists
+		return nil, errorx.Err(errkey.ErrRoleNameExists)
 	}
 
 	existing, err = uc.repo.FindByCode(ctx, role.Code)
-	if err != nil && !errors.Is(err, ErrRoleNotFound) {
+	if err != nil {
 		return nil, err
 	}
 	if existing != nil {
-		return nil, ErrRoleCodeExists
+		return nil, errorx.Err(errkey.ErrRoleCodeExists)
 	}
 	role.ID = uc.idgen.NextID(id.ROLE)
 
@@ -108,7 +107,7 @@ func (uc *RoleUsecase) DeleteRole(ctx context.Context, id string) error {
 		return err
 	}
 	if hasUsers {
-		return ErrRoleHasUsers
+		return errorx.Err(errkey.ErrRoleHasUsers)
 	}
 
 	return uc.repo.Delete(ctx, id)

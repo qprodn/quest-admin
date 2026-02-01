@@ -3,8 +3,10 @@ package config
 import (
 	"context"
 	"quest-admin/internal/data/idgen"
+	"quest-admin/pkg/errorx"
 	"quest-admin/pkg/util/pagination"
 	"quest-admin/types/consts/id"
+	"quest-admin/types/errkey"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -48,7 +50,7 @@ func (uc *ConfigUsecase) CreateConfig(ctx context.Context, config *Config) error
 	}
 	if existing != nil {
 		uc.log.WithContext(ctx).Error("已存在相同配置键,key:%s", config.Key)
-		return ErrConfigExists
+		return errorx.Err(errkey.ErrConfigExists)
 	}
 
 	config.ID = uc.idgen.NextID(id.CONFIG)
@@ -68,10 +70,10 @@ func (uc *ConfigUsecase) GetConfigByKey(ctx context.Context, key string) (*Confi
 		return nil, err
 	}
 	if config == nil {
-		return nil, ErrConfigNotFound
+		return nil, errorx.Err(errkey.ErrConfigNotFound)
 	}
 	if config.Status != 1 {
-		return nil, ErrConfigDisabled
+		return nil, errorx.Err(errkey.ErrConfigDisabled)
 	}
 	return config, nil
 }
@@ -133,7 +135,7 @@ func (uc *ConfigUsecase) UpdateConfig(ctx context.Context, config *Config) error
 		}
 		if existing != nil && existing.ID != config.ID {
 			uc.log.WithContext(ctx).Error("已存在相同配置键,key:%s", config.Key)
-			return ErrConfigExists
+			return errorx.Err(errkey.ErrConfigExists)
 		}
 	}
 

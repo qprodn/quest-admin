@@ -2,9 +2,10 @@ package organization
 
 import (
 	"context"
-	"errors"
 	"quest-admin/internal/data/idgen"
+	"quest-admin/pkg/errorx"
 	"quest-admin/types/consts/id"
+	"quest-admin/types/errkey"
 
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -43,11 +44,11 @@ func (uc *PostUsecase) CreatePost(ctx context.Context, post *Post) (*Post, error
 	uc.log.WithContext(ctx).Infof("CreatePost: name=%s, code=%s", post.Name, post.Code)
 
 	existing, err := uc.repo.FindByName(ctx, post.Name)
-	if err != nil && !errors.Is(err, ErrPostNotFound) {
+	if err != nil {
 		return nil, err
 	}
 	if existing != nil {
-		return nil, ErrPostNameExists
+		return nil, errorx.Err(errkey.ErrPostNameExists)
 	}
 	post.ID = uc.idgen.NextID(id.POST)
 
@@ -88,7 +89,7 @@ func (uc *PostUsecase) DeletePost(ctx context.Context, id string) error {
 		return err
 	}
 	if hasUsers {
-		return ErrPostHasUsers
+		return errorx.Err(errkey.ErrPostHasUsers)
 	}
 
 	return uc.repo.Delete(ctx, id)

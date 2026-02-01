@@ -3,7 +3,9 @@ package permission
 import (
 	"context"
 	"quest-admin/internal/data/idgen"
+	"quest-admin/pkg/errorx"
 	"quest-admin/types/consts/id"
+	"quest-admin/types/errkey"
 	"sort"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -39,13 +41,13 @@ func (uc *MenuUsecase) CreateMenu(ctx context.Context, menu *Menu) error {
 		_, err := uc.repo.FindByID(ctx, menu.ParentID)
 		if err != nil {
 			uc.log.WithContext(ctx).Errorf("parent menu not found,parentId:%v", menu.ParentID)
-			return ErrInvalidParentMenu
+			return errorx.Err(errkey.ErrInvalidParentMenu)
 		}
 	}
 	menu.ID = uc.idgen.NextID(id.MENU)
 	err := uc.repo.Create(ctx, menu)
 	if err != nil {
-		return ErrInternalServer
+		return errorx.Err(errkey.ErrInternalServer)
 	}
 	return nil
 }
@@ -78,27 +80,27 @@ func (uc *MenuUsecase) UpdateMenu(ctx context.Context, menu *Menu) error {
 	}
 	if dbMenu == nil {
 		uc.log.WithContext(ctx).Errorf("menu not found,id:%v", menu.ID)
-		return ErrMenuNotFound
+		return errorx.Err(errkey.ErrMenuNotFound)
 	}
 
 	if menu.ParentID != "" {
 		if menu.ParentID == menu.ID {
 			uc.log.WithContext(ctx).Errorf("parent menu not valid,id:%v", menu.ID)
-			return ErrInvalidParentMenu
+			return errorx.Err(errkey.ErrInvalidParentMenu)
 		}
 		parentMenu, err := uc.repo.FindByID(ctx, menu.ParentID)
 		if err != nil {
 			uc.log.WithContext(ctx).Errorf("parent menu not found,id:%v", menu.ID)
-			return ErrInvalidParentMenu
+			return errorx.Err(errkey.ErrInvalidParentMenu)
 		}
 		if parentMenu == nil {
 			uc.log.WithContext(ctx).Errorf("parent menu not found,id:%v", menu.ParentID)
-			return ErrInvalidParentMenu
+			return errorx.Err(errkey.ErrInvalidParentMenu)
 		}
 	}
 	err = uc.repo.Update(ctx, menu)
 	if err != nil {
-		return ErrInternalServer
+		return errorx.Err(errkey.ErrInternalServer)
 	}
 	return nil
 }
@@ -111,7 +113,7 @@ func (uc *MenuUsecase) DeleteMenu(ctx context.Context, id string) error {
 	}
 	if dbMenu == nil {
 		uc.log.WithContext(ctx).Errorf("menu not found,id:%v", id)
-		return ErrMenuNotFound
+		return errorx.Err(errkey.ErrMenuNotFound)
 	}
 
 	children, err := uc.repo.FindByParentID(ctx, id)
@@ -121,11 +123,11 @@ func (uc *MenuUsecase) DeleteMenu(ctx context.Context, id string) error {
 	}
 	if len(children) > 0 {
 		uc.log.WithContext(ctx).Errorf("menu has child menus,menuId:%v", id)
-		return ErrMenuHasChildren
+		return errorx.Err(errkey.ErrMenuHasChildren)
 	}
 	err = uc.repo.Delete(ctx, id)
 	if err != nil {
-		return ErrInternalServer
+		return errorx.Err(errkey.ErrInternalServer)
 	}
 	return nil
 }
