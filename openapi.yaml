@@ -194,10 +194,10 @@ paths:
     /qs/v1/dict/data/create:
         post:
             tags:
-                - DictTypeService
+                - DictService
             summary: 创建字典数据
             description: 创建一个新的字典数据
-            operationId: DictTypeService_CreateDictData
+            operationId: DictService_CreateDictData
             requestBody:
                 content:
                     application/json:
@@ -211,10 +211,10 @@ paths:
     /qs/v1/dict/data/delete:
         delete:
             tags:
-                - DictTypeService
+                - DictService
             summary: 删除字典数据
             description: 删除字典数据，此操作不可逆
-            operationId: DictTypeService_DeleteDictData
+            operationId: DictService_DeleteDictData
             parameters:
                 - name: id
                   in: query
@@ -227,10 +227,10 @@ paths:
     /qs/v1/dict/data/get:
         get:
             tags:
-                - DictTypeService
+                - DictService
             summary: 获取字典数据详细信息
             description: 根据字典数据ID获取字典数据的详细信息
-            operationId: DictTypeService_GetDictData
+            operationId: DictService_GetDictData
             parameters:
                 - name: id
                   in: query
@@ -246,10 +246,10 @@ paths:
     /qs/v1/dict/data/list:
         post:
             tags:
-                - DictTypeService
+                - DictService
             summary: 获取字典数据列表
             description: 分页查询字典数据列表
-            operationId: DictTypeService_ListDictData
+            operationId: DictService_ListDictData
             requestBody:
                 content:
                     application/json:
@@ -266,10 +266,10 @@ paths:
     /qs/v1/dict/data/update:
         put:
             tags:
-                - DictTypeService
+                - DictService
             summary: 更新字典数据信息
             description: 更新字典数据的基本信息
-            operationId: DictTypeService_UpdateDictData
+            operationId: DictService_UpdateDictData
             requestBody:
                 content:
                     application/json:
@@ -283,10 +283,10 @@ paths:
     /qs/v1/dict/type/create:
         post:
             tags:
-                - DictTypeService
+                - DictService
             summary: 创建字典类型
             description: 创建一个新的字典类型
-            operationId: DictTypeService_CreateDictType
+            operationId: DictService_CreateDictType
             requestBody:
                 content:
                     application/json:
@@ -300,10 +300,10 @@ paths:
     /qs/v1/dict/type/delete:
         delete:
             tags:
-                - DictTypeService
+                - DictService
             summary: 删除字典类型
             description: 删除字典类型，此操作不可逆
-            operationId: DictTypeService_DeleteDictType
+            operationId: DictService_DeleteDictType
             parameters:
                 - name: id
                   in: query
@@ -316,10 +316,10 @@ paths:
     /qs/v1/dict/type/get:
         get:
             tags:
-                - DictTypeService
+                - DictService
             summary: 获取字典类型详细信息
             description: 根据字典类型ID获取字典类型的详细信息
-            operationId: DictTypeService_GetDictType
+            operationId: DictService_GetDictType
             parameters:
                 - name: id
                   in: query
@@ -335,10 +335,10 @@ paths:
     /qs/v1/dict/type/list:
         post:
             tags:
-                - DictTypeService
+                - DictService
             summary: 获取字典类型列表
             description: 分页查询字典类型列表
-            operationId: DictTypeService_ListDictTypes
+            operationId: DictService_ListDictTypes
             requestBody:
                 content:
                     application/json:
@@ -355,10 +355,10 @@ paths:
     /qs/v1/dict/type/update:
         put:
             tags:
-                - DictTypeService
+                - DictService
             summary: 更新字典类型信息
             description: 更新字典类型的基本信息
-            operationId: DictTypeService_UpdateDictType
+            operationId: DictService_UpdateDictType
             requestBody:
                 content:
                     application/json:
@@ -3243,17 +3243,15 @@ tags:
     - name: DepartmentService
       description: 部门相关操作
     - name: DepartmentService
-    - name: DictDataService
-      description: 字典数据相关操作
-    - name: DictTypeService
-      description: 字典类型相关操作
-    - name: DictTypeService
-    - name: MenuService
+    - name: DictService
+    - name: DictService
+      description: 字典相关操作
     - name: MenuService
       description: 菜单管理相关操作
-    - name: PostService
+    - name: MenuService
     - name: PostService
       description: 岗位相关操作
+    - name: PostService
     - name: RoleService
       description: 角色管理相关操作
     - name: RoleService

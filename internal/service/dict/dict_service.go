@@ -12,7 +12,7 @@ import (
 )
 
 type DictService struct {
-	v1.UnimplementedDictTypeServiceServer
+	v1.UnimplementedDictServiceServer
 	dduc *biz.DictDataUsecase
 	dtuc *biz.DictTypeUsecase
 	log  *log.Helper

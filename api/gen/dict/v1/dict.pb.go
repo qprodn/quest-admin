@@ -1369,8 +1369,8 @@ const file_dict_v1_dict_proto_rawDesc = "" +
 	"\a_remark\"y\n" +
 	"\x15DeleteDictDataRequest\x126\n" +
 	"\x02id\x18\x01 \x01(\tB!\xbaG\x1e:\v\x12\t123456789\x92\x02\x0e字典数据IDH\x00R\x02id\x88\x01\x01:!\xbaG\x1e\x92\x02\x1b删除字典数据请求体B\x05\n" +
-	"\x03_id2\xcc\x0e\n" +
-	"\x0fDictTypeService\x12\xaa\x01\n" +
+	"\x03_id2\xc8\x0e\n" +
+	"\vDictService\x12\xaa\x01\n" +
 	"\x0eCreateDictType\x12%.system.dict.v1.CreateDictTypeRequest\x1a\x16.google.protobuf.Empty\"Y\xbaG4\x12\x12创建字典类型\x1a\x1e创建一个新的字典类型\x82\xd3\xe4\x93\x02\x1c:\x01*\"\x17/qs/v1/dict/type/create\x12\xcb\x01\n" +
 	"\vGetDictType\x12\".system.dict.v1.GetDictTypeRequest\x1a .system.dict.v1.GetDictTypeReply\"v\xbaGW\x12\x1e获取字典类型详细信息\x1a5根据字典类型ID获取字典类型的详细信息\x82\xd3\xe4\x93\x02\x16\x12\x14/qs/v1/dict/type/get\x12\xb8\x01\n" +
 	"\rListDictTypes\x12$.system.dict.v1.ListDictTypesRequest\x1a\".system.dict.v1.ListDictTypesReply\"]\xbaG:\x12\x18获取字典类型列表\x1a\x1e分页查询字典类型列表\x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/qs/v1/dict/type/list\x12\xb3\x01\n" +
@@ -1380,9 +1380,8 @@ const file_dict_v1_dict_proto_rawDesc = "" +
 	"\vGetDictData\x12\".system.dict.v1.GetDictDataRequest\x1a .system.dict.v1.GetDictDataReply\"v\xbaGW\x12\x1e获取字典数据详细信息\x1a5根据字典数据ID获取字典数据的详细信息\x82\xd3\xe4\x93\x02\x16\x12\x14/qs/v1/dict/data/get\x12\xb5\x01\n" +
 	"\fListDictData\x12#.system.dict.v1.ListDictDataRequest\x1a!.system.dict.v1.ListDictDataReply\"]\xbaG:\x12\x18获取字典数据列表\x1a\x1e分页查询字典数据列表\x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/qs/v1/dict/data/list\x12\xb3\x01\n" +
 	"\x0eUpdateDictData\x12%.system.dict.v1.UpdateDictDataRequest\x1a\x16.google.protobuf.Empty\"b\xbaG=\x12\x18更新字典数据信息\x1a!更新字典数据的基本信息\x82\xd3\xe4\x93\x02\x1c:\x01*\x1a\x17/qs/v1/dict/data/update\x12\xb0\x01\n" +
-	"\x0eDeleteDictData\x12%.system.dict.v1.DeleteDictDataRequest\x1a\x16.google.protobuf.Empty\"_\xbaG=\x12\x12删除字典数据\x1a'删除字典数据，此操作不可逆\x82\xd3\xe4\x93\x02\x19*\x17/qs/v1/dict/data/deleteB}\xbaGZ:+\n" +
-	"\x0fDictTypeService\x12\x18字典类型相关操作:+\n" +
-	"\x0fDictDataService\x12\x18字典数据相关操作Z\x1equest-admin/api/gen/dict/v1;v1b\x06proto3"
+	"\x0eDeleteDictData\x12%.system.dict.v1.DeleteDictDataRequest\x1a\x16.google.protobuf.Empty\"_\xbaG=\x12\x12删除字典数据\x1a'删除字典数据，此操作不可逆\x82\xd3\xe4\x93\x02\x19*\x17/qs/v1/dict/data/deleteBF\xbaG#:!\n" +
+	"\vDictService\x12\x12字典相关操作Z\x1equest-admin/api/gen/dict/v1;v1b\x06proto3"
 
 var (
 	file_dict_v1_dict_proto_rawDescOnce sync.Once
@@ -1426,26 +1425,26 @@ var file_dict_v1_dict_proto_depIdxs = []int32{
 	16, // 5: system.dict.v1.DictDataInfo.update_at:type_name -> google.protobuf.Timestamp
 	8,  // 6: system.dict.v1.GetDictDataReply.dict_data:type_name -> system.dict.v1.DictDataInfo
 	8,  // 7: system.dict.v1.ListDictDataReply.dict_data_list:type_name -> system.dict.v1.DictDataInfo
-	1,  // 8: system.dict.v1.DictTypeService.CreateDictType:input_type -> system.dict.v1.CreateDictTypeRequest
-	2,  // 9: system.dict.v1.DictTypeService.GetDictType:input_type -> system.dict.v1.GetDictTypeRequest
-	4,  // 10: system.dict.v1.DictTypeService.ListDictTypes:input_type -> system.dict.v1.ListDictTypesRequest
-	6,  // 11: system.dict.v1.DictTypeService.UpdateDictType:input_type -> system.dict.v1.UpdateDictTypeRequest
-	7,  // 12: system.dict.v1.DictTypeService.DeleteDictType:input_type -> system.dict.v1.DeleteDictTypeRequest
-	9,  // 13: system.dict.v1.DictTypeService.CreateDictData:input_type -> system.dict.v1.CreateDictDataRequest
-	10, // 14: system.dict.v1.DictTypeService.GetDictData:input_type -> system.dict.v1.GetDictDataRequest
-	12, // 15: system.dict.v1.DictTypeService.ListDictData:input_type -> system.dict.v1.ListDictDataRequest
-	14, // 16: system.dict.v1.DictTypeService.UpdateDictData:input_type -> system.dict.v1.UpdateDictDataRequest
-	15, // 17: system.dict.v1.DictTypeService.DeleteDictData:input_type -> system.dict.v1.DeleteDictDataRequest
-	17, // 18: system.dict.v1.DictTypeService.CreateDictType:output_type -> google.protobuf.Empty
-	3,  // 19: system.dict.v1.DictTypeService.GetDictType:output_type -> system.dict.v1.GetDictTypeReply
-	5,  // 20: system.dict.v1.DictTypeService.ListDictTypes:output_type -> system.dict.v1.ListDictTypesReply
-	17, // 21: system.dict.v1.DictTypeService.UpdateDictType:output_type -> google.protobuf.Empty
-	17, // 22: system.dict.v1.DictTypeService.DeleteDictType:output_type -> google.protobuf.Empty
-	17, // 23: system.dict.v1.DictTypeService.CreateDictData:output_type -> google.protobuf.Empty
-	11, // 24: system.dict.v1.DictTypeService.GetDictData:output_type -> system.dict.v1.GetDictDataReply
-	13, // 25: system.dict.v1.DictTypeService.ListDictData:output_type -> system.dict.v1.ListDictDataReply
-	17, // 26: system.dict.v1.DictTypeService.UpdateDictData:output_type -> google.protobuf.Empty
-	17, // 27: system.dict.v1.DictTypeService.DeleteDictData:output_type -> google.protobuf.Empty
+	1,  // 8: system.dict.v1.DictService.CreateDictType:input_type -> system.dict.v1.CreateDictTypeRequest
+	2,  // 9: system.dict.v1.DictService.GetDictType:input_type -> system.dict.v1.GetDictTypeRequest
+	4,  // 10: system.dict.v1.DictService.ListDictTypes:input_type -> system.dict.v1.ListDictTypesRequest
+	6,  // 11: system.dict.v1.DictService.UpdateDictType:input_type -> system.dict.v1.UpdateDictTypeRequest
+	7,  // 12: system.dict.v1.DictService.DeleteDictType:input_type -> system.dict.v1.DeleteDictTypeRequest
+	9,  // 13: system.dict.v1.DictService.CreateDictData:input_type -> system.dict.v1.CreateDictDataRequest
+	10, // 14: system.dict.v1.DictService.GetDictData:input_type -> system.dict.v1.GetDictDataRequest
+	12, // 15: system.dict.v1.DictService.ListDictData:input_type -> system.dict.v1.ListDictDataRequest
+	14, // 16: system.dict.v1.DictService.UpdateDictData:input_type -> system.dict.v1.UpdateDictDataRequest
+	15, // 17: system.dict.v1.DictService.DeleteDictData:input_type -> system.dict.v1.DeleteDictDataRequest
+	17, // 18: system.dict.v1.DictService.CreateDictType:output_type -> google.protobuf.Empty
+	3,  // 19: system.dict.v1.DictService.GetDictType:output_type -> system.dict.v1.GetDictTypeReply
+	5,  // 20: system.dict.v1.DictService.ListDictTypes:output_type -> system.dict.v1.ListDictTypesReply
+	17, // 21: system.dict.v1.DictService.UpdateDictType:output_type -> google.protobuf.Empty
+	17, // 22: system.dict.v1.DictService.DeleteDictType:output_type -> google.protobuf.Empty
+	17, // 23: system.dict.v1.DictService.CreateDictData:output_type -> google.protobuf.Empty
+	11, // 24: system.dict.v1.DictService.GetDictData:output_type -> system.dict.v1.GetDictDataReply
+	13, // 25: system.dict.v1.DictService.ListDictData:output_type -> system.dict.v1.ListDictDataReply
+	17, // 26: system.dict.v1.DictService.UpdateDictData:output_type -> google.protobuf.Empty
+	17, // 27: system.dict.v1.DictService.DeleteDictData:output_type -> google.protobuf.Empty
 	18, // [18:28] is the sub-list for method output_type
 	8,  // [8:18] is the sub-list for method input_type
 	8,  // [8:8] is the sub-list for extension type_name

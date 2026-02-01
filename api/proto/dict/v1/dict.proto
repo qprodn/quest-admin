@@ -12,17 +12,13 @@ option go_package = "quest-admin/api/gen/dict/v1;v1";
 option (openapi.v3.document) = {
   tags: [
     {
-      name: "DictTypeService";
-      description: "字典类型相关操作";
-    },
-    {
-      name: "DictDataService";
-      description: "字典数据相关操作";
+      name: "DictService";
+      description: "字典相关操作";
     }
   ];
 };
 
-service DictTypeService {
+service DictService {
   // 创建字典类型
   rpc CreateDictType (CreateDictTypeRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {

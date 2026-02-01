@@ -20,18 +20,18 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-const OperationDictTypeServiceCreateDictData = "/system.dict.v1.DictTypeService/CreateDictData"
-const OperationDictTypeServiceCreateDictType = "/system.dict.v1.DictTypeService/CreateDictType"
-const OperationDictTypeServiceDeleteDictData = "/system.dict.v1.DictTypeService/DeleteDictData"
-const OperationDictTypeServiceDeleteDictType = "/system.dict.v1.DictTypeService/DeleteDictType"
-const OperationDictTypeServiceGetDictData = "/system.dict.v1.DictTypeService/GetDictData"
-const OperationDictTypeServiceGetDictType = "/system.dict.v1.DictTypeService/GetDictType"
-const OperationDictTypeServiceListDictData = "/system.dict.v1.DictTypeService/ListDictData"
-const OperationDictTypeServiceListDictTypes = "/system.dict.v1.DictTypeService/ListDictTypes"
-const OperationDictTypeServiceUpdateDictData = "/system.dict.v1.DictTypeService/UpdateDictData"
-const OperationDictTypeServiceUpdateDictType = "/system.dict.v1.DictTypeService/UpdateDictType"
+const OperationDictServiceCreateDictData = "/system.dict.v1.DictService/CreateDictData"
+const OperationDictServiceCreateDictType = "/system.dict.v1.DictService/CreateDictType"
+const OperationDictServiceDeleteDictData = "/system.dict.v1.DictService/DeleteDictData"
+const OperationDictServiceDeleteDictType = "/system.dict.v1.DictService/DeleteDictType"
+const OperationDictServiceGetDictData = "/system.dict.v1.DictService/GetDictData"
+const OperationDictServiceGetDictType = "/system.dict.v1.DictService/GetDictType"
+const OperationDictServiceListDictData = "/system.dict.v1.DictService/ListDictData"
+const OperationDictServiceListDictTypes = "/system.dict.v1.DictService/ListDictTypes"
+const OperationDictServiceUpdateDictData = "/system.dict.v1.DictService/UpdateDictData"
+const OperationDictServiceUpdateDictType = "/system.dict.v1.DictService/UpdateDictType"
 
-type DictTypeServiceHTTPServer interface {
+type DictServiceHTTPServer interface {
 	// CreateDictData 创建字典数据
 	CreateDictData(context.Context, *CreateDictDataRequest) (*emptypb.Empty, error)
 	// CreateDictType 创建字典类型
@@ -54,21 +54,21 @@ type DictTypeServiceHTTPServer interface {
 	UpdateDictType(context.Context, *UpdateDictTypeRequest) (*emptypb.Empty, error)
 }
 
-func RegisterDictTypeServiceHTTPServer(s *http.Server, srv DictTypeServiceHTTPServer) {
+func RegisterDictServiceHTTPServer(s *http.Server, srv DictServiceHTTPServer) {
 	r := s.Route("/")
-	r.POST("/qs/v1/dict/type/create", _DictTypeService_CreateDictType0_HTTP_Handler(srv))
-	r.GET("/qs/v1/dict/type/get", _DictTypeService_GetDictType0_HTTP_Handler(srv))
-	r.POST("/qs/v1/dict/type/list", _DictTypeService_ListDictTypes0_HTTP_Handler(srv))
-	r.PUT("/qs/v1/dict/type/update", _DictTypeService_UpdateDictType0_HTTP_Handler(srv))
-	r.DELETE("/qs/v1/dict/type/delete", _DictTypeService_DeleteDictType0_HTTP_Handler(srv))
-	r.POST("/qs/v1/dict/data/create", _DictTypeService_CreateDictData0_HTTP_Handler(srv))
-	r.GET("/qs/v1/dict/data/get", _DictTypeService_GetDictData0_HTTP_Handler(srv))
-	r.POST("/qs/v1/dict/data/list", _DictTypeService_ListDictData0_HTTP_Handler(srv))
-	r.PUT("/qs/v1/dict/data/update", _DictTypeService_UpdateDictData0_HTTP_Handler(srv))
-	r.DELETE("/qs/v1/dict/data/delete", _DictTypeService_DeleteDictData0_HTTP_Handler(srv))
+	r.POST("/qs/v1/dict/type/create", _DictService_CreateDictType0_HTTP_Handler(srv))
+	r.GET("/qs/v1/dict/type/get", _DictService_GetDictType0_HTTP_Handler(srv))
+	r.POST("/qs/v1/dict/type/list", _DictService_ListDictTypes0_HTTP_Handler(srv))
+	r.PUT("/qs/v1/dict/type/update", _DictService_UpdateDictType0_HTTP_Handler(srv))
+	r.DELETE("/qs/v1/dict/type/delete", _DictService_DeleteDictType0_HTTP_Handler(srv))
+	r.POST("/qs/v1/dict/data/create", _DictService_CreateDictData0_HTTP_Handler(srv))
+	r.GET("/qs/v1/dict/data/get", _DictService_GetDictData0_HTTP_Handler(srv))
+	r.POST("/qs/v1/dict/data/list", _DictService_ListDictData0_HTTP_Handler(srv))
+	r.PUT("/qs/v1/dict/data/update", _DictService_UpdateDictData0_HTTP_Handler(srv))
+	r.DELETE("/qs/v1/dict/data/delete", _DictService_DeleteDictData0_HTTP_Handler(srv))
 }
 
-func _DictTypeService_CreateDictType0_HTTP_Handler(srv DictTypeServiceHTTPServer) func(ctx http.Context) error {
+func _DictService_CreateDictType0_HTTP_Handler(srv DictServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in CreateDictTypeRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -77,7 +77,7 @@ func _DictTypeService_CreateDictType0_HTTP_Handler(srv DictTypeServiceHTTPServer
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationDictTypeServiceCreateDictType)
+		http.SetOperation(ctx, OperationDictServiceCreateDictType)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.CreateDictType(ctx, req.(*CreateDictTypeRequest))
 		})
@@ -90,13 +90,13 @@ func _DictTypeService_CreateDictType0_HTTP_Handler(srv DictTypeServiceHTTPServer
 	}
 }
 
-func _DictTypeService_GetDictType0_HTTP_Handler(srv DictTypeServiceHTTPServer) func(ctx http.Context) error {
+func _DictService_GetDictType0_HTTP_Handler(srv DictServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in GetDictTypeRequest
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationDictTypeServiceGetDictType)
+		http.SetOperation(ctx, OperationDictServiceGetDictType)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetDictType(ctx, req.(*GetDictTypeRequest))
 		})
@@ -109,7 +109,7 @@ func _DictTypeService_GetDictType0_HTTP_Handler(srv DictTypeServiceHTTPServer) f
 	}
 }
 
-func _DictTypeService_ListDictTypes0_HTTP_Handler(srv DictTypeServiceHTTPServer) func(ctx http.Context) error {
+func _DictService_ListDictTypes0_HTTP_Handler(srv DictServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in ListDictTypesRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -118,7 +118,7 @@ func _DictTypeService_ListDictTypes0_HTTP_Handler(srv DictTypeServiceHTTPServer)
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationDictTypeServiceListDictTypes)
+		http.SetOperation(ctx, OperationDictServiceListDictTypes)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.ListDictTypes(ctx, req.(*ListDictTypesRequest))
 		})
@@ -131,7 +131,7 @@ func _DictTypeService_ListDictTypes0_HTTP_Handler(srv DictTypeServiceHTTPServer)
 	}
 }
 
-func _DictTypeService_UpdateDictType0_HTTP_Handler(srv DictTypeServiceHTTPServer) func(ctx http.Context) error {
+func _DictService_UpdateDictType0_HTTP_Handler(srv DictServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in UpdateDictTypeRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -140,7 +140,7 @@ func _DictTypeService_UpdateDictType0_HTTP_Handler(srv DictTypeServiceHTTPServer
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationDictTypeServiceUpdateDictType)
+		http.SetOperation(ctx, OperationDictServiceUpdateDictType)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.UpdateDictType(ctx, req.(*UpdateDictTypeRequest))
 		})
@@ -153,13 +153,13 @@ func _DictTypeService_UpdateDictType0_HTTP_Handler(srv DictTypeServiceHTTPServer
 	}
 }
 
-func _DictTypeService_DeleteDictType0_HTTP_Handler(srv DictTypeServiceHTTPServer) func(ctx http.Context) error {
+func _DictService_DeleteDictType0_HTTP_Handler(srv DictServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in DeleteDictTypeRequest
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationDictTypeServiceDeleteDictType)
+		http.SetOperation(ctx, OperationDictServiceDeleteDictType)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.DeleteDictType(ctx, req.(*DeleteDictTypeRequest))
 		})
@@ -172,7 +172,7 @@ func _DictTypeService_DeleteDictType0_HTTP_Handler(srv DictTypeServiceHTTPServer
 	}
 }
 
-func _DictTypeService_CreateDictData0_HTTP_Handler(srv DictTypeServiceHTTPServer) func(ctx http.Context) error {
+func _DictService_CreateDictData0_HTTP_Handler(srv DictServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in CreateDictDataRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -181,7 +181,7 @@ func _DictTypeService_CreateDictData0_HTTP_Handler(srv DictTypeServiceHTTPServer
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationDictTypeServiceCreateDictData)
+		http.SetOperation(ctx, OperationDictServiceCreateDictData)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.CreateDictData(ctx, req.(*CreateDictDataRequest))
 		})
@@ -194,13 +194,13 @@ func _DictTypeService_CreateDictData0_HTTP_Handler(srv DictTypeServiceHTTPServer
 	}
 }
 
-func _DictTypeService_GetDictData0_HTTP_Handler(srv DictTypeServiceHTTPServer) func(ctx http.Context) error {
+func _DictService_GetDictData0_HTTP_Handler(srv DictServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in GetDictDataRequest
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationDictTypeServiceGetDictData)
+		http.SetOperation(ctx, OperationDictServiceGetDictData)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetDictData(ctx, req.(*GetDictDataRequest))
 		})
@@ -213,7 +213,7 @@ func _DictTypeService_GetDictData0_HTTP_Handler(srv DictTypeServiceHTTPServer) f
 	}
 }
 
-func _DictTypeService_ListDictData0_HTTP_Handler(srv DictTypeServiceHTTPServer) func(ctx http.Context) error {
+func _DictService_ListDictData0_HTTP_Handler(srv DictServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in ListDictDataRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -222,7 +222,7 @@ func _DictTypeService_ListDictData0_HTTP_Handler(srv DictTypeServiceHTTPServer) 
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationDictTypeServiceListDictData)
+		http.SetOperation(ctx, OperationDictServiceListDictData)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.ListDictData(ctx, req.(*ListDictDataRequest))
 		})
@@ -235,7 +235,7 @@ func _DictTypeService_ListDictData0_HTTP_Handler(srv DictTypeServiceHTTPServer) 
 	}
 }
 
-func _DictTypeService_UpdateDictData0_HTTP_Handler(srv DictTypeServiceHTTPServer) func(ctx http.Context) error {
+func _DictService_UpdateDictData0_HTTP_Handler(srv DictServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in UpdateDictDataRequest
 		if err := ctx.Bind(&in); err != nil {
@@ -244,7 +244,7 @@ func _DictTypeService_UpdateDictData0_HTTP_Handler(srv DictTypeServiceHTTPServer
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationDictTypeServiceUpdateDictData)
+		http.SetOperation(ctx, OperationDictServiceUpdateDictData)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.UpdateDictData(ctx, req.(*UpdateDictDataRequest))
 		})
@@ -257,13 +257,13 @@ func _DictTypeService_UpdateDictData0_HTTP_Handler(srv DictTypeServiceHTTPServer
 	}
 }
 
-func _DictTypeService_DeleteDictData0_HTTP_Handler(srv DictTypeServiceHTTPServer) func(ctx http.Context) error {
+func _DictService_DeleteDictData0_HTTP_Handler(srv DictServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in DeleteDictDataRequest
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationDictTypeServiceDeleteDictData)
+		http.SetOperation(ctx, OperationDictServiceDeleteDictData)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.DeleteDictData(ctx, req.(*DeleteDictDataRequest))
 		})
@@ -276,7 +276,7 @@ func _DictTypeService_DeleteDictData0_HTTP_Handler(srv DictTypeServiceHTTPServer
 	}
 }
 
-type DictTypeServiceHTTPClient interface {
+type DictServiceHTTPClient interface {
 	// CreateDictData 创建字典数据
 	CreateDictData(ctx context.Context, req *CreateDictDataRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	// CreateDictType 创建字典类型
@@ -299,20 +299,20 @@ type DictTypeServiceHTTPClient interface {
 	UpdateDictType(ctx context.Context, req *UpdateDictTypeRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 }
 
-type DictTypeServiceHTTPClientImpl struct {
+type DictServiceHTTPClientImpl struct {
 	cc *http.Client
 }
 
-func NewDictTypeServiceHTTPClient(client *http.Client) DictTypeServiceHTTPClient {
-	return &DictTypeServiceHTTPClientImpl{client}
+func NewDictServiceHTTPClient(client *http.Client) DictServiceHTTPClient {
+	return &DictServiceHTTPClientImpl{client}
 }
 
 // CreateDictData 创建字典数据
-func (c *DictTypeServiceHTTPClientImpl) CreateDictData(ctx context.Context, in *CreateDictDataRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+func (c *DictServiceHTTPClientImpl) CreateDictData(ctx context.Context, in *CreateDictDataRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
 	pattern := "/qs/v1/dict/data/create"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationDictTypeServiceCreateDictData))
+	opts = append(opts, http.Operation(OperationDictServiceCreateDictData))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -322,11 +322,11 @@ func (c *DictTypeServiceHTTPClientImpl) CreateDictData(ctx context.Context, in *
 }
 
 // CreateDictType 创建字典类型
-func (c *DictTypeServiceHTTPClientImpl) CreateDictType(ctx context.Context, in *CreateDictTypeRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+func (c *DictServiceHTTPClientImpl) CreateDictType(ctx context.Context, in *CreateDictTypeRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
 	pattern := "/qs/v1/dict/type/create"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationDictTypeServiceCreateDictType))
+	opts = append(opts, http.Operation(OperationDictServiceCreateDictType))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -336,11 +336,11 @@ func (c *DictTypeServiceHTTPClientImpl) CreateDictType(ctx context.Context, in *
 }
 
 // DeleteDictData 删除字典数据
-func (c *DictTypeServiceHTTPClientImpl) DeleteDictData(ctx context.Context, in *DeleteDictDataRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+func (c *DictServiceHTTPClientImpl) DeleteDictData(ctx context.Context, in *DeleteDictDataRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
 	pattern := "/qs/v1/dict/data/delete"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation(OperationDictTypeServiceDeleteDictData))
+	opts = append(opts, http.Operation(OperationDictServiceDeleteDictData))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "DELETE", path, nil, &out, opts...)
 	if err != nil {
@@ -350,11 +350,11 @@ func (c *DictTypeServiceHTTPClientImpl) DeleteDictData(ctx context.Context, in *
 }
 
 // DeleteDictType 删除字典类型
-func (c *DictTypeServiceHTTPClientImpl) DeleteDictType(ctx context.Context, in *DeleteDictTypeRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+func (c *DictServiceHTTPClientImpl) DeleteDictType(ctx context.Context, in *DeleteDictTypeRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
 	pattern := "/qs/v1/dict/type/delete"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation(OperationDictTypeServiceDeleteDictType))
+	opts = append(opts, http.Operation(OperationDictServiceDeleteDictType))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "DELETE", path, nil, &out, opts...)
 	if err != nil {
@@ -364,11 +364,11 @@ func (c *DictTypeServiceHTTPClientImpl) DeleteDictType(ctx context.Context, in *
 }
 
 // GetDictData 获取字典数据信息
-func (c *DictTypeServiceHTTPClientImpl) GetDictData(ctx context.Context, in *GetDictDataRequest, opts ...http.CallOption) (*GetDictDataReply, error) {
+func (c *DictServiceHTTPClientImpl) GetDictData(ctx context.Context, in *GetDictDataRequest, opts ...http.CallOption) (*GetDictDataReply, error) {
 	var out GetDictDataReply
 	pattern := "/qs/v1/dict/data/get"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation(OperationDictTypeServiceGetDictData))
+	opts = append(opts, http.Operation(OperationDictServiceGetDictData))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -378,11 +378,11 @@ func (c *DictTypeServiceHTTPClientImpl) GetDictData(ctx context.Context, in *Get
 }
 
 // GetDictType 获取字典类型信息
-func (c *DictTypeServiceHTTPClientImpl) GetDictType(ctx context.Context, in *GetDictTypeRequest, opts ...http.CallOption) (*GetDictTypeReply, error) {
+func (c *DictServiceHTTPClientImpl) GetDictType(ctx context.Context, in *GetDictTypeRequest, opts ...http.CallOption) (*GetDictTypeReply, error) {
 	var out GetDictTypeReply
 	pattern := "/qs/v1/dict/type/get"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation(OperationDictTypeServiceGetDictType))
+	opts = append(opts, http.Operation(OperationDictServiceGetDictType))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -392,11 +392,11 @@ func (c *DictTypeServiceHTTPClientImpl) GetDictType(ctx context.Context, in *Get
 }
 
 // ListDictData 获取字典数据列表
-func (c *DictTypeServiceHTTPClientImpl) ListDictData(ctx context.Context, in *ListDictDataRequest, opts ...http.CallOption) (*ListDictDataReply, error) {
+func (c *DictServiceHTTPClientImpl) ListDictData(ctx context.Context, in *ListDictDataRequest, opts ...http.CallOption) (*ListDictDataReply, error) {
 	var out ListDictDataReply
 	pattern := "/qs/v1/dict/data/list"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationDictTypeServiceListDictData))
+	opts = append(opts, http.Operation(OperationDictServiceListDictData))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -406,11 +406,11 @@ func (c *DictTypeServiceHTTPClientImpl) ListDictData(ctx context.Context, in *Li
 }
 
 // ListDictTypes 获取字典类型列表
-func (c *DictTypeServiceHTTPClientImpl) ListDictTypes(ctx context.Context, in *ListDictTypesRequest, opts ...http.CallOption) (*ListDictTypesReply, error) {
+func (c *DictServiceHTTPClientImpl) ListDictTypes(ctx context.Context, in *ListDictTypesRequest, opts ...http.CallOption) (*ListDictTypesReply, error) {
 	var out ListDictTypesReply
 	pattern := "/qs/v1/dict/type/list"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationDictTypeServiceListDictTypes))
+	opts = append(opts, http.Operation(OperationDictServiceListDictTypes))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -420,11 +420,11 @@ func (c *DictTypeServiceHTTPClientImpl) ListDictTypes(ctx context.Context, in *L
 }
 
 // UpdateDictData 更新字典数据信息
-func (c *DictTypeServiceHTTPClientImpl) UpdateDictData(ctx context.Context, in *UpdateDictDataRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+func (c *DictServiceHTTPClientImpl) UpdateDictData(ctx context.Context, in *UpdateDictDataRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
 	pattern := "/qs/v1/dict/data/update"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationDictTypeServiceUpdateDictData))
+	opts = append(opts, http.Operation(OperationDictServiceUpdateDictData))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
 	if err != nil {
@@ -434,11 +434,11 @@ func (c *DictTypeServiceHTTPClientImpl) UpdateDictData(ctx context.Context, in *
 }
 
 // UpdateDictType 更新字典类型信息
-func (c *DictTypeServiceHTTPClientImpl) UpdateDictType(ctx context.Context, in *UpdateDictTypeRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+func (c *DictServiceHTTPClientImpl) UpdateDictType(ctx context.Context, in *UpdateDictTypeRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
 	pattern := "/qs/v1/dict/type/update"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationDictTypeServiceUpdateDictType))
+	opts = append(opts, http.Operation(OperationDictServiceUpdateDictType))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
 	if err != nil {
