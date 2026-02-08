@@ -146,7 +146,7 @@ func (uc *RoleUsecase) DeleteRole(ctx context.Context, id string) error {
 func (uc *RoleUsecase) AssignRoleMenu(ctx context.Context, bo *AssignRoleMenuBO) error {
 	role, err := uc.repo.FindByID(ctx, bo.RoleID)
 	if err != nil {
-		return nil
+		return err
 	}
 	if role == nil {
 		return errorx.Err(errkey.ErrRoleNotFound)

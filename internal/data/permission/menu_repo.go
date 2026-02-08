@@ -58,7 +58,7 @@ func (r *menuRepo) FindByMenuIDs(ctx context.Context, menuIDs []string) ([]*biz.
 	var dbMenus []*Menu
 	err := r.data.DB(ctx).NewSelect().
 		Model(&dbMenus).
-		Where("id in ?", bun.In(menuIDs)).
+		Where("id IN (?)", bun.In(menuIDs)).
 		Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

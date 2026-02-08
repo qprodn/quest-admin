@@ -55,7 +55,7 @@ func (r *roleRepo) FindListByIDs(ctx context.Context, roleIds []string) ([]*biz.
 	var dbRoles []*Role
 	err := r.data.DB(ctx).NewSelect().
 		Model(&dbRoles).
-		Where("id in ?", bun.In(roleIds)).
+		Where("id in (?)", bun.In(roleIds)).
 		Where("tenant = ?", ctxs.GetTenantID(ctx)).
 		Scan(ctx)
 	if err != nil {

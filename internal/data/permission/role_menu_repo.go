@@ -42,7 +42,7 @@ func (r *roleMapMenuRepo) FindListByRoleIDs(ctx context.Context, roles []string)
 	var roleMenus []*RoleMenu
 	err := r.data.DB(ctx).NewSelect().
 		Model(&roleMenus).
-		Where("role_id in ?", bun.In(roles)).
+		Where("role_id in (?)", bun.In(roles)).
 		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Scan(ctx)
 	if err != nil {
