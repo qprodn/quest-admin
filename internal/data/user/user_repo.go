@@ -73,6 +73,7 @@ func (r *userRepo) Create(ctx context.Context, user *biz.User) error {
 
 	_, err := r.data.DB(ctx).NewInsert().Model(dbUser).Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return err
 	}
 
@@ -90,6 +91,7 @@ func (r *userRepo) FindByID(ctx context.Context, id string) (*biz.User, error) {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	return r.toBizUser(dbUser), nil
@@ -107,6 +109,7 @@ func (r *userRepo) FindByUsername(ctx context.Context, username string) (*biz.Us
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	return r.toBizUser(dbUser), nil
@@ -143,6 +146,7 @@ func (r *userRepo) List(ctx context.Context, opt *biz.WhereUserOpt) ([]*biz.User
 	}
 	err := q.Where("tenant_id = ?", ctxs.GetTenantID(ctx)).Scan(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -173,6 +177,7 @@ func (r *userRepo) Count(ctx context.Context, opt *biz.WhereUserOpt) (int64, err
 	}
 	total, err := q.Where("tenant_id = ?", ctxs.GetTenantID(ctx)).Count(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return 0, err
 	}
 	return int64(total), nil
@@ -198,6 +203,7 @@ func (r *userRepo) Update(ctx context.Context, user *biz.User) error {
 		OmitZero().
 		Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return err
 	}
 

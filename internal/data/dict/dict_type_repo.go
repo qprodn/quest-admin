@@ -62,6 +62,7 @@ func (r *dictTypeRepo) Create(ctx context.Context, dictType *biz.DictType) (*biz
 
 	_, err := r.data.DB(ctx).NewInsert().Model(dbDictType).Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -80,6 +81,7 @@ func (r *dictTypeRepo) FindByID(ctx context.Context, id string) (*biz.DictType, 
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	return r.toBizDictType(dbDictType), nil
@@ -97,6 +99,7 @@ func (r *dictTypeRepo) FindByCode(ctx context.Context, code string) (*biz.DictTy
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	return r.toBizDictType(dbDictType), nil
@@ -136,6 +139,7 @@ func (r *dictTypeRepo) List(ctx context.Context, opt *biz.WhereDictTypeOpt) ([]*
 
 	err := q.Where("tenant_id = ?", ctxs.GetTenantID(ctx)).Scan(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -164,6 +168,7 @@ func (r *dictTypeRepo) Count(ctx context.Context, opt *biz.WhereDictTypeOpt) (in
 
 	total, err := q.Where("tenant_id = ?", ctxs.GetTenantID(ctx)).Count(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return 0, err
 	}
 
@@ -189,6 +194,7 @@ func (r *dictTypeRepo) Update(ctx context.Context, dictType *biz.DictType) (*biz
 		OmitZero().
 		Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -213,6 +219,7 @@ func (r *dictTypeRepo) HasDictData(ctx context.Context, id string) (bool, error)
 		Where("dd.tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Count(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return false, err
 	}
 	return count > 0, nil
@@ -229,6 +236,7 @@ func (r *dictTypeRepo) FindByIDs(ctx context.Context, ids []string) ([]*biz.Dict
 		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Scan(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 

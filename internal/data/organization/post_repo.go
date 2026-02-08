@@ -62,6 +62,7 @@ func (r *postRepo) Create(ctx context.Context, post *biz.Post) (*biz.Post, error
 
 	_, err := r.data.DB(ctx).NewInsert().Model(dbPost).Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -80,6 +81,7 @@ func (r *postRepo) FindByID(ctx context.Context, id string) (*biz.Post, error) {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	return r.toBizPost(dbPost), nil
@@ -97,6 +99,7 @@ func (r *postRepo) FindByName(ctx context.Context, name string) (*biz.Post, erro
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	return r.toBizPost(dbPost), nil
@@ -114,6 +117,7 @@ func (r *postRepo) FindByCode(ctx context.Context, code string) (*biz.Post, erro
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	return r.toBizPost(dbPost), nil
@@ -153,6 +157,7 @@ func (r *postRepo) List(ctx context.Context, opt *biz.WherePostOpt) ([]*biz.Post
 
 	err := q.Where("tenant_id = ?", ctxs.GetTenantID(ctx)).Scan(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -181,6 +186,7 @@ func (r *postRepo) Count(ctx context.Context, opt *biz.WherePostOpt) (int64, err
 
 	total, err := q.Where("tenant_id = ?", ctxs.GetTenantID(ctx)).Count(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return 0, err
 	}
 
@@ -206,6 +212,7 @@ func (r *postRepo) Update(ctx context.Context, post *biz.Post) (*biz.Post, error
 		OmitZero().
 		Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -230,6 +237,7 @@ func (r *postRepo) HasUsers(ctx context.Context, id string) (bool, error) {
 		Where("up.tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Count(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return false, err
 	}
 	return count > 0, nil
@@ -246,6 +254,7 @@ func (r *postRepo) FindListByIDs(ctx context.Context, ids []string) ([]*biz.Post
 		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Scan(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 

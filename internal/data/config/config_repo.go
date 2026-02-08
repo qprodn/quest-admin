@@ -18,17 +18,17 @@ import (
 type Config struct {
 	bun.BaseModel `bun:"table:qa_config,alias:c"`
 
-	ID        string     `bun:"id,pk"`
-	Name      string     `bun:"name,notnull"`
-	Key       string     `bun:"key,notnull"`
-	Value     string     `bun:"value"`
-	Status    int32      `bun:"status,default:1"`
-	CreateBy  string     `bun:"create_by"`
-	CreateAt  time.Time  `bun:"create_at,notnull,default:current_timestamp()"`
-	UpdateBy  string     `bun:"update_by"`
-	UpdateAt  time.Time  `bun:"update_at,notnull,default:current_timestamp()"`
-	TenantID  string     `bun:"tenant_id"`
-	DeleteAt  *time.Time `bun:"delete_at,soft_delete,nullzero"`
+	ID       string     `bun:"id,pk"`
+	Name     string     `bun:"name,notnull"`
+	Key      string     `bun:"key,notnull"`
+	Value    string     `bun:"value"`
+	Status   int32      `bun:"status,default:1"`
+	CreateBy string     `bun:"create_by"`
+	CreateAt time.Time  `bun:"create_at,notnull,default:current_timestamp()"`
+	UpdateBy string     `bun:"update_by"`
+	UpdateAt time.Time  `bun:"update_at,notnull,default:current_timestamp()"`
+	TenantID string     `bun:"tenant_id"`
+	DeleteAt *time.Time `bun:"delete_at,soft_delete,nullzero"`
 }
 
 type configRepo struct {
@@ -50,16 +50,17 @@ func (r *configRepo) Create(ctx context.Context, config *biz.Config) error {
 		Name:     config.Name,
 		Key:      config.Key,
 		Value:    config.Value,
-		Status:    config.Status,
-		CreateBy:  config.CreateBy,
-		CreateAt:  now,
-		UpdateBy:  config.UpdateBy,
-		UpdateAt:  now,
-		TenantID:  config.TenantID,
+		Status:   config.Status,
+		CreateBy: config.CreateBy,
+		CreateAt: now,
+		UpdateBy: config.UpdateBy,
+		UpdateAt: now,
+		TenantID: config.TenantID,
 	}
 
 	_, err := r.data.DB(ctx).NewInsert().Model(dbConfig).Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return err
 	}
 
@@ -78,6 +79,7 @@ func (r *configRepo) FindByID(ctx context.Context, id string) (*biz.Config, erro
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	return r.toBizConfig(dbConfig), nil
@@ -95,6 +97,7 @@ func (r *configRepo) FindByKey(ctx context.Context, key string) (*biz.Config, er
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	return r.toBizConfig(dbConfig), nil
@@ -127,6 +130,7 @@ func (r *configRepo) List(ctx context.Context, opt *biz.WhereConfigOpt) ([]*biz.
 
 	err := q.Where("tenant_id = ?", ctxs.GetTenantID(ctx)).Scan(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -154,6 +158,7 @@ func (r *configRepo) Count(ctx context.Context, opt *biz.WhereConfigOpt) (int64,
 
 	total, err := q.Where("tenant_id = ?", ctxs.GetTenantID(ctx)).Count(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return 0, err
 	}
 	return int64(total), nil
@@ -165,7 +170,7 @@ func (r *configRepo) Update(ctx context.Context, config *biz.Config) error {
 		Name:     config.Name,
 		Key:      config.Key,
 		Value:    config.Value,
-		UpdateAt:  time.Now(),
+		UpdateAt: time.Now(),
 	}
 
 	_, err := r.data.DB(ctx).
@@ -176,6 +181,7 @@ func (r *configRepo) Update(ctx context.Context, config *biz.Config) error {
 		OmitZero().
 		Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return err
 	}
 
@@ -211,11 +217,11 @@ func (r *configRepo) toBizConfig(dbConfig *Config) *biz.Config {
 		Name:     dbConfig.Name,
 		Key:      dbConfig.Key,
 		Value:    dbConfig.Value,
-		Status:    dbConfig.Status,
-		CreateBy:  dbConfig.CreateBy,
-		CreateAt:  dbConfig.CreateAt,
-		UpdateBy:  dbConfig.UpdateBy,
-		UpdateAt:  dbConfig.UpdateAt,
-		TenantID:  dbConfig.TenantID,
+		Status:   dbConfig.Status,
+		CreateBy: dbConfig.CreateBy,
+		CreateAt: dbConfig.CreateAt,
+		UpdateBy: dbConfig.UpdateBy,
+		UpdateAt: dbConfig.UpdateAt,
+		TenantID: dbConfig.TenantID,
 	}
 }

@@ -56,6 +56,7 @@ func (r *userPostRepo) Create(ctx context.Context, item *biz.UserPost) error {
 		TenantID: ctxs.GetTenantID(ctx),
 	}).Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return err
 	}
 	return nil
@@ -69,6 +70,7 @@ func (r *userPostRepo) Delete(ctx context.Context, id string) error {
 		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return err
 	}
 	return nil
@@ -85,6 +87,7 @@ func (r *userPostRepo) GetUserPosts(ctx context.Context, userID string) ([]*biz.
 		if err == sql.ErrNoRows {
 			return make([]*biz.UserPost, 0), nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 

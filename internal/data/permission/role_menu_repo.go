@@ -46,6 +46,7 @@ func (r *roleMapMenuRepo) FindListByRoleIDs(ctx context.Context, roles []string)
 		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Scan(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	if len(roleMenus) == 0 {
@@ -74,6 +75,7 @@ func (r *roleMapMenuRepo) Create(ctx context.Context, item *permission.RoleMenu)
 		TenantID: ctxs.GetTenantID(ctx),
 	}).Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return err
 	}
 	return nil
@@ -88,6 +90,7 @@ func (r *roleMapMenuRepo) Delete(ctx context.Context, id string) error {
 		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return err
 	}
 	return nil
@@ -101,6 +104,7 @@ func (r *roleMapMenuRepo) GetRoleMenus(ctx context.Context, roleID string) ([]*p
 		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Scan(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -119,6 +123,7 @@ func (r *roleMapMenuRepo) GetMenuIDs(ctx context.Context, roleID string) ([]stri
 		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Scan(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 

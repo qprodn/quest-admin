@@ -58,6 +58,7 @@ func (r *userRoleRepo) Create(ctx context.Context, item *biz.UserRole) error {
 		TenantID: ctxs.GetTenantID(ctx),
 	}).Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return err
 	}
 	return nil
@@ -68,9 +69,10 @@ func (r *userRoleRepo) Delete(ctx context.Context, id string) error {
 		Model((*UserRole)(nil)).
 		Set("update_by = ?", ctxs.GetLoginID(ctx)).
 		Where("id = ?", id).
-		Where("tenant = ?", ctxs.GetTenantID(ctx)).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return err
 	}
 	return nil
@@ -87,6 +89,7 @@ func (r *userRoleRepo) GetUserRoles(ctx context.Context, userID string) ([]*biz.
 		if errors.Is(err, sql.ErrNoRows) {
 			return make([]*biz.UserRole, 0), nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -108,6 +111,9 @@ func (r *userRoleRepo) addUserRoles(ctx context.Context, userID string, roleIDs 
 	}
 
 	_, err := r.data.DB(ctx).NewInsert().Model(&userRoles).Exec(ctx)
+	if err != nil {
+		r.log.WithContext(ctx).Error(err)
+	}
 	return err
 }
 
@@ -118,6 +124,9 @@ func (r *userRoleRepo) removeUserRoles(ctx context.Context, userID string, roleI
 		Where("role_id IN (?)", bun.In(roleIDs)).
 		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Exec(ctx)
+	if err != nil {
+		r.log.WithContext(ctx).Error(err)
+	}
 	return err
 }
 
@@ -129,6 +138,7 @@ func (r *userRoleRepo) replaceUserRoles(ctx context.Context, userID string, role
 			Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 			Exec(ctx)
 		if err != nil {
+			r.log.WithContext(ctx).Error(err)
 			return err
 		}
 
@@ -145,6 +155,7 @@ func (r *userRoleRepo) replaceUserRoles(ctx context.Context, userID string, role
 			}
 			_, err = tx.NewInsert().Model(&userRoles).Exec(ctx)
 			if err != nil {
+				r.log.WithContext(ctx).Error(err)
 				return err
 			}
 		}

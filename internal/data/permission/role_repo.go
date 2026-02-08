@@ -56,12 +56,13 @@ func (r *roleRepo) FindListByIDs(ctx context.Context, roleIds []string) ([]*biz.
 	err := r.data.DB(ctx).NewSelect().
 		Model(&dbRoles).
 		Where("id in (?)", bun.In(roleIds)).
-		Where("tenant = ?", ctxs.GetTenantID(ctx)).
+		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Scan(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return []*biz.Role{}, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	roles := slices.Map(dbRoles, func(item *Role, index int) *biz.Role {
@@ -91,6 +92,7 @@ func (r *roleRepo) Create(ctx context.Context, role *biz.Role) (*biz.Role, error
 
 	_, err := r.data.DB(ctx).NewInsert().Model(dbRole).Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -109,6 +111,7 @@ func (r *roleRepo) FindByID(ctx context.Context, id string) (*biz.Role, error) {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	return r.toBizRole(dbRole), nil
@@ -126,6 +129,7 @@ func (r *roleRepo) FindByName(ctx context.Context, name string) (*biz.Role, erro
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	return r.toBizRole(dbRole), nil
@@ -143,6 +147,7 @@ func (r *roleRepo) FindByCode(ctx context.Context, code string) (*biz.Role, erro
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	return r.toBizRole(dbRole), nil
@@ -182,6 +187,7 @@ func (r *roleRepo) List(ctx context.Context, opt *biz.WhereRoleOpt) ([]*biz.Role
 
 	err := q.Where("tenant_id = ?", ctxs.GetTenantID(ctx)).Scan(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -210,6 +216,7 @@ func (r *roleRepo) Count(ctx context.Context, opt *biz.WhereRoleOpt) (int64, err
 
 	total, err := q.Where("tenant_id = ?", ctxs.GetTenantID(ctx)).Count(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return 0, err
 	}
 
@@ -237,6 +244,7 @@ func (r *roleRepo) Update(ctx context.Context, role *biz.Role) (*biz.Role, error
 		OmitZero().
 		Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -262,6 +270,7 @@ func (r *roleRepo) HasUsers(ctx context.Context, id string) (bool, error) {
 		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Count(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return false, err
 	}
 	return count > 0, nil

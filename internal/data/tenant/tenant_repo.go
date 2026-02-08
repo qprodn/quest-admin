@@ -67,6 +67,7 @@ func (r *tenantRepo) Create(ctx context.Context, tenant *biz.Tenant) error {
 
 	_, err := r.data.DB(ctx).NewInsert().Model(dbTenant).Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return err
 	}
 
@@ -80,6 +81,7 @@ func (r *tenantRepo) FindByID(ctx context.Context, id string) (*biz.Tenant, erro
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	return r.toBizTenant(dbTenant), nil
@@ -92,6 +94,7 @@ func (r *tenantRepo) FindByName(ctx context.Context, name string) (*biz.Tenant, 
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	return r.toBizTenant(dbTenant), nil
@@ -112,6 +115,7 @@ func (r *tenantRepo) List(ctx context.Context, query *biz.ListTenantsQuery) (*bi
 
 	total, err := q.Count(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -129,6 +133,7 @@ func (r *tenantRepo) List(ctx context.Context, query *biz.ListTenantsQuery) (*bi
 		Offset(int((query.Page - 1) * query.PageSize)).
 		Scan(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -168,6 +173,7 @@ func (r *tenantRepo) Update(ctx context.Context, tenant *biz.Tenant) error {
 
 	_, err := r.data.DB(ctx).NewUpdate().Model(dbTenant).WherePK().OmitZero().Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return err
 	}
 
@@ -194,6 +200,7 @@ func (r *tenantRepo) FindIDAndNameList(ctx context.Context) ([]*biz.TenantSimple
 		Order("name ASC").
 		Scan(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 

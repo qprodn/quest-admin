@@ -79,6 +79,7 @@ func (r *departmentRepo) Create(ctx context.Context, dept *biz.Department) (*biz
 
 	_, err := r.data.DB(ctx).NewInsert().Model(dbDept).Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -97,6 +98,7 @@ func (r *departmentRepo) FindByID(ctx context.Context, id string) (*biz.Departme
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	return r.toBizDepartment(dbDept), nil
@@ -114,6 +116,7 @@ func (r *departmentRepo) FindByName(ctx context.Context, name string) (*biz.Depa
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	return r.toBizDepartment(dbDept), nil
@@ -128,6 +131,7 @@ func (r *departmentRepo) List(ctx context.Context) ([]*biz.Department, error) {
 		Order("level ASC, sort ASC").
 		Scan(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -146,6 +150,7 @@ func (r *departmentRepo) FindByParentID(ctx context.Context, parentID string) ([
 		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Scan(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -178,6 +183,7 @@ func (r *departmentRepo) Update(ctx context.Context, dept *biz.Department) (*biz
 		OmitZero().
 		Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -202,6 +208,7 @@ func (r *departmentRepo) HasUsers(ctx context.Context, id string) (bool, error) 
 		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Count(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return false, err
 	}
 	return count > 0, nil
@@ -218,6 +225,7 @@ func (r *departmentRepo) FindListByIDs(ctx context.Context, ids []string) ([]*bi
 		Where("tenant_id = ?", ctxs.GetTenantID(ctx)).
 		Scan(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 

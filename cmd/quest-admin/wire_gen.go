@@ -44,7 +44,7 @@ import (
 
 // wireApp init kratos application.
 func wireApp(bootstrap *conf.Bootstrap, logger log.Logger) (*kratos.App, func(), error) {
-	db := pg.NewDB(bootstrap)
+	db := pg.NewDB(bootstrap, logger)
 	dataData := data.NewData(db)
 	userRepo := user.NewUserRepo(dataData, logger)
 	manager := transaction.NewManager(db)

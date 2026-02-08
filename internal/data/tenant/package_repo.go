@@ -57,6 +57,7 @@ func (r *packageRepo) Create(ctx context.Context, pkg *biz.TenantPackage) (*biz.
 
 	_, err := r.data.DB(ctx).NewInsert().Model(dbPkg).Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -70,6 +71,7 @@ func (r *packageRepo) FindByID(ctx context.Context, id string) (*biz.TenantPacka
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	return r.toBizPackage(dbPkg), nil
@@ -82,6 +84,7 @@ func (r *packageRepo) FindByName(ctx context.Context, name string) (*biz.TenantP
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	return r.toBizPackage(dbPkg), nil
@@ -102,6 +105,7 @@ func (r *packageRepo) List(ctx context.Context, query *biz.ListPackagesQuery) (*
 
 	total, err := q.Count(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -119,6 +123,7 @@ func (r *packageRepo) List(ctx context.Context, query *biz.ListPackagesQuery) (*
 		Offset(int((query.Page - 1) * query.PageSize)).
 		Scan(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -153,6 +158,7 @@ func (r *packageRepo) Update(ctx context.Context, pkg *biz.TenantPackage) (*biz.
 
 	_, err := r.data.DB(ctx).NewUpdate().Model(dbPkg).WherePK().OmitZero().Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -173,6 +179,7 @@ func (r *packageRepo) IsInUse(ctx context.Context, id string) (bool, error) {
 		Where("package_id = ?", id).
 		Count(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return false, err
 	}
 	return count > 0, nil

@@ -64,6 +64,7 @@ func (r *menuRepo) FindByMenuIDs(ctx context.Context, menuIDs []string) ([]*biz.
 		if errors.Is(err, sql.ErrNoRows) {
 			return []*biz.Menu{}, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	menus := make([]*biz.Menu, 0, len(dbMenus))
@@ -98,6 +99,7 @@ func (r *menuRepo) Create(ctx context.Context, menu *biz.Menu) error {
 
 	_, err := r.data.DB(ctx).NewInsert().Model(dbMenu).Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return err
 	}
 
@@ -111,6 +113,7 @@ func (r *menuRepo) FindByID(ctx context.Context, id string) (*biz.Menu, error) {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	return r.toBizMenu(dbMenu), nil
@@ -123,6 +126,7 @@ func (r *menuRepo) FindByName(ctx context.Context, name string) (*biz.Menu, erro
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 	return r.toBizMenu(dbMenu), nil
@@ -139,6 +143,7 @@ func (r *menuRepo) List(ctx context.Context) ([]*biz.Menu, error) {
 		if errors.Is(err, sql.ErrNoRows) {
 			return []*biz.Menu{}, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -159,6 +164,7 @@ func (r *menuRepo) FindByParentID(ctx context.Context, parentID string) ([]*biz.
 		if errors.Is(err, sql.ErrNoRows) {
 			return []*biz.Menu{}, nil
 		}
+		r.log.WithContext(ctx).Error(err)
 		return nil, err
 	}
 
@@ -191,6 +197,7 @@ func (r *menuRepo) Update(ctx context.Context, menu *biz.Menu) error {
 
 	_, err := r.data.DB(ctx).NewUpdate().Model(dbMenu).WherePK().Exec(ctx)
 	if err != nil {
+		r.log.WithContext(ctx).Error(err)
 		return err
 	}
 	return nil
