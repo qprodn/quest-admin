@@ -109,73 +109,80 @@ func (r *dictDataRepo) FindByValue(ctx context.Context, dictTypeID, value string
 	return r.toBizDictData(dbDictData), nil
 }
 
-func (r *dictDataRepo) List(ctx context.Context, query *biz.ListDictDataQuery) (*biz.ListDictDataResult, error) {
+func (r *dictDataRepo) List(ctx context.Context, opt *biz.WhereDictDataOpt) ([]*biz.DictData, error) {
 	var dbDictData []*DictData
 	q := r.data.DB(ctx).NewSelect().Model(&dbDictData)
 
-	if query.DictTypeID != "" {
-		q = q.Where("dict_type_id = ?", query.DictTypeID)
+	if opt.DictTypeID != "" {
+		q = q.Where("dict_type_id = ?", opt.DictTypeID)
 	}
 
-	if query.Keyword != "" {
+	if opt.Keyword != "" {
 		q = q.WhereGroup(" AND ", func(q *bun.SelectQuery) *bun.SelectQuery {
-			return q.WhereOr("label LIKE ?", "%"+query.Keyword+"%").
-				WhereOr("value LIKE ?", "%"+query.Keyword+"%")
+			return q.WhereOr("label LIKE ?", "%"+opt.Keyword+"%").
+				WhereOr("value LIKE ?", "%"+opt.Keyword+"%")
 		})
 	}
 
-	if query.Status != nil {
-		q = q.Where("status = ?", *query.Status)
+	if opt.Status != nil {
+		q = q.Where("status = ?", *opt.Status)
 	}
 
-	q = q.Where("tenant_id = ?", ctxs.GetTenantID(ctx))
-
-	total, err := q.ScanAndCount(ctx, &dbDictData, nil)
-	if err != nil {
-		return nil, err
+	if opt.Offset != 0 {
+		q.Offset(int(opt.Offset))
+	}
+	if opt.Limit != 0 {
+		q.Limit(int(opt.Limit))
 	}
 
-	page := query.Page
-	pageSize := query.PageSize
-	if page < 1 {
-		page = 1
-	}
-	if pageSize < 1 {
-		pageSize = 10
-	}
-
-	offset := (page - 1) * pageSize
-	q = q.Offset(int(offset)).Limit(int(pageSize))
-
-	if query.SortField != "" {
-		order := query.SortOrder
+	if opt.SortField != "" && opt.SortOrder != "" {
+		order := opt.SortOrder
 		if order != "asc" && order != "desc" {
 			order = "asc"
 		}
-		q = q.Order(fmt.Sprintf("%s %s", query.SortField, order))
+		q = q.Order(fmt.Sprintf("%s %s", opt.SortField, order))
 	} else {
 		q = q.Order("sort ASC, create_at DESC")
 	}
 
-	err = q.Scan(ctx)
+	err := q.Where("tenant_id = ?", ctxs.GetTenantID(ctx)).Scan(ctx)
 	if err != nil {
 		return nil, err
 	}
-
-	totalPages := int32((int64(total) + int64(pageSize) - 1) / int64(pageSize))
 
 	dictData := make([]*biz.DictData, 0, len(dbDictData))
 	for _, dbDictData := range dbDictData {
 		dictData = append(dictData, r.toBizDictData(dbDictData))
 	}
 
-	return &biz.ListDictDataResult{
-		DictData:   dictData,
-		Total:      int64(total),
-		Page:       page,
-		PageSize:   pageSize,
-		TotalPages: totalPages,
-	}, nil
+	return dictData, nil
+}
+
+func (r *dictDataRepo) Count(ctx context.Context, opt *biz.WhereDictDataOpt) (int64, error) {
+	var dbDictData []*DictData
+	q := r.data.DB(ctx).NewSelect().Model(&dbDictData)
+
+	if opt.DictTypeID != "" {
+		q = q.Where("dict_type_id = ?", opt.DictTypeID)
+	}
+
+	if opt.Keyword != "" {
+		q = q.WhereGroup(" AND ", func(q *bun.SelectQuery) *bun.SelectQuery {
+			return q.WhereOr("label LIKE ?", "%"+opt.Keyword+"%").
+				WhereOr("value LIKE ?", "%"+opt.Keyword+"%")
+		})
+	}
+
+	if opt.Status != nil {
+		q = q.Where("status = ?", *opt.Status)
+	}
+
+	total, err := q.Where("tenant_id = ?", ctxs.GetTenantID(ctx)).Count(ctx)
+	if err != nil {
+		return 0, err
+	}
+
+	return int64(total), nil
 }
 
 func (r *dictDataRepo) Update(ctx context.Context, dictData *biz.DictData) (*biz.DictData, error) {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"quest-admin/internal/data/idgen"
 	"quest-admin/pkg/errorx"
+	"quest-admin/pkg/util/pagination"
 	"quest-admin/types/consts/id"
 	"quest-admin/types/errkey"
 
@@ -15,7 +16,8 @@ type PostRepo interface {
 	FindByID(ctx context.Context, id string) (*Post, error)
 	FindByName(ctx context.Context, name string) (*Post, error)
 	FindByCode(ctx context.Context, code string) (*Post, error)
-	List(ctx context.Context, query *ListPostsQuery) (*ListPostsResult, error)
+	List(ctx context.Context, opt *WherePostOpt) ([]*Post, error)
+	Count(ctx context.Context, opt *WherePostOpt) (int64, error)
 	Update(ctx context.Context, post *Post) (*Post, error)
 	Delete(ctx context.Context, id string) error
 	HasUsers(ctx context.Context, id string) (bool, error)
@@ -62,7 +64,35 @@ func (uc *PostUsecase) GetPost(ctx context.Context, id string) (*Post, error) {
 
 func (uc *PostUsecase) ListPosts(ctx context.Context, query *ListPostsQuery) (*ListPostsResult, error) {
 	uc.log.WithContext(ctx).Infof("ListPosts: page=%d, pageSize=%d, keyword=%s", query.Page, query.PageSize, query.Keyword)
-	return uc.repo.List(ctx, query)
+
+	opt := &WherePostOpt{
+		Limit:     query.PageSize,
+		Offset:    pagination.GetOffset(query.Page, query.PageSize),
+		Keyword:   query.Keyword,
+		Status:    query.Status,
+		SortField: query.SortField,
+		SortOrder: query.SortOrder,
+	}
+
+	list, err := uc.repo.List(ctx, opt)
+	if err != nil {
+		uc.log.WithContext(ctx).Error("查询岗位列表失败", err)
+		return nil, err
+	}
+
+	total, err := uc.repo.Count(ctx, opt)
+	if err != nil {
+		uc.log.WithContext(ctx).Error("查询岗位列表总数失败", err)
+		return nil, err
+	}
+
+	return &ListPostsResult{
+		Posts:      list,
+		Total:      total,
+		Page:       query.Page,
+		PageSize:   query.PageSize,
+		TotalPages: pagination.GetTotalPages(total, int64(query.PageSize)),
+	}, nil
 }
 
 func (uc *PostUsecase) UpdatePost(ctx context.Context, post *Post) (*Post, error) {

@@ -148,67 +148,72 @@ func (r *roleRepo) FindByCode(ctx context.Context, code string) (*biz.Role, erro
 	return r.toBizRole(dbRole), nil
 }
 
-func (r *roleRepo) List(ctx context.Context, query *biz.ListRolesQuery) (*biz.ListRolesResult, error) {
+func (r *roleRepo) List(ctx context.Context, opt *biz.WhereRoleOpt) ([]*biz.Role, error) {
 	var dbRoles []*Role
 	q := r.data.DB(ctx).NewSelect().Model(&dbRoles)
 
-	if query.Keyword != "" {
+	if opt.Keyword != "" {
 		q = q.WhereGroup(" AND ", func(q *bun.SelectQuery) *bun.SelectQuery {
-			return q.WhereOr("name LIKE ?", "%"+query.Keyword+"%").
-				WhereOr("code LIKE ?", "%"+query.Keyword+"%")
+			return q.WhereOr("name LIKE ?", "%"+opt.Keyword+"%").
+				WhereOr("code LIKE ?", "%"+opt.Keyword+"%")
 		})
 	}
 
-	if query.Status != nil {
-		q = q.Where("status = ?", *query.Status)
+	if opt.Status != nil {
+		q = q.Where("status = ?", *opt.Status)
 	}
 
-	total, err := q.ScanAndCount(ctx, &dbRoles, nil)
-	if err != nil {
-		return nil, err
+	if opt.Offset != 0 {
+		q.Offset(int(opt.Offset))
+	}
+	if opt.Limit != 0 {
+		q.Limit(int(opt.Limit))
 	}
 
-	page := query.Page
-	pageSize := query.PageSize
-	if page < 1 {
-		page = 1
-	}
-	if pageSize < 1 {
-		pageSize = 10
-	}
-
-	offset := (page - 1) * pageSize
-	q = q.Offset(int(offset)).Limit(int(pageSize))
-
-	if query.SortField != "" {
-		order := query.SortOrder
+	if opt.SortField != "" && opt.SortOrder != "" {
+		order := opt.SortOrder
 		if order != "asc" && order != "desc" {
 			order = "asc"
 		}
-		q = q.Order(fmt.Sprintf("%s %s", query.SortField, order))
+		q = q.Order(fmt.Sprintf("%s %s", opt.SortField, order))
 	} else {
 		q = q.Order("sort ASC, create_at DESC")
 	}
 
-	err = q.Where("tenant_id = ?", ctxs.GetTenantID(ctx)).Scan(ctx)
+	err := q.Where("tenant_id = ?", ctxs.GetTenantID(ctx)).Scan(ctx)
 	if err != nil {
 		return nil, err
 	}
-
-	totalPages := int32((int64(total) + int64(pageSize) - 1) / int64(pageSize))
 
 	roles := make([]*biz.Role, 0, len(dbRoles))
 	for _, dbRole := range dbRoles {
 		roles = append(roles, r.toBizRole(dbRole))
 	}
 
-	return &biz.ListRolesResult{
-		Roles:      roles,
-		Total:      int64(total),
-		Page:       page,
-		PageSize:   pageSize,
-		TotalPages: totalPages,
-	}, nil
+	return roles, nil
+}
+
+func (r *roleRepo) Count(ctx context.Context, opt *biz.WhereRoleOpt) (int64, error) {
+	var dbRoles []*Role
+	q := r.data.DB(ctx).NewSelect().Model(&dbRoles)
+
+	if opt.Keyword != "" {
+		q = q.WhereGroup(" AND ", func(q *bun.SelectQuery) *bun.SelectQuery {
+			return q.WhereOr("name LIKE ?", "%"+opt.Keyword+"%").
+				WhereOr("code LIKE ?", "%"+opt.Keyword+"%")
+		})
+	}
+
+	if opt.Status != nil {
+		q = q.Where("status = ?", *opt.Status)
+	}
+
+	total, err := q.Where("tenant_id = ?", ctxs.GetTenantID(ctx)).Count(ctx)
+	if err != nil {
+		return 0, err
+	}
+
+	return int64(total), nil
 }
 
 func (r *roleRepo) Update(ctx context.Context, role *biz.Role) (*biz.Role, error) {

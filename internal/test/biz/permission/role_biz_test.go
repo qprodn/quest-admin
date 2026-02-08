@@ -48,12 +48,17 @@ func (m *MockRoleRepo) FindByCode(ctx context.Context, code string) (*permission
 	return args.Get(0).(*permission.Role), args.Error(1)
 }
 
-func (m *MockRoleRepo) List(ctx context.Context, query *permission.ListRolesQuery) (*permission.ListRolesResult, error) {
-	args := m.Called(ctx, query)
+func (m *MockRoleRepo) List(ctx context.Context, opt *permission.WhereRoleOpt) ([]*permission.Role, error) {
+	args := m.Called(ctx, opt)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
-	return args.Get(0).(*permission.ListRolesResult), args.Error(1)
+	return args.Get(0).([]*permission.Role), args.Error(1)
+}
+
+func (m *MockRoleRepo) Count(ctx context.Context, opt *permission.WhereRoleOpt) (int64, error) {
+	args := m.Called(ctx, opt)
+	return args.Get(0).(int64), args.Error(1)
 }
 
 func (m *MockRoleRepo) Update(ctx context.Context, role *permission.Role) (*permission.Role, error) {

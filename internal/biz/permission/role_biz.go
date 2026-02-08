@@ -6,6 +6,7 @@ import (
 	"quest-admin/internal/data/transaction"
 	"quest-admin/pkg/errorx"
 	"quest-admin/pkg/lang/slices"
+	"quest-admin/pkg/util/pagination"
 	"quest-admin/types/consts/id"
 	"quest-admin/types/errkey"
 
@@ -17,7 +18,8 @@ type RoleRepo interface {
 	FindByID(ctx context.Context, id string) (*Role, error)
 	FindByName(ctx context.Context, name string) (*Role, error)
 	FindByCode(ctx context.Context, code string) (*Role, error)
-	List(ctx context.Context, query *ListRolesQuery) (*ListRolesResult, error)
+	List(ctx context.Context, opt *WhereRoleOpt) ([]*Role, error)
+	Count(ctx context.Context, opt *WhereRoleOpt) (int64, error)
 	Update(ctx context.Context, role *Role) (*Role, error)
 	Delete(ctx context.Context, id string) error
 	HasUsers(ctx context.Context, id string) (bool, error)
@@ -80,7 +82,35 @@ func (uc *RoleUsecase) GetRole(ctx context.Context, id string) (*Role, error) {
 
 func (uc *RoleUsecase) ListRoles(ctx context.Context, query *ListRolesQuery) (*ListRolesResult, error) {
 	uc.log.WithContext(ctx).Infof("ListRoles: page=%d, pageSize=%d, keyword=%s", query.Page, query.PageSize, query.Keyword)
-	return uc.repo.List(ctx, query)
+
+	opt := &WhereRoleOpt{
+		Limit:     query.PageSize,
+		Offset:    pagination.GetOffset(query.Page, query.PageSize),
+		Keyword:   query.Keyword,
+		Status:    query.Status,
+		SortField: query.SortField,
+		SortOrder: query.SortOrder,
+	}
+
+	list, err := uc.repo.List(ctx, opt)
+	if err != nil {
+		uc.log.WithContext(ctx).Error("查询角色列表失败", err)
+		return nil, err
+	}
+
+	total, err := uc.repo.Count(ctx, opt)
+	if err != nil {
+		uc.log.WithContext(ctx).Error("查询角色列表总数失败", err)
+		return nil, err
+	}
+
+	return &ListRolesResult{
+		Roles:      list,
+		Total:      total,
+		Page:       query.Page,
+		PageSize:   query.PageSize,
+		TotalPages: pagination.GetTotalPages(total, int64(query.PageSize)),
+	}, nil
 }
 
 func (uc *RoleUsecase) UpdateRole(ctx context.Context, role *Role) (*Role, error) {

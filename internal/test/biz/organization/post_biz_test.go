@@ -46,12 +46,17 @@ func (m *MockPostRepo) FindByCode(ctx context.Context, code string) (*org.Post, 
 	return args.Get(0).(*org.Post), args.Error(1)
 }
 
-func (m *MockPostRepo) List(ctx context.Context, query *org.ListPostsQuery) (*org.ListPostsResult, error) {
-	args := m.Called(ctx, query)
+func (m *MockPostRepo) List(ctx context.Context, opt *org.WherePostOpt) ([]*org.Post, error) {
+	args := m.Called(ctx, opt)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
-	return args.Get(0).(*org.ListPostsResult), args.Error(1)
+	return args.Get(0).([]*org.Post), args.Error(1)
+}
+
+func (m *MockPostRepo) Count(ctx context.Context, opt *org.WherePostOpt) (int64, error) {
+	args := m.Called(ctx, opt)
+	return args.Get(0).(int64), args.Error(1)
 }
 
 func (m *MockPostRepo) Update(ctx context.Context, post *org.Post) (*org.Post, error) {

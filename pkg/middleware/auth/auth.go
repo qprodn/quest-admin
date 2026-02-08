@@ -2,12 +2,17 @@ package auth
 
 import (
 	"context"
+	v1 "quest-admin/api/gen/auth/v1"
 	"quest-admin/internal/data/auth"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/transport"
 )
+
+var whitList = []string{
+	v1.OperationAuthServiceLogin,
+}
 
 func AdminHttpServer(manager *auth.Manager) middleware.Middleware {
 	return func(handler middleware.Handler) middleware.Handler {
@@ -17,6 +22,13 @@ func AdminHttpServer(manager *auth.Manager) middleware.Middleware {
 				tenantId = ""
 			)
 			if tr, ok := transport.FromServerContext(ctx); ok {
+				operation := tr.Operation()
+				for _, v := range whitList {
+					if v == operation {
+						return handler(ctx, req)
+					}
+				}
+
 				token := tr.RequestHeader().Get("Authorization")
 				if token != "" {
 					loginID, err = manager.Admin.GetLoginID(token)

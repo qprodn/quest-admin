@@ -42,6 +42,15 @@ type ListPostsQuery struct {
 	SortOrder string
 }
 
+type WherePostOpt struct {
+	Limit     int32
+	Offset    int32
+	Keyword   string
+	Status    *int32
+	SortField string
+	SortOrder string
+}
+
 type ListPostsResult struct {
 	Posts      []*Post
 	Total      int64

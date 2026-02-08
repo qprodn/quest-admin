@@ -4,6 +4,7 @@ import (
 	"context"
 	"quest-admin/internal/data/idgen"
 	"quest-admin/pkg/errorx"
+	"quest-admin/pkg/util/pagination"
 	"quest-admin/types/consts/id"
 	"quest-admin/types/errkey"
 
@@ -14,7 +15,8 @@ type DictTypeRepo interface {
 	Create(ctx context.Context, dictType *DictType) (*DictType, error)
 	FindByID(ctx context.Context, id string) (*DictType, error)
 	FindByCode(ctx context.Context, code string) (*DictType, error)
-	List(ctx context.Context, query *ListDictTypesQuery) (*ListDictTypesResult, error)
+	List(ctx context.Context, opt *WhereDictTypeOpt) ([]*DictType, error)
+	Count(ctx context.Context, opt *WhereDictTypeOpt) (int64, error)
 	Update(ctx context.Context, dictType *DictType) (*DictType, error)
 	Delete(ctx context.Context, id string) error
 	HasDictData(ctx context.Context, id string) (bool, error)
@@ -62,7 +64,35 @@ func (uc *DictTypeUsecase) GetDictType(ctx context.Context, id string) (*DictTyp
 
 func (uc *DictTypeUsecase) ListDictTypes(ctx context.Context, query *ListDictTypesQuery) (*ListDictTypesResult, error) {
 	uc.log.WithContext(ctx).Infof("ListDictTypes: page=%d, pageSize=%d, keyword=%s", query.Page, query.PageSize, query.Keyword)
-	return uc.repo.List(ctx, query)
+
+	opt := &WhereDictTypeOpt{
+		Limit:     query.PageSize,
+		Offset:    pagination.GetOffset(query.Page, query.PageSize),
+		Keyword:   query.Keyword,
+		Status:    query.Status,
+		SortField: query.SortField,
+		SortOrder: query.SortOrder,
+	}
+
+	list, err := uc.repo.List(ctx, opt)
+	if err != nil {
+		uc.log.WithContext(ctx).Error("查询字典类型列表失败", err)
+		return nil, err
+	}
+
+	total, err := uc.repo.Count(ctx, opt)
+	if err != nil {
+		uc.log.WithContext(ctx).Error("查询字典类型列表总数失败", err)
+		return nil, err
+	}
+
+	return &ListDictTypesResult{
+		DictTypes:  list,
+		Total:      total,
+		Page:       query.Page,
+		PageSize:   query.PageSize,
+		TotalPages: pagination.GetTotalPages(total, int64(query.PageSize)),
+	}, nil
 }
 
 func (uc *DictTypeUsecase) UpdateDictType(ctx context.Context, dictType *DictType) (*DictType, error) {
@@ -111,7 +141,8 @@ type DictDataRepo interface {
 	Create(ctx context.Context, dictData *DictData) (*DictData, error)
 	FindByID(ctx context.Context, id string) (*DictData, error)
 	FindByValue(ctx context.Context, dictTypeID, value string) (*DictData, error)
-	List(ctx context.Context, query *ListDictDataQuery) (*ListDictDataResult, error)
+	List(ctx context.Context, opt *WhereDictDataOpt) ([]*DictData, error)
+	Count(ctx context.Context, opt *WhereDictDataOpt) (int64, error)
 	Update(ctx context.Context, dictData *DictData) (*DictData, error)
 	Delete(ctx context.Context, id string) error
 	FindListByIDs(ctx context.Context, ids []string) ([]*DictData, error)
@@ -159,7 +190,36 @@ func (uc *DictDataUsecase) GetDictData(ctx context.Context, id string) (*DictDat
 
 func (uc *DictDataUsecase) ListDictData(ctx context.Context, query *ListDictDataQuery) (*ListDictDataResult, error) {
 	uc.log.WithContext(ctx).Infof("ListDictData: page=%d, pageSize=%d, dictTypeID=%s", query.Page, query.PageSize, query.DictTypeID)
-	return uc.repo.List(ctx, query)
+
+	opt := &WhereDictDataOpt{
+		Limit:      query.PageSize,
+		Offset:     pagination.GetOffset(query.Page, query.PageSize),
+		DictTypeID: query.DictTypeID,
+		Keyword:    query.Keyword,
+		Status:     query.Status,
+		SortField:  query.SortField,
+		SortOrder:  query.SortOrder,
+	}
+
+	list, err := uc.repo.List(ctx, opt)
+	if err != nil {
+		uc.log.WithContext(ctx).Error("查询字典数据列表失败", err)
+		return nil, err
+	}
+
+	total, err := uc.repo.Count(ctx, opt)
+	if err != nil {
+		uc.log.WithContext(ctx).Error("查询字典数据列表总数失败", err)
+		return nil, err
+	}
+
+	return &ListDictDataResult{
+		DictData:   list,
+		Total:      total,
+		Page:       query.Page,
+		PageSize:   query.PageSize,
+		TotalPages: pagination.GetTotalPages(total, int64(query.PageSize)),
+	}, nil
 }
 
 func (uc *DictDataUsecase) UpdateDictData(ctx context.Context, dictData *DictData) (*DictData, error) {

@@ -25,12 +25,31 @@ type ListDictTypesQuery struct {
 	SortOrder string
 }
 
+type WhereDictTypeOpt struct {
+	Limit     int32
+	Offset    int32
+	Keyword   string
+	Status    *int32
+	SortField string
+	SortOrder string
+}
+
 type ListDictTypesResult struct {
 	DictTypes  []*DictType
 	Total      int64
 	Page       int32
 	PageSize   int32
 	TotalPages int32
+}
+
+type WhereDictDataOpt struct {
+	Limit      int32
+	Offset     int32
+	DictTypeID string
+	Keyword    string
+	Status     *int32
+	SortField  string
+	SortOrder  string
 }
 
 type DictData struct {
